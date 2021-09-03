@@ -5,6 +5,8 @@ pause
 C:\MinGW\bin\gcc.exe lex.yy.c -o Compilado.exe
 echo "compilando el archivo flex..se crea el compilado.exe"
 pause
+Compilado.exe tests/declaracion_variables.txt
+echo "analizador lexico sobre declaracion de variables.txt"
 Compilado.exe tests/asignaciones.txt
 echo "analizador lexico sobre asignaciones.txt"
 Compilado.exe tests/operadores.txt

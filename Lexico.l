@@ -59,6 +59,10 @@ _NOT		    "NOT"|"not"|"Not"
 
 ","         	{ return COMA;}
 ";"         	{ return PUNTO_COMA;}
+"["         	{ return CORCHETE_ABRE;}
+"]"         	{ return CORCHETE_CIERRA;}
+"("         	{ return PARENTESIS_ABRE;}
+")"         	{ return PARENTESIS_CIERRA;}
 
 ">"         	{ return OP_MAY;}
 "<"         	{ return OP_MEN;}
@@ -71,8 +75,6 @@ _NOT		    "NOT"|"not"|"Not"
 {_IF}          {return _IF;}
 {_ELSE}        {return _ELSE;}
 {_FLOAT}       {return _FLOAT;}
-{_INTEGER}     {return _INTEGER;}
-{_STRING}      {return _STRING;}
 {_DISPLAY}     {return _PUT;}
 {_GET}         {return _GET;}
 {_DIM}         {return _DIM;}
@@ -80,6 +82,9 @@ _NOT		    "NOT"|"not"|"Not"
 {_AND}         {return _AND;}
 {_OR}          {return _OR;}
 {_NOT}         {return _NOT;}
+{_STRING}      {return _STRING;}
+{_REAL}        {return _REAL;}
+{_INTEGER}     {return _INTEGER;}
 
 
 
