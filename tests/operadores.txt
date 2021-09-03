@@ -1,0 +1,11 @@
+IF (var_1 > var_3)
+    PRINT var_1
+ELSE
+    PRINT var_3
+END
+
+WHILE (var_1 > var_3)
+    PRINT var_1
+    var_1 := var_1 + 1
+END
+

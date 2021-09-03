@@ -5,8 +5,14 @@ pause
 C:\MinGW\bin\gcc.exe lex.yy.c -o Compilado.exe
 echo "compilando el archivo flex..se crea el compilado.exe"
 pause
-Compilado.exe prueba1.txt
-echo "analizador lexico sobre prueba1.txt"
+Compilado.exe tests/declaracion_variables.txt
+echo "analizador lexico sobre declaracion de variables.txt"
+Compilado.exe tests/asignaciones.txt
+echo "analizador lexico sobre asignaciones.txt"
+Compilado.exe tests/operadores.txt
+echo "analizador lexico sobre operadores.txt"
+Compilado.exe tests/tipo_de_datos.txt
+echo "analizador lexico sobre tipo_de_datos.txt"
 del lex.yy.C
 del Compilado.exe
 echo "se borran archivos demas.."

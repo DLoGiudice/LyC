@@ -1,0 +1,2 @@
+DIM [ var_1, var_2, var_3 ] AS [ integer, real, string ]
+DIM [ var_4 ] AS [ real ]
