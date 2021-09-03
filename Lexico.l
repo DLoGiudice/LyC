@@ -24,27 +24,27 @@ REAL     	    {DIGITO}{0,8}{CHAR_PUNTO}{DIGITO}{1,8}
 ENTERO          {DIGITO}+
 CADENA          \"[^\n"]*\"
 
-GUIONES         [-_]
+GUIONES         ("-"|"_")
 ID			    {LETRA}({LETRA}|{DIGITO}|{GUIONES})*
 
-_WHILE		    "WHILE"|"while"|"While"
+WHILE		    "WHILE"
 
-_IF		        "IF"|"if"|"If"
-_ELSE		    "ELSE"|"else"|"Else"
+IF		        "IF"
+ELSE		    "ELSE"
 
-_FLOAT		    "FLOAT"|"float"|"Float"
-_INT    	    "INT"|"int"|"Int"
-_STRING	        "STRING"|"string"|"String"
+FLOAT		    "FLOAT"
+INT    	        "INT"
+STRING	        "STRING"
 
-_DISPLAY	    "DISPLAY"|"display"|"Display"
-_GET		    "GET"|"get"|"Get"
+DISPLAY	        "DISPLAY"
+GET		        "GET"
 
-_DIM		    "DIM"|"dim"|"Dim"
-_AS		        "AS"|"As"|"as"
+DIM		        "DIM"
+AS		        "AS"
 
-_AND		    "AND"|"and"|"And"
-_OR 		    "OR"|"or"|"Or"
-_NOT		    "NOT"|"not"|"Not"
+AND		        "AND"
+OR 		        "OR"
+NOT		        "NOT"
 
 
 
@@ -71,20 +71,20 @@ _NOT		    "NOT"|"not"|"Not"
 "=="       	 	{ return OP_IGUALIGUAL;}
 "<>"        	{ return OP_DISTINTO;}
 
-{_WHILE}       {return _WHILE;}
-{_IF}          {return _IF;}
-{_ELSE}        {return _ELSE;}
-{_FLOAT}       {return _FLOAT;}
-{_DISPLAY}     {return _PUT;}
-{_GET}         {return _GET;}
-{_DIM}         {return _DIM;}
-{_AS}          {return _AS;}
-{_AND}         {return _AND;}
-{_OR}          {return _OR;}
-{_NOT}         {return _NOT;}
-{_STRING}      {return _STRING;}
-{_REAL}        {return _REAL;}
-{_INTEGER}     {return _INTEGER;}
+{WHILE}         { return WHILE; }
+{IF}            { return IF; }
+{ELSE}          { return ELSE; }
+{FLOAT}         { return FLOAT; }
+{DISPLAY}       { return PUT; }
+{GET}           { return GET; }
+{DIM}           { return DIM; }
+{AS}            { return AS; }
+{AND}           { return AND; }
+{OR}            { return OR; }
+{NOT}           { return NOT; }
+{STRING}        { return STRING; }
+{REAL}          { return REAL; }
+{INTEGER}       { return INTEGER; }
 
 
 
