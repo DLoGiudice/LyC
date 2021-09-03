@@ -1,0 +1,17 @@
+*/ reales /*
+.456
+0.456
+123.456
+
+*/ enteras /*
+0
+1
+-32767
+32767
+
+*/ String /*
+"prueba"
+"prueba-con-([{simbolos}])"
+"prueba > con < operadores"
+"prueba con := asignacion"
+"prueba con palabra reservada IF WHILE"
