@@ -1,2 +1,2 @@
 DIM
-DIMTEST
+DIM AS
