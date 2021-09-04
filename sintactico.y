@@ -13,12 +13,16 @@ void yyerror (char const *s) {
 
 %union
 {
-    int tipo_integer;  /* Para Enteros. */
+    int value_int;  /* Para Enteros. */
+    float value_float;  /* Para reales. */
+    char* value_string;  /* Para strings. */
 }
 
-/* %type <tipo_integer> ENTERO */
+/* %type <value_int> ENTERO */
 
 // Declaracion variables
+
+
 
 %token OP_ASIG
 %token OP_MAS
@@ -42,6 +46,10 @@ void yyerror (char const *s) {
 %token OP_IGUALIGUAL
 %token OP_DISTINTO
 
+%token TIPO_FLOAT
+%token TIPO_INT
+%token TIPO_STRING
+
 %token WHILE
 %token IF
 %token ELSE
@@ -53,12 +61,30 @@ void yyerror (char const *s) {
 %token OR
 %token NOT
 
+%token <value_int> ENTERO
+%token <value_float> REAL
+%token <value_string> CADENA
+
 %%
 
-declaraciones: DIM {
-    printf("Token encontrado");
-};
+programa: declaracion |
+    programa declaracion |
+    programa factor;
 
+declaracion: DIM {
+    printf("DECLARACION");
+    };
+
+factor: 
+    ENTERO {
+        printf("factor ENTERO");
+    } |
+    REAL {
+        printf("factor REAL");
+    } |
+    CADENA {
+        printf("factor STRING");
+    };
 %%
 
 int main(){

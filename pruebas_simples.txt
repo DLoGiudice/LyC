@@ -1,2 +1,13 @@
 DIM
-DIM AS
+1
+13
+124
+"2>3"
+" con espacios "
+" con operadores + "
+"123"
+"hola como va"
+22.33
+.345
+123.123
+DIM

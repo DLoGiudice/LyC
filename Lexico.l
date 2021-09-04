@@ -30,6 +30,10 @@ TIPO_FLOAT      "float"
 TIPO_INT        "int"
 TIPO_STRING	    "string"
 
+/*COMENTARIO_CERO  {COMENTARIO_A}{COMENTARIO}{COMENTARIO_C}*/
+/*COMENTARIO_UNO {COMENTARIO_A}{COMENTARIO}*{COMENTARIO_CERO}{COMENTARIO}*{COMENTARIO_C}*/
+/*\* este es un comentario \* Comentario anidado *\ SI *\ */
+
 /* Sección REGLAS: Patrones necesarios para analisis lexico */
 %%
 ":="		    return OP_ASIG;
@@ -54,6 +58,10 @@ TIPO_STRING	    "string"
 "=="       	 	return OP_IGUALIGUAL;
 "<>"        	return OP_DISTINTO;
 
+{TIPO_FLOAT}    return TIPO_FLOAT;
+{TIPO_INT}      return TIPO_INT;
+{TIPO_STRING}   return TIPO_STRING;
+
 "WHILE"         return WHILE;
 "IF"            return IF;
 "ELSE"          return ELSE;
@@ -64,4 +72,8 @@ TIPO_STRING	    "string"
 "AND"           return AND;
 "OR"            return OR;
 "NOT"           return NOT;
+
+{CADENA}        return CADENA;
+{REAL}          return REAL;
+{ENTERO}        return ENTERO;
 %%
