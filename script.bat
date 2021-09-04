@@ -1,18 +1,14 @@
 @echo off
-C:\GnuWin32\bin\flex ejemplo2.l
+C:\GnuWin32\bin\bison Sintactico.y
+echo "generando archivo bison.."
+C:\GnuWin32\bin\flex Lexico.l
 echo "generando archivo flex.."
 pause
-C:\MinGW\bin\gcc.exe lex.yy.c -o Compilado.exe
+C:\MinGW\bin\gcc.exe sintactico.tab.c lex.yy.c -o Compilado.exe
 echo "compilando el archivo flex..se crea el compilado.exe"
 pause
-Compilado.exe tests/declaracion_variables.txt
-echo "analizador lexico sobre declaracion de variables.txt"
-Compilado.exe tests/asignaciones.txt
-echo "analizador lexico sobre asignaciones.txt"
-Compilado.exe tests/operadores.txt
-echo "analizador lexico sobre operadores.txt"
-Compilado.exe tests/tipo_de_datos.txt
-echo "analizador lexico sobre tipo_de_datos.txt"
+Compilado.exe tests/pruebas.txt
+echo "analizador lexico sobre pruebas.txt"
 del lex.yy.C
 del Compilado.exe
 echo "se borran archivos demas.."

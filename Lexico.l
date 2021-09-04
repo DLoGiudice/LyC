@@ -6,8 +6,7 @@
 #include <string.h>
 #include <float.h>
 
-FILE *yyin;
-
+#include "y.tab.h"
 %}
 
 /* Sección conjuntos y Regex: Opciones - Conjuntos - Expresiones regulares */
@@ -32,9 +31,9 @@ WHILE		    "WHILE"
 IF		        "IF"
 ELSE		    "ELSE"
 
-FLOAT		    "FLOAT"
-INT    	        "INT"
-STRING	        "STRING"
+TIPO_FLOAT      "FLOAT"
+TIPO_INT        "INT"
+TIPO_STRING	    "STRING"
 
 DISPLAY	        "DISPLAY"
 GET		        "GET"
@@ -47,59 +46,7 @@ OR 		        "OR"
 NOT		        "NOT"
 
 
-
-
 /* Sección REGLAS: Patrones necesarios para analisis lexico */
 %%
-":="		    { return OP_ASIG;}
-"+"				{ return OP_MAS;}
-"-"				{ return OP_MENOS;}
-"*"				{ return OP_MUL;}
-"/"				{ return OP_DIV;}
-
-","         	{ return COMA;}
-";"         	{ return PUNTO_COMA;}
-"["         	{ return CORCHETE_ABRE;}
-"]"         	{ return CORCHETE_CIERRA;}
-"("         	{ return PARENTESIS_ABRE;}
-")"         	{ return PARENTESIS_CIERRA;}
-
-">"         	{ return OP_MAY;}
-"<"         	{ return OP_MEN;}
-">="        	{ return OP_MAY_IGUAL;}
-"<="        	{ return OP_MEN_IGUAL;}
-"=="       	 	{ return OP_IGUALIGUAL;}
-"<>"        	{ return OP_DISTINTO;}
-
-{WHILE}         { return WHILE; }
-{IF}            { return IF; }
-{ELSE}          { return ELSE; }
-{FLOAT}         { return FLOAT; }
-{DISPLAY}       { return PUT; }
-{GET}           { return GET; }
-{DIM}           { return DIM; }
-{AS}            { return AS; }
-{AND}           { return AND; }
-{OR}            { return OR; }
-{NOT}           { return NOT; }
-{STRING}        { return STRING; }
-{REAL}          { return REAL; }
-{INTEGER}       { return INTEGER; }
-
-
-
+"DIM"           return DIM;
 %%
-/* Sección CODIGO: Patrones necesarios para analisis lexico */
-int main(int argc,char *argv[])
-{
-    if ((yyin = fopen(argv[1], "rt")) == NULL)
-    {
-        printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
-    }
-    else
-    {
-        yylex();
-    }
-fclose(yyin);
-}
-
