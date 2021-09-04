@@ -21,7 +21,9 @@ void yyerror (char const *s) {
 %token DIM
 %%
 
-declaraciones: DIM;
+declaraciones: DIM {
+    printf("Token encontrado");
+};
 
 %%
 
