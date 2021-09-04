@@ -18,12 +18,7 @@ void yyerror (char const *s) {
     char* value_string;  /* Para strings. */
 }
 
-/* %type <value_int> ENTERO */
-
 // Declaracion variables
-
-
-
 %token OP_ASIG
 %token OP_MAS
 %token OP_MENOS

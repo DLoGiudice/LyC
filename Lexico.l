@@ -30,8 +30,6 @@ TIPO_FLOAT      "float"
 TIPO_INT        "int"
 TIPO_STRING	    "string"
 
-/*COMENTARIO_CERO  {COMENTARIO_A}{COMENTARIO}{COMENTARIO_C}*/
-/*COMENTARIO_UNO {COMENTARIO_A}{COMENTARIO}*{COMENTARIO_CERO}{COMENTARIO}*{COMENTARIO_C}*/
 /*\* este es un comentario \* Comentario anidado *\ SI *\ */
 
 /* Sección REGLAS: Patrones necesarios para analisis lexico */
