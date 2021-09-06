@@ -57,8 +57,6 @@ TIPO_STRING	    "string"
 
 "WHILE"         return WHILE;
 "IF"            return IF;
-"THEN"          return THEN; // Quizas es buena idea poner el then y hacer un IF a > 12 THEN
-"ENDIF"         return ENDIF; // No lo use, pero ponemos un ENDIF ???
 "ELSE"          return ELSE;
 "DISPLAY"       return DISPLAY;
 "GET"           return GET;

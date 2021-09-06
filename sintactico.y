@@ -70,12 +70,10 @@ sentencia: seleccion{/* if a > e then */}
         | iteracion{/*  while 2==2*/}
         | definicion{/* DIM pi AS REAL*/};
 
-seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA THEN {/* IF ( a <> 4) THEN*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA THEN LLAVE_ABRE LLAVE_CIERRA {/*IF ( a <> 4) THEN {}*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA THEN LLAVE_ABRE programa LLAVE_CIERRA {/*IF ( a <> 4) THEN {programa}*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA THEN LLAVE_ABRE programa LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{/*IF ( a <> 4) THEN {programa} else {}*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA THEN LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE programa LLAVE_CIERRA{/*IF ( a <> 4) THEN {} else {programa}*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA THEN LLAVE_ABRE programa LLAVE_CIERRA ELSE LLAVE_ABRE programa LLAVE_CIERRA{/*IF ( a <> 4) THEN {programa} else {programa}*/};
+seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA {/*IF ( a <> 4) {sentencia}*/}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{/*IF ( a <> 4) {sentencia} else {}*/}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{/*IF ( a <> 4) {} else {sentencia}*/}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{/*IF ( a <> 4) {sentencia} else {sentencia}*/};
 
 condicion: comparacion {/*x == 22
                         (x == 22)*/}
