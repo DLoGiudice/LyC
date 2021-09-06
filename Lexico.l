@@ -22,6 +22,7 @@ CHAR_PUNTO      ["."]
 REAL     	    {DIGITO}{0,8}{CHAR_PUNTO}{DIGITO}{1,8}
 ENTERO          {DIGITO}+
 CADENA          \"(\\.|[^\"])*\"
+CONSTANTE       {ENTERO}|{REAL}
 
 GUIONES         ("-"|"_")
 ID			    {LETRA}({LETRA}|{DIGITO}|{GUIONES})*
@@ -56,6 +57,8 @@ TIPO_STRING	    "string"
 
 "WHILE"         return WHILE;
 "IF"            return IF;
+"THEN"          return THEN; // Quizas es buena idea poner el then y hacer un IF a > 12 THEN
+"ENDIF"         return ENDIF; // No lo use, pero ponemos un ENDIF ???
 "ELSE"          return ELSE;
 "DISPLAY"       return DISPLAY;
 "GET"           return GET;
@@ -64,4 +67,8 @@ TIPO_STRING	    "string"
 "AND"           return AND;
 "OR"            return OR;
 "NOT"           return NOT;
+
+"REAL"          return REAL;
+"ENTERO"        return ENTERO;
+
 %%
