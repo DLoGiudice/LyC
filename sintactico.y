@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-
+int yylex();
 int yyparse();
 void yyerror(char const *str);
 void yyerror (char const *s) {
