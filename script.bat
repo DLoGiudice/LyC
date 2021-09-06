@@ -12,4 +12,5 @@ del y.tab.c
 del y.tab.h
 del y.output
 del lex.yy.C
+del sintactico.tab.c
 pause
