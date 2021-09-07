@@ -56,6 +56,10 @@ void yyerror (char const *s) {
 %token OR
 %token NOT
 
+%token EQUMIN
+%token EQUMAX
+%token LONG
+
 %token ID
 %token <value_int> ENTERO
 %token <value_float> REAL

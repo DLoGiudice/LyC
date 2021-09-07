@@ -16,7 +16,7 @@
 
 #define LIMITE 30
 
-int validarInt(int num);
+int validarEntero(int num);
 int validarCadena(char *str);
 int validarReal(float num);
 
