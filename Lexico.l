@@ -7,6 +7,19 @@
 #include <float.h>
 
 #include "y.tab.h"
+
+#define ENTERO_MAX 32767
+#define ENTERO_MIN -32768
+
+#define REAL_MAX 2147483647
+#define REAL_MIN -2147483648
+
+#define LIMITE 30
+
+int validarInt(int num);
+int validarCadena(char *str);
+int validarReal(float num);
+
 %}
 
 /* Sección conjuntos y Regex: Opciones - Conjuntos - Expresiones regulares */
@@ -18,9 +31,8 @@
 DIGITO          [0-9]
 LETRA           [a-zA-Z]
 
-CHAR_PUNTO      ["."]
-REAL     	    {DIGITO}{0,8}{CHAR_PUNTO}{DIGITO}{1,8}
-ENTERO          {DIGITO}+
+REAL     	    -?{DIGITO}+"."{DIGITO}*
+ENTERO          -?{DIGITO}+
 CADENA          \"(\\.|[^\"])*\"
 
 GUIONES         ("-"|"_")
@@ -71,8 +83,52 @@ TIPO_STRING	    "string"
 "OR"            return OR;
 "NOT"           return NOT;
 
+"LONG"          return LONG;
+"EQUMAX"        return EQUMAX;
+"EQUMIN"        return EQUMIN;
+
 {ID}            return ID;
-{CADENA}        return CADENA;
-{REAL}          return REAL;
-{ENTERO}        return ENTERO;
+{CADENA}	    { yylval.value_string = strdup(yytext); 
+                    validarCadena(yylval.value_string);
+                    return CADENA; }
+{REAL}		    { yylval.value_float = atof(yytext);
+                    validarReal(yylval.value_float); 
+                    return REAL; }
+{ENTERO}		{   yylval.value_int = atoi(yytext); 
+                    validarEntero(yylval.value_int); 
+                    return ENTERO; }
+
 %%
+
+/* Validaciones Entero  */
+int validarEntero(int num)
+{
+	if(num < ENTERO_MIN || num > ENTERO_MAX){
+		printf("Constante ENTERO fuera de rango\n");
+		fprintf(stderr, "Fin de programa\n");
+		exit (1);
+	}
+	return 1;
+}
+
+/* Validaciones Cadena  */
+int validarCadena(char *str)
+{
+	if(strlen(str) > LIMITE){
+		printf("Constante CADENA fuera de rango\n");
+		fprintf(stderr, "Fin de programa\n");
+		exit (1);
+	}
+	return 1;
+}
+
+/* Validaciones Real  */
+int validarReal(float num)
+{
+	if(num < REAL_MIN || num > REAL_MAX){
+		printf("Constante REAL fuera de rango\n");
+		fprintf(stderr, "Fin de programa\n");
+		exit (1);
+	}
+	return 1;
+}
