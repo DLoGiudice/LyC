@@ -2,6 +2,7 @@ DIM [ a, b, beta ] AS [ integer, real, string ]
 DIM [ var_1, var_2, var_3 ] AS [ integer, integer, integer ]
 DIM [ var_4, var_5 ] AS [ real, real]
 DIM [ c ] AS [ real ]
+IF ( var_1 > 3 ) { var_3 }
 1
 13
 124
