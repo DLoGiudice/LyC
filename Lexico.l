@@ -26,8 +26,8 @@ CADENA          \"(\\.|[^\"])*\"
 GUIONES         ("-"|"_")
 ID			    {LETRA}({LETRA}|{DIGITO}|{GUIONES})*
 
-TIPO_FLOAT      "float"
-TIPO_INT        "int"
+TIPO_REAL       "real"
+TIPO_INTEGER    "integer"
 TIPO_STRING	    "string"
 
 /*\* este es un comentario \* Comentario anidado *\ SI *\ */
@@ -56,8 +56,8 @@ TIPO_STRING	    "string"
 "=="       	 	return OP_IGUALIGUAL;
 "<>"        	return OP_DISTINTO;
 
-{TIPO_FLOAT}    return TIPO_FLOAT;
-{TIPO_INT}      return TIPO_INT;
+{TIPO_REAL}     return TIPO_REAL;
+{TIPO_INTEGER}  return TIPO_INTEGER;
 {TIPO_STRING}   return TIPO_STRING;
 
 "WHILE"         return WHILE;
@@ -71,6 +71,7 @@ TIPO_STRING	    "string"
 "OR"            return OR;
 "NOT"           return NOT;
 
+{ID}            return ID;
 {CADENA}        return CADENA;
 {REAL}          return REAL;
 {ENTERO}        return ENTERO;
