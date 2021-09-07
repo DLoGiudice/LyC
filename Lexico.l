@@ -16,7 +16,7 @@
 
 #define LIMITE 30
 
-int validarInt(int num);
+int validarEntero(int num);
 int validarCadena(char *str);
 int validarReal(float num);
 
@@ -38,8 +38,8 @@ CADENA          \"(\\.|[^\"])*\"
 GUIONES         ("-"|"_")
 ID			    {LETRA}({LETRA}|{DIGITO}|{GUIONES})*
 
-TIPO_FLOAT      "float"
-TIPO_INT        "int"
+TIPO_REAL       "real"
+TIPO_INTEGER    "integer"
 TIPO_STRING	    "string"
 
 /*\* este es un comentario \* Comentario anidado *\ SI *\ */
@@ -68,8 +68,8 @@ TIPO_STRING	    "string"
 "=="       	 	return OP_IGUALIGUAL;
 "<>"        	return OP_DISTINTO;
 
-{TIPO_FLOAT}    return TIPO_FLOAT;
-{TIPO_INT}      return TIPO_INT;
+{TIPO_REAL}     return TIPO_REAL;
+{TIPO_INTEGER}  return TIPO_INTEGER;
 {TIPO_STRING}   return TIPO_STRING;
 
 "WHILE"         return WHILE;
@@ -87,6 +87,7 @@ TIPO_STRING	    "string"
 "EQUMAX"        return EQUMAX;
 "EQUMIN"        return EQUMIN;
 
+{ID}            return ID;
 {CADENA}	    { yylval.value_string = strdup(yytext); 
                     validarCadena(yylval.value_string);
                     return CADENA; }
@@ -100,7 +101,6 @@ TIPO_STRING	    "string"
 %%
 
 /* Validaciones Entero  */
-
 int validarEntero(int num)
 {
 	if(num < ENTERO_MIN || num > ENTERO_MAX){
