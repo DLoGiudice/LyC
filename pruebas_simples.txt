@@ -18,3 +18,9 @@ a := b
 a := "CADENA"
 a := 3.3
 a := 3
+WHILE (id > 3) {a := b }
+WHILE (id > 3) {IF ( var_1 > 3 ) 
+{ 
+var_3 
+}
+}

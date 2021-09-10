@@ -75,8 +75,12 @@ programa: sentencia{};
 sentencia: declaracion{/* DIM pi AS REAL*/}
           | factor {/* Solo esta de prueba, BORRAR */}
           | seleccion{/* if a > e then */}
-          | asignacion{/* a := 12*/};
-//        | iteracion{/*  while 2==2*/};
+          | asignacion{/* a := 12*/}
+          | iteracion{/*  while 2==2*/};
+
+iteracion: WHILE PARENTESIS_ABRE comparacion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
+    printf ("Iteracion - While");
+};
 
 asignacion: ID OP_ASIG factor {printf ("Asignacion");};
  
@@ -119,23 +123,19 @@ comparacion: expresion operador expresion{/*c > 33.3
                                                                                 (4 <> 3)
                                                                                 (a == b)*/};
 
-sentencia: factor;
-
 expresion: termino;
-
 termino: factor;
-
+factor: ID  { printf("factor ENTERO"); }
+      | ENTERO { printf("factor ENTERO"); } 
+      | REAL { printf("factor REAL"); }
+      | CADENA { printf("factor STRING"); };
+      
 operador: OP_MAY{}
         | OP_MEN{}
         | OP_MAY_IGUAL{}
         | OP_MEN_IGUAL{}
         | OP_IGUALIGUAL{}
         | OP_DISTINTO{};
-
-factor: ID  { printf("factor ENTERO"); }
-      | ENTERO { printf("factor ENTERO"); } 
-      | REAL { printf("factor REAL"); }
-      | CADENA { printf("factor STRING"); };
 %%
 
 int main(){
