@@ -74,9 +74,11 @@ programa: sentencia{};
 
 sentencia: declaracion{/* DIM pi AS REAL*/}
           | factor {/* Solo esta de prueba, BORRAR */}
-          | seleccion{/* if a > e then */};
-//        | asignacion{/* a := 12*/}
+          | seleccion{/* if a > e then */}
+          | asignacion{/* a := 12*/};
 //        | iteracion{/*  while 2==2*/};
+
+asignacion: ID OP_ASIG factor {printf ("Asignacion");};
  
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
     printf("DECLARACION ");
