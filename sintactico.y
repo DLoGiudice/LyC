@@ -148,12 +148,13 @@ termino: factor
        | termino OP_MUL factor { printf("termino op_mul"); }
        | termino OP_DIV factor { printf("termino op_div"); };
 
-lista_factor: lista_factor COMA factor  { printf("Lista de factores "); }
-                |  factor { printf("factor tipo: "); };
+lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
+            |  expresion { printf("factor tipo: "); };
 
 factor: ID  { printf("factor ID"); }
       | ENTERO { printf("factor ENTERO"); } 
-      | REAL { printf("factor REAL"); };
+      | REAL { printf("factor REAL"); }
+      | long { printf("factor LONG"); };
       
 operador: OP_MAY{}
         | OP_MEN{}
