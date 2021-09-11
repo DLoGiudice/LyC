@@ -78,7 +78,7 @@ sentencia: declaracion{/* DIM pi AS REAL*/}
           | asignacion{/* a := 12*/}
           | iteracion{/*  while 2==2*/};
 
-iteracion: WHILE PARENTESIS_ABRE comparacion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
+iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
     printf ("Iteracion - While");
 };
 

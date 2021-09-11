@@ -24,3 +24,6 @@ WHILE (id > 3) {IF ( var_1 > 3 )
 var_3 
 }
 }
+WHILE (id > 3 AND f > 5){
+a := 3.3 
+}
