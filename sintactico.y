@@ -76,13 +76,19 @@ sentencia: declaracion{/* DIM pi AS REAL*/}
           | factor {/* Solo esta de prueba, BORRAR */}
           | seleccion{/* if a > e then */}
           | asignacion{/* a := 12*/}
-          | iteracion{/*  while 2==2*/};
+          | iteracion{/*  while 2==2*/}
+          | display{/*  display*/};
+
+display: DISPLAY CADENA {printf ("Display Cadena");}
+       | DISPLAY factor {printf ("Display factor");}
+       | DISPLAY expresion {printf ("Display expresion");};
 
 iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
     printf ("Iteracion - While");
 };
 
-asignacion: ID OP_ASIG factor {printf ("Asignacion");};
+asignacion: ID OP_ASIG factor {printf ("Asignacion - factor");}
+          | ID OP_ASIG CADENA {printf ("Asignacion - cadena");};
  
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
     printf("DECLARACION ");
@@ -123,12 +129,17 @@ comparacion: expresion operador expresion{/*c > 33.3
                                                                                 (4 <> 3)
                                                                                 (a == b)*/};
 
-expresion: termino;
-termino: factor;
-factor: ID  { printf("factor ENTERO"); }
+expresion: termino
+         | expresion OP_MAS termino { printf("expresion OP_MAS"); }
+         | expresion OP_MENOS termino { printf("expresion OP_MENOS"); };
+
+termino: factor
+       | termino OP_MUL factor { printf("termino op_mul"); }
+       | termino OP_DIV factor { printf("termino op_div"); };
+    
+factor: ID  { printf("factor ID"); }
       | ENTERO { printf("factor ENTERO"); } 
-      | REAL { printf("factor REAL"); }
-      | CADENA { printf("factor STRING"); };
+      | REAL { printf("factor REAL"); };
       
 operador: OP_MAY{}
         | OP_MEN{}

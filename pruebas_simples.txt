@@ -3,17 +3,18 @@ DIM [ var_1, var_2, var_3 ] AS [ integer, integer, integer ]
 DIM [ var_4, var_5 ] AS [ real, real]
 DIM [ c ] AS [ real ]
 IF ( var_1 > 3 ) { var_3 }
-1
-13
-124
-"2>3"
-" con espacios "
-" con operadores + "
-"123"
-"hola como va"
-22.33
-.345
-123.123
+DISPLAY 1
+DISPLAY 13
+DISPLAY 124
+DISPLAY "2>3"
+DISPLAY " con espacios "
+DISPLAY " con operadores + "
+DISPLAY "123"
+DISPLAY "hola como va"
+DISPLAY 22.33
+DISPLAY .345
+DISPLAY 123.123
+DISPLAY 33 * 44 + 43 - 5 / 8
 a := b
 a := "CADENA"
 a := 3.3
@@ -21,7 +22,7 @@ a := 3
 WHILE (id > 3) {a := b }
 WHILE (id > 3) {IF ( var_1 > 3 ) 
 { 
-var_3 
+DISPLAY var_3 
 }
 }
 WHILE (id > 3 AND f > 5){
