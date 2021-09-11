@@ -77,11 +77,20 @@ sentencia: declaracion{/* DIM pi AS REAL*/}
           | seleccion{/* if a > e then */}
           | asignacion{/* a := 12*/}
           | iteracion{/*  while 2==2*/}
-          | display{/*  display*/};
+          | display{/*  display*/}
+          | long{/*  long([a,b,c,e]) = 4 - long de una lista*/}
+          | eq{/*  EQUMAX - EQUMIN - devuelve bool */};
 
 display: DISPLAY CADENA {printf ("Display Cadena");}
        | DISPLAY factor {printf ("Display factor");}
        | DISPLAY expresion {printf ("Display expresion");};
+
+long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
+    printf("LONG DE diferentes factores \n");
+};
+
+eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {printf("EQUMAX: \n");}
+  | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {printf("EQUMIN: \n");};
 
 iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
     printf ("Iteracion - While");
@@ -136,7 +145,10 @@ expresion: termino
 termino: factor
        | termino OP_MUL factor { printf("termino op_mul"); }
        | termino OP_DIV factor { printf("termino op_div"); };
-    
+
+lista_factor: lista_factor COMA factor  { printf("Lista de factores "); }
+                |  factor { printf("factor tipo: "); };
+
 factor: ID  { printf("factor ID"); }
       | ENTERO { printf("factor ENTERO"); } 
       | REAL { printf("factor REAL"); };

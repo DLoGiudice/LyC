@@ -12,7 +12,7 @@
 #define ENTERO_MIN -32768
 
 #define REAL_MAX 2147483647
-#define REAL_MIN -2147483648
+#define REAL_MIN -2147483647
 
 #define LIMITE 30
 
