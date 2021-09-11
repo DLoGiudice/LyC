@@ -97,7 +97,9 @@ iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa
 };
 
 asignacion: ID OP_ASIG factor {printf ("Asignacion - factor");}
-          | ID OP_ASIG CADENA {printf ("Asignacion - cadena");};
+          | ID OP_ASIG CADENA {printf ("Asignacion - cadena");}
+          | ID eq CADENA {printf ("Asignacion - EQ");}
+          | ID long CADENA {printf ("Asignacion - LONG");};
  
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
     printf("DECLARACION ");

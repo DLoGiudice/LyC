@@ -10,7 +10,7 @@ type pruebas_simples.txt | primera_entrega.exe
 echo "se borran archivos demas.."
 del y.tab.c
 del y.tab.h
-del y.output
+#del y.output
 del lex.yy.C
 del sintactico.tab.c
 pause
