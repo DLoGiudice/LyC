@@ -1,7 +1,11 @@
 DIM [ a, b, beta ] AS [ integer, real, string ]
+*/ comentario /*
+*/comentarioSinEspacios/*
 DIM [ var_1, var_2, var_3 ] AS [ integer, integer, integer ]
 DIM [ var_4, var_5 ] AS [ real, real]
 DIM [ c ] AS [ real ]
+*/ */ comentario anidado /* comentario /*
+*/  comentario */ comentario anidado /* comentario /*
 IF ( var_1 > 3 ) { var_3 }
 DISPLAY 1
 DISPLAY 13
