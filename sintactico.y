@@ -172,6 +172,7 @@ int main(){
     lista = crearLista();
     
     printf("COMIENZA EJECUCION");
+    
     yyparse();
 
     escribirLista(lista);

@@ -19,7 +19,7 @@ typedef struct s_dato
 // Tenemos maxima cadena y ID de 30, se le suma 1 por el /n
 typedef struct s_nodo
 {
-    t_dato *dato;
+    t_dato dato;
     struct s_nodo *siguiente;
 } t_nodo;
 
@@ -32,8 +32,8 @@ typedef struct lista
 } listaPPF;
 
 listaPPF* crearLista();
-int insertarLista(listaPPF *lista, t_dato *dato);
-t_dato *crearDato(char *nombre, char *tipo, char *valor, char *longitud);
+int insertarLista(listaPPF *lista, t_dato dato);
+t_dato crearDato(char *nombre, char *tipo, char *valor, char *longitud);
 int escribirLista(listaPPF *lista);
 
 int escribirLista(listaPPF *lista)
@@ -51,10 +51,10 @@ int escribirLista(listaPPF *lista)
     while (lista->prim != NULL)
     {
         t_nodo *nodo = lista->prim;
-        t_dato *dato = nodo->dato;
+        t_dato dato = nodo->dato;
 
-        fprintf(fp, "%s|%s|%s|%s\n", dato->nombre, dato->tipo, dato->valor, dato->longitud);
-        printf("%s|%s|%s|%s\n", dato->nombre, dato->tipo, dato->valor, dato->longitud);
+        fprintf(fp, "%s|%s|%s|%s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
+        printf("%s|%s|%s|%s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
         
         lista->prim = lista->prim->siguiente;
         free(nodo);
@@ -66,24 +66,24 @@ int escribirLista(listaPPF *lista)
 }
 
 // Si retorna 1 es un error
-t_dato* crearDato(char *nombre, char *tipo, char *valor, char *longitud)
+t_dato crearDato(char *nombre, char *tipo, char *valor, char *longitud)
 {
-    t_dato *dato;
-    dato = (t_dato *)malloc(sizeof(t_dato));
+    t_dato dato;
+  //  dato = (t_dato *)malloc(sizeof(t_dato));
     printf("Estoy en crearDato");
-    if (dato == NULL){
-        exit(1);
-    }
-    strcpy(dato->nombre, nombre);
-    strcpy(dato->tipo, tipo);
-    strcpy(dato->valor, valor);
-    strcpy(dato->longitud, longitud);
+   // if (dato == NULL){
+   //     exit(1);
+   // }
+    strcpy(dato.nombre, nombre);
+    strcpy(dato.tipo, tipo);
+    strcpy(dato.valor, valor);
+    strcpy(dato.longitud, longitud);
 
     return dato;
 }
 
 // Si retorna 1 es un error
-int insertarLista(listaPPF *lista, t_dato *dato)
+int insertarLista(listaPPF *lista, t_dato dato)
 {
     t_nodo *nuevoNodo;
     nuevoNodo = (t_nodo *)malloc(sizeof(t_nodo));
