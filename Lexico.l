@@ -42,7 +42,12 @@ TIPO_REAL       "real"
 TIPO_INTEGER    "integer"
 TIPO_STRING	    "string"
 
-/*\* este es un comentario \* Comentario anidado *\ SI *\ */
+COMENTARIO_BIEN "*/"[^\*\/\n\r]*"/*"
+
+COMEN_ABRE		"*/"
+COMEN_CIERRA	"/*"
+COMENTARIO		{COMEN_ABRE}[^\*\/\n\r]*{COMEN_CIERRA}
+COMENTARIO_ANI  {COMEN_ABRE}([^\*\/\n\r]*|{COMENTARIO})+{COMEN_CIERRA}
 
 /* Sección REGLAS: Patrones necesarios para analisis lexico */
 %%
@@ -97,6 +102,9 @@ TIPO_STRING	    "string"
 {ENTERO}		{   yylval.value_int = atoi(yytext); 
                     validarEntero(yylval.value_int); 
                     return ENTERO; }
+
+{COMENTARIO}	 { printf("comentario"); }
+{COMENTARIO_ANI} { printf("comentario ani"); }
 
 %%
 
