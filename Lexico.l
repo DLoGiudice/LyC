@@ -42,12 +42,11 @@ TIPO_REAL       "real"
 TIPO_INTEGER    "integer"
 TIPO_STRING	    "string"
 
-COMENTARIO_BIEN "*/"[^\*\/\n\r]*"/*"
-
 COMEN_ABRE		"*/"
 COMEN_CIERRA	"/*"
-COMENTARIO		{COMEN_ABRE}[^\*\/\n\r]*{COMEN_CIERRA}
-COMENTARIO_ANI  {COMEN_ABRE}([^\*\/\n\r]*|{COMENTARIO})+{COMEN_CIERRA}
+COMEN_CADENA	[^\*\/\n\r]*
+COMENTARIO		{COMEN_ABRE}{COMEN_CADENA}{COMEN_CIERRA}
+COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
 
 /* Sección REGLAS: Patrones necesarios para analisis lexico */
 %%
