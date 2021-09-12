@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "lista.c"
 
 int yylex();
 int yyparse();
@@ -9,6 +10,7 @@ void yyerror(char const *str);
 void yyerror (char const *s) {
     fprintf (stderr, "%s\n", s);
 }
+listaPPF *lista;
 %}
 
 %union
@@ -151,7 +153,9 @@ termino: factor
 lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
             |  expresion { printf("factor tipo: "); };
 
-factor: ID  { printf("factor ID"); }
+factor: ID  { insertarLista(lista, crearDato("ss","qq","qqq","qqq"));
+    
+    printf("factor ID ", "$1"); }
       | ENTERO { printf("factor ENTERO"); } 
       | REAL { printf("factor REAL"); }
       | long { printf("factor LONG"); };
@@ -165,5 +169,11 @@ operador: OP_MAY{}
 %%
 
 int main(){
+    lista = crearLista();
+    
+    printf("COMIENZA EJECUCION");
     yyparse();
+
+    escribirLista(lista);
+
 }
