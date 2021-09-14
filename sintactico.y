@@ -14,12 +14,13 @@ listaPPF *lista;
 %}
 
 %union
-{
+{   /* Comunicacion con el lexico, defino tipos de datos para los tokens */
     int value_int;  /* Para Enteros. */
     float value_float;  /* Para reales. */
     char* value_string;  /* Para strings. */
 }
 
+//Tipos que defino para el lexico
 %type <value_int> ENTERO
 %type <value_float> REAL
 %type <value_string> ID CADENA
@@ -157,9 +158,9 @@ lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
 factor: ID { printf("factor ID %s", $1);}
       | ENTERO { printf("factor ENTERO %d", $1); }
       | REAL {
-          //char nombre[30];
-          //sprintf(nombre, "%.4f", $1);
-          //insertarLista(lista, crearDato(nombre,"REAL","-","-"));
+          char nombre[30];
+          sprintf(nombre, "%.4f", $1);
+          insertarLista(lista, crearDato(nombre,"REAL","-","-"));
           printf("factor REAL %.4f", $1); }
       | long { printf("factor LONG"); };
       
