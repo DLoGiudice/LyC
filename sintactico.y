@@ -20,6 +20,15 @@ listaPPF *lista;
     char* value_string;  /* Para strings. */
 }
 
+%type <value_int> ENTERO
+%type <value_float> REAL
+%type <value_string> ID CADENA
+
+%token ID
+%token ENTERO
+%token REAL
+%token CADENA
+
 // Declaracion variables
 %token OP_ASIG
 %token OP_MAS
@@ -61,11 +70,6 @@ listaPPF *lista;
 %token EQUMIN
 %token EQUMAX
 %token LONG
-
-%token ID
-%token <value_int> ENTERO
-%token <value_float> REAL
-%token <value_string> CADENA
 
 %%
 
@@ -153,11 +157,13 @@ termino: factor
 lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
             |  expresion { printf("factor tipo: "); };
 
-factor: ID  { insertarLista(lista, crearDato("ss","qq","qqq","qqq"));
-    
-    printf("factor ID ", "$1"); }
-      | ENTERO { printf("factor ENTERO"); } 
-      | REAL { printf("factor REAL"); }
+factor: ID { printf("factor ID %s", $1);}
+      | ENTERO { printf("factor ENTERO %d", $1); }
+      | REAL {
+          //char nombre[30];
+          //sprintf(nombre, "%.4f", $1);
+          //insertarLista(lista, crearDato(nombre,"REAL","-","-"));
+          printf("factor REAL %.4f", $1); }
       | long { printf("factor LONG"); };
       
 operador: OP_MAY{}

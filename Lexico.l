@@ -2,7 +2,6 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-//#include <conio.h>
 #include <string.h>
 #include <float.h>
 
@@ -91,7 +90,8 @@ COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
 "EQUMAX"        return EQUMAX;
 "EQUMIN"        return EQUMIN;
 
-{ID}            return ID;
+{ID}            { yylval.value_string = strdup(yytext);
+				  return ID; }
 {CADENA}	    { yylval.value_string = strdup(yytext); 
                     validarCadena(yylval.value_string);
                     return CADENA; }

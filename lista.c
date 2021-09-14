@@ -69,11 +69,7 @@ int escribirLista(listaPPF *lista)
 t_dato crearDato(char *nombre, char *tipo, char *valor, char *longitud)
 {
     t_dato dato;
-  //  dato = (t_dato *)malloc(sizeof(t_dato));
-    printf("Estoy en crearDato");
-   // if (dato == NULL){
-   //     exit(1);
-   // }
+
     strcpy(dato.nombre, nombre);
     strcpy(dato.tipo, tipo);
     strcpy(dato.valor, valor);
