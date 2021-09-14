@@ -7,9 +7,7 @@
 int yylex();
 int yyparse();
 void yyerror(char const *str);
-void yyerror (char const *s) {
-    fprintf (stderr, "%s\n", s);
-}
+
 listaPPF *lista;
 %}
 
@@ -181,4 +179,10 @@ int main(){
 
     escribirLista(lista);
 
+}
+
+void yyerror (char const *s) {
+    fprintf (stderr, "\n %s \n", s);
+    printf("me fui del programa \n");
+    exit(1);
 }

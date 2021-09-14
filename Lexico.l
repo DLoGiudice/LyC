@@ -105,6 +105,10 @@ COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
 {COMENTARIO}	 { printf("comentario"); }
 {COMENTARIO_ANI} { printf("comentario ani"); }
 
+"\n"
+"\t"
+" "	
+
 %%
 
 /* Validaciones Entero  */
