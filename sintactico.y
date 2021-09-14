@@ -75,7 +75,6 @@ programa: sentencia{};
         | programa sentencia{};
 
 sentencia: declaracion{/* DIM pi AS REAL*/}
-          | factor {/* Solo esta de prueba, BORRAR */}
           | seleccion{/* if a > e then */}
           | asignacion{/* a := 12*/}
           | iteracion{/*  while 2==2*/}
@@ -84,7 +83,6 @@ sentencia: declaracion{/* DIM pi AS REAL*/}
           | eq{/*  EQUMAX - EQUMIN - devuelve bool */};
 
 display: DISPLAY CADENA {printf ("Display Cadena");}
-       | DISPLAY factor {printf ("Display factor");}
        | DISPLAY expresion {printf ("Display expresion");};
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
