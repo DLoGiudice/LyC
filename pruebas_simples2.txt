@@ -1,3 +1,3 @@
-DIM [ a, b, beta ] AS [ integer, real, string ]
+DIM [ a, b, betaaaaa ] AS [ integer, real, string ]
 a := 2
 b := 3.2

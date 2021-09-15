@@ -91,10 +91,19 @@ COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
 "EQUMIN"        return EQUMIN;
 
 {ID}            { yylval.value_string = strdup(yytext);
+				  validarCadena(yylval.value_string);
 				  return ID; }
-{CADENA}	    { yylval.value_string = strdup(yytext); 
-                    validarCadena(yylval.value_string);
+
+{CADENA}	    {	yylval.value_string = strdup(yytext); 
+                	validarCadena(yylval.value_string);
+					int longitud = strlen(yylval.value_string);
+					char cte_string[longitud];
+					strcpy(cte_string, "_");
+					strcat(cte_string, yytext+1);
+					strcpy(cte_string + strlen(cte_string) - 1, "\0");
+					strcpy(yylval.value_string, cte_string);
                     return CADENA; }
+
 {REAL}		    { yylval.value_float = atof(yytext);
                     validarReal(yylval.value_float); 
                     return REAL; }
@@ -126,7 +135,7 @@ int validarEntero(int num)
 int validarCadena(char *str)
 {
 	if(strlen(str) > LIMITE){
-		printf("Constante CADENA fuera de rango\n");
+		printf("Constante CADENA o ID fuera de rango\n");
 		fprintf(stderr, "Fin de programa\n");
 		exit (1);
 	}
