@@ -31,15 +31,31 @@ typedef struct lista
     t_lista ult;
 } listaPPF;
 
-listaPPF* crearLista();
+listaPPF *crearLista();
 int insertarLista(listaPPF *lista, t_dato dato);
 t_dato crearDato(char *nombre, char *tipo, char *valor, char *longitud);
 int escribirLista(listaPPF *lista);
+int detectarDuplicados(listaPPF *lista, t_dato dato);
+int detectarInsertar(listaPPF *lista, t_dato dato);
+
+// Si devuelve un 1 fallo por que hay un duplicado
+int detectarInsertar(listaPPF *lista, t_dato dato)
+{
+    if (detectarDuplicados(lista, dato) == 0)
+    {
+        insertarLista(lista, dato);
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
 
 int escribirLista(listaPPF *lista)
 {
 
-    printf ("ESTOY ESCRIBIENDO");
+    printf("ESTOY ESCRIBIENDO");
     FILE *fp;
 
     fp = fopen("ts.txt", "w+");
@@ -55,7 +71,7 @@ int escribirLista(listaPPF *lista)
 
         fprintf(fp, "%s|%s|%s|%s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
         printf("%s|%s|%s|%s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
-        
+
         lista->prim = lista->prim->siguiente;
         free(nodo);
     }
@@ -63,6 +79,24 @@ int escribirLista(listaPPF *lista)
     fclose(fp);
 
     return (0);
+}
+
+// Si retorno un 1 hay un duplicado
+// Uso un auxiliar para no mover lista y que quede siempre apuntando al 1°
+int detectarDuplicados(listaPPF *lista, t_dato dato)
+{
+    t_nodo *auxiliar;
+    auxiliar = lista->prim;
+    while (auxiliar != NULL)
+    {
+        if (strcmp(auxiliar->dato.nombre, dato.nombre) == 0)
+        {
+            // esta en la lista de simbolos
+            return 1;
+        }
+        auxiliar = auxiliar->siguiente;
+    }
+    return 0;
 }
 
 // Si retorna 1 es un error
@@ -104,8 +138,9 @@ int insertarLista(listaPPF *lista, t_dato dato)
     lista->ult = nuevoNodo;
 }
 
-listaPPF* crearLista()
-{   listaPPF *lista;
+listaPPF *crearLista()
+{
+    listaPPF *lista;
     lista = (listaPPF *)malloc(sizeof(listaPPF));
 
     lista->prim = NULL;

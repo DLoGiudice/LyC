@@ -111,7 +111,7 @@ declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE 
     
     if(contadorListaVariables == contadorTipoDato){
         printf ("COINCIDEN LAS CANTIDADES \n");
-    }else{
+        }else{
         printf ("NO COINCIDEN LAS CANTIDADES \n");
         yyerror ("NO COINCIDEN LAS CANTIDADES - msj de error \n");
     }
@@ -180,8 +180,10 @@ factor: ID { printf("factor ID %s", $1);}
       | REAL {
           char nombre[30];
           sprintf(nombre, "%.4f", $1);
-          insertarLista(lista, crearDato(nombre,"REAL","-","-"));
-          printf("factor REAL %.4f", $1); }
+            if (detectarInsertar(lista, crearDato(nombre,"REAL","-","-"))==1){
+                yyerror("Hay un duplicado en la tabla de simbolos");
+            }
+          }
       | long { printf("factor LONG"); };
       
 operador: OP_MAY{}
@@ -194,13 +196,9 @@ operador: OP_MAY{}
 
 int main(){
     lista = crearLista();
-    
     printf("COMIENZA EJECUCION");
-    
     yyparse();
-
     escribirLista(lista);
-
 }
 
 void yyerror (char const *s) {
