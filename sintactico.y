@@ -8,6 +8,10 @@ int yylex();
 int yyparse();
 void yyerror(char const *str);
 
+//Variables para verificar la coincidencia de lista de variables y lista de tipos.
+int contadorListaVariables = 0;
+int contadorTipoDato = 0;
+
 listaPPF *lista;
 %}
 
@@ -104,14 +108,32 @@ asignacion: ID OP_ASIG factor {printf ("Asignacion - factor");}
           | ID OP_ASIG eq {printf ("Asignacion - EQ");};
  
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
-    printf("DECLARACION ");
+    
+    if(contadorListaVariables == contadorTipoDato){
+        printf ("COINCIDEN LAS CANTIDADES \n");
+    }else{
+        printf ("NO COINCIDEN LAS CANTIDADES \n");
+        yyerror ("NO COINCIDEN LAS CANTIDADES - msj de error \n");
+    }
+
+    contadorListaVariables = 0;
+    contadorTipoDato = 0;
+    printf("DECLARACION");
     };
 
-lista_variables: lista_variables COMA ID { printf("Lista de Variables "); }
-               | ID  { printf("ID "); };
+lista_variables: lista_variables COMA ID { 
+                    contadorListaVariables++;
+                printf("Lista de Variables %d \n", contadorListaVariables); }
+               | ID  { 
+                   contadorListaVariables++;
+                   printf("ID - CONTADOR %d \n", contadorListaVariables); };
 
-lista_tipo_datos: lista_tipo_datos COMA tipo_dato  { printf("Lista de Tipos de datos "); }
-                |  tipo_dato { printf("Tipo Dato "); };
+lista_tipo_datos: lista_tipo_datos COMA tipo_dato  { 
+                contadorTipoDato++;
+                printf("Lista de Tipos de datos "); }
+                |  tipo_dato { 
+                    contadorTipoDato++;
+                    printf("Tipo Dato "); };
 
 tipo_dato: TIPO_REAL  { printf("Tipo Real "); }
          | TIPO_INTEGER  { printf("Tipo Integer "); }
