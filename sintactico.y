@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "lista.c"
+#include "lista_simple.c"
 
 int yylex();
 int yyparse();
@@ -13,6 +14,10 @@ int contadorListaVariables = 0;
 int contadorTipoDato = 0;
 
 listaPPF *lista;
+
+listaSimple *listaListaVariables;
+listaSimple *listaTipoDato;
+
 %}
 
 %union
@@ -25,12 +30,13 @@ listaPPF *lista;
 //Tipos que defino para el lexico
 %type <value_int> ENTERO
 %type <value_float> REAL
-%type <value_string> ID CADENA
+%type <value_string> ID CADENA TIPO_STRING TIPO_INTEGER TIPO_REAL tipo_dato
 
 %token ID
 %token ENTERO
 %token REAL
 %token CADENA
+
 
 // Declaracion variables
 %token OP_ASIG
@@ -111,6 +117,7 @@ declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE 
     
     if(contadorListaVariables == contadorTipoDato){
         printf ("COINCIDEN LAS CANTIDADES \n");
+        escribirListaSimple(listaListaVariables, listaTipoDato);
         }else{
         printf ("NO COINCIDEN LAS CANTIDADES \n");
         yyerror ("NO COINCIDEN LAS CANTIDADES - msj de error \n");
@@ -123,21 +130,30 @@ declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE 
 
 lista_variables: lista_variables COMA ID { 
                     contadorListaVariables++;
+                insertarListaSimple(listaListaVariables, $3);     
                 printf("Lista de Variables %d \n", contadorListaVariables); }
                | ID  { 
                    contadorListaVariables++;
+                insertarListaSimple(listaListaVariables, $1); 
                    printf("ID - CONTADOR %d \n", contadorListaVariables); };
 
 lista_tipo_datos: lista_tipo_datos COMA tipo_dato  { 
                 contadorTipoDato++;
                 printf("Lista de Tipos de datos "); }
-                |  tipo_dato { 
-                    contadorTipoDato++;
-                    printf("Tipo Dato "); };
+                |tipo_dato
+                { 
+                contadorTipoDato++;
+                };
 
-tipo_dato: TIPO_REAL  { printf("Tipo Real "); }
-         | TIPO_INTEGER  { printf("Tipo Integer "); }
-         | TIPO_STRING { printf("Tipo String "); };
+tipo_dato: TIPO_REAL  { printf("Tipo Real ");
+        insertarListaSimple(listaTipoDato, "Real");
+       }
+         | TIPO_INTEGER  { printf("Tipo Integer ");          
+        insertarListaSimple(listaTipoDato, "Integer"); 
+       }
+         | TIPO_STRING { printf("Tipo String "); 
+        insertarListaSimple(listaTipoDato, "String"); 
+       };
 
 seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA {printf("seleccion ");/*IF ( a <> 4) {sentencia}*/}
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{/*IF ( a <> 4) {sentencia} else {}*/}
@@ -196,6 +212,8 @@ operador: OP_MAY{}
 
 int main(){
     lista = crearLista();
+    listaTipoDato = crearListaSimple();
+    listaListaVariables = crearListaSimple();
     printf("COMIENZA EJECUCION");
     yyparse();
     escribirLista(lista);

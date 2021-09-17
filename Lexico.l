@@ -71,7 +71,7 @@ COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
 "=="       	 	return OP_IGUALIGUAL;
 "<>"        	return OP_DISTINTO;
 
-{TIPO_REAL}     return TIPO_REAL;
+{TIPO_REAL}     printf ("TIPO_REAL %s", yytext); return TIPO_REAL;
 {TIPO_INTEGER}  return TIPO_INTEGER;
 {TIPO_STRING}   return TIPO_STRING;
 
