@@ -30,7 +30,7 @@ int validarReal(float num);
 DIGITO          [0-9]
 LETRA           [a-zA-Z]
 
-REAL     	    -?{DIGITO}+"."{DIGITO}*
+REAL     	    -?{DIGITO}?+"."{DIGITO}*
 ENTERO          -?{DIGITO}+
 CADENA          \"(\\.|[^\"])*\"
 
