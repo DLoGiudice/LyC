@@ -201,10 +201,17 @@ lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
             |  expresion { printf("factor tipo: "); };
 
 factor: ID { printf("factor ID %s", $1);}
-      | ENTERO { printf("factor ENTERO %d", $1); }
+      | ENTERO { printf("factor ENTERO %d", $1); 
+          char nombre[150] = "_";
+          char valor[150];
+          sprintf(valor, "%d", $1);
+            if (detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-"))==1){
+                yyerror("Hay un duplicado en la tabla de simbolos");
+            }
+            }
       | REAL {
-          char nombre[33] = "_";
-          char valor[30];
+          char nombre[150] = "_";
+          char valor[150];
           sprintf(valor, "%.4f", $1);
             if (detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-"))==1){
                 yyerror("Hay un duplicado en la tabla de simbolos");
