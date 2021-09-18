@@ -135,11 +135,15 @@ declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE 
 
 lista_variables: lista_variables COMA ID { 
                     contadorListaVariables++;
-                insertarListaSimple(listaListaVariables, $3);     
+                char nombre[33] = "_";
+                strcat(nombre, $3);
+                insertarListaSimple(listaListaVariables, nombre);     
                 printf("Lista de Variables %d \n", contadorListaVariables); }
                | ID  { 
                    contadorListaVariables++;
-                insertarListaSimple(listaListaVariables, $1); 
+                char nombre[33] = "_";
+                strcat(nombre, $1);
+                insertarListaSimple(listaListaVariables, nombre);    
                    printf("ID - CONTADOR %d \n", contadorListaVariables); };
 
 lista_tipo_datos: lista_tipo_datos COMA tipo_dato  { 
@@ -199,9 +203,10 @@ lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
 factor: ID { printf("factor ID %s", $1);}
       | ENTERO { printf("factor ENTERO %d", $1); }
       | REAL {
-          char nombre[30];
-          sprintf(nombre, "%.4f", $1);
-            if (detectarInsertar(lista, crearDato(nombre,"-",nombre,"-"))==1){
+          char nombre[33] = "_";
+          char valor[30];
+          sprintf(valor, "%.4f", $1);
+            if (detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-"))==1){
                 yyerror("Hay un duplicado en la tabla de simbolos");
             }
           }
