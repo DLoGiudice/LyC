@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "lista_simple.c"
 
 // Tenemos un puntero a lista, esa lista es de s_nodo, cada nodo tiene
 // un t_dato (este t_dato es un struct de dato que tiene los datos
@@ -37,6 +38,27 @@ t_dato crearDato(char *nombre, char *tipo, char *valor, char *longitud);
 int escribirLista(listaPPF *lista);
 int detectarDuplicados(listaPPF *lista, t_dato dato);
 int detectarInsertar(listaPPF *lista, t_dato dato);
+int escribirPares(listaPPF *lista, listaSimple *listaVariables, listaSimple * listaTipos);
+
+// Si devuelve un 1 fallo por que hay un duplicado
+int escribirPares(listaPPF *lista, listaSimple *listaVariables, listaSimple * listaTipos){
+    while (listaVariables->prim != NULL)
+    {
+        t_nodoSimple *nodoVariables = listaVariables->prim;
+        t_datoSimple datoVariables = nodoVariables->dato;
+
+        t_nodoSimple *nodoTipos = listaTipos->prim;
+        t_datoSimple datoTipos = nodoTipos->dato;
+
+        if(detectarInsertar(lista, crearDato(datoVariables.datoSimple, datoTipos.datoSimple,"-","-"))==1)
+            return 1;
+
+        listaVariables->prim = listaVariables->prim->siguiente;
+        listaTipos->prim = listaTipos->prim->siguiente;
+        free(nodoVariables);
+        free(nodoTipos);
+    }   
+}
 
 // Si devuelve un 1 fallo por que hay un duplicado
 int detectarInsertar(listaPPF *lista, t_dato dato)

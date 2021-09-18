@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "lista.c"
-#include "lista_simple.c"
 
 int yylex();
 int yyparse();
@@ -117,7 +116,8 @@ declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE 
     
     if(contadorListaVariables == contadorTipoDato){
         printf ("COINCIDEN LAS CANTIDADES \n");
-        escribirListaSimple(listaListaVariables, listaTipoDato);
+        if (escribirPares(lista,listaListaVariables,listaTipoDato)==1)
+            yyerror("Hay un duplicado en la tabla de simbolos");
         }else{
         printf ("NO COINCIDEN LAS CANTIDADES \n");
         yyerror ("NO COINCIDEN LAS CANTIDADES - msj de error \n");
@@ -196,7 +196,7 @@ factor: ID { printf("factor ID %s", $1);}
       | REAL {
           char nombre[30];
           sprintf(nombre, "%.4f", $1);
-            if (detectarInsertar(lista, crearDato(nombre,"REAL","-","-"))==1){
+            if (detectarInsertar(lista, crearDato(nombre,"-",nombre,"-"))==1){
                 yyerror("Hay un duplicado en la tabla de simbolos");
             }
           }
