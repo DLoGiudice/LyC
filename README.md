@@ -7,3 +7,9 @@
 * Numero a las reglas.
 * Escritura de la tabla de simbolos. (Done)
 * Todo con _ adelante (Done)
+
+Actualizacion 2021-09-18
+
+* Limites de los valores reales (hay una version pero se puede mejorar)
+* Archivo con ejemplos.
+* Numero a las reglas.
