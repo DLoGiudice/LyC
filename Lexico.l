@@ -98,7 +98,7 @@ COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
                 	validarCadena(yylval.value_string);
 					int longitud = strlen(yylval.value_string);
 					char cte_string[longitud];
-					strcpy(cte_string, "_");
+					strcpy(cte_string, "");
 					strcat(cte_string, yytext+1);
 					strcpy(cte_string + strlen(cte_string) - 1, "\0");
 					strcpy(yylval.value_string, cte_string);

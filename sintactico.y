@@ -105,11 +105,16 @@ eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCH
   | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {printf("EQUMIN: \n");};
 
 iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
-    printf ("Iteracion - While");
-};
-
+    printf ("Iteracion - While");};
 asignacion: ID OP_ASIG factor {printf ("Asignacion - factor");}
-          | ID OP_ASIG CADENA {printf ("Asignacion - cadena");}
+          | ID OP_ASIG CADENA {
+               char longitud[2] = "";
+               char nombre[33] = "_";
+               sprintf(longitud, "%d", strlen($3));
+            if (detectarInsertar(lista, crearDato(strcat(nombre,$3),"-",$3,longitud))==1){
+                 yyerror("Hay un duplicado en la tabla de simbolos");
+             }
+              printf ("Asignacion - cadena");}
           | ID OP_ASIG eq {printf ("Asignacion - EQ");};
  
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
