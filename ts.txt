@@ -1,15 +1,16 @@
-NOMBRE|TIPODATO|VALOR|LONGITUD
-_limite|Integer|-|-
-_resultador_final|Real|-|-
-_prediccion|Integer|-|-
-_contador|Integer|-|-
-_acumulador|Integer|-|-
-_mensaje_final|String|-|-
-_0|-|0|-
-_1|-|1|-
-_1000|-|1000|-
-_10|-|10|-
-_2|-|2|-
-_15|-|15|-
-_100|-|100|-
-_110|-|110|-
+NOMBRE                        |TIPODATO  |VALOR     |LONGITUD        
+==================================================================
+_limite                       |Integer   |-         |-               
+_resultador_final             |Real      |-         |-               
+_prediccion                   |Integer   |-         |-               
+_contador                     |Integer   |-         |-               
+_acumulador                   |Integer   |-         |-               
+_mensaje_final                |String    |-         |-               
+_0                            |-         |0         |-               
+_1                            |-         |1         |-               
+_1000                         |-         |1000      |-               
+_10                           |-         |10        |-               
+_2                            |-         |2         |-               
+_15                           |-         |15        |-               
+_100                          |-         |100       |-               
+_110                          |-         |110       |-               
