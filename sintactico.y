@@ -81,33 +81,33 @@ listaSimple *listaTipoDato;
 
 %%
 
-start: programa{};
+start: programa{printf("COMPILACION OK\n"); printf("Regla 0\n");};
 
-programa: sentencia{}; 
-        | programa sentencia{};
+programa: sentencia{printf("Regla 1\n");}
+        | programa sentencia{printf("Regla 2\n");};
 
-sentencia: declaracion {/* DIM pi AS REAL*/}
-          | seleccion {/* if a > e then */}
-          | asignacion {/* a := 12*/}
-          | iteracion {/*  while 2==2*/}
-          | display {/*  display*/}
-          | get {/* GET variable */};
+sentencia: declaracion {printf("Regla 3\n");}
+          | seleccion {printf("Regla 4\n");}
+          | asignacion {printf("Regla 5\n");}
+          | iteracion {printf("Regla 6\n");}
+          | display {printf("Regla 7\n");}
+          | get {printf("Regla 8\n");};
 
-display: DISPLAY CADENA { printf ("Display Cadena"); }
-       | DISPLAY expresion { printf ("Display expresion"); };
+display: DISPLAY CADENA { printf ("Display Cadena - Regla 9\n"); }
+       | DISPLAY expresion { printf ("Display expresion - Regla 10\n"); };
 
-get: GET ID { printf("GET ID"); };
+get: GET ID { printf("GET ID - Regla 11\n"); };
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
-    printf("LONG DE diferentes factores \n");
+    printf("LONG ([lista]) - Regla 12\n");
 };
 
-eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMAX: \n"); }
-  | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN: \n"); };
+eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMAX(expresion;[lista]) - Regla 13\n"); }
+  | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN(expresion;[lista]) - Regla 14\n"); };
 
 iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
-    printf ("Iteracion - While"); };
-asignacion: ID OP_ASIG factor { printf ("Asignacion - factor"); }
+    printf ("Iteracion  While (Condicion) {Programa} - Regla 15 \n"); };
+asignacion: ID OP_ASIG factor { printf ("Asignacion - factor - Regla 16\n"); }
           | ID OP_ASIG CADENA {
             char longitud[2] = "";
             char nombre[33] = "_";
@@ -115,8 +115,8 @@ asignacion: ID OP_ASIG factor { printf ("Asignacion - factor"); }
             if (detectarInsertar(lista, crearDato(strcat(nombre, $3),"-", $3, longitud))==1){
                 yyerror("Hay un duplicado en la tabla de simbolos");
              }
-            printf ("Asignacion - cadena"); }
-          | ID OP_ASIG eq { printf ("Asignacion - EQ"); };
+            printf ("Asignacion - cadena - Regla 17\n"); }
+          | ID OP_ASIG eq { printf ("Asignacion - EQ - Regla 18\n"); };
  
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
     
@@ -131,7 +131,7 @@ declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE 
 
     contadorListaVariables = 0;
     contadorTipoDato = 0;
-    printf("DECLARACION");
+    printf("DECLARACION - DIM [Lista variables] AS [lista tipo de dato] - Regla 19\n");
     };
 
 lista_variables: lista_variables COMA ID { 
@@ -139,71 +139,60 @@ lista_variables: lista_variables COMA ID {
                 char nombre[33] = "_";
                 strcat(nombre, $3);
                 insertarListaSimple(listaListaVariables, nombre);     
-                printf("Lista de Variables %d \n", contadorListaVariables); }
+                printf("Lista de Variables - Regla 20\n"); }
                | ID  { 
                    contadorListaVariables++;
                 char nombre[33] = "_";
                 strcat(nombre, $1);
                 insertarListaSimple(listaListaVariables, nombre);    
-                   printf("ID - CONTADOR %d \n", contadorListaVariables); };
+                   printf("ID - Regla 21\n"); };
 
 lista_tipo_datos: lista_tipo_datos COMA tipo_dato  { 
                 contadorTipoDato++;
-                printf("Lista de Tipos de datos "); }
+                printf("Lista de Tipos de datos - Regla 22\n"); }
                 |tipo_dato
                 { 
                 contadorTipoDato++;
+                printf("Tipo de dato - Regla 23\n");
                 };
 
-tipo_dato: TIPO_REAL { printf("Tipo Real ");
+tipo_dato: TIPO_REAL { printf("Tipo Real - Regla 24\n");
         insertarListaSimple(listaTipoDato, "Real");
        }
-         | TIPO_INTEGER { printf("Tipo Integer ");
+         | TIPO_INTEGER { printf("Tipo Integer - Regla 25\n");
         insertarListaSimple(listaTipoDato, "Integer");
        }
-         | TIPO_STRING { printf("Tipo String ");
+         | TIPO_STRING { printf("Tipo String - Regla 26\n");
         insertarListaSimple(listaTipoDato, "String");
        };
 
-seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA { printf("seleccion ");/*IF ( a <> 4) {sentencia}*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{/*IF ( a <> 4) {sentencia} else {}*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{/*IF ( a <> 4) {} else {sentencia}*/}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{/*IF ( a <> 4) {sentencia} else {sentencia}*/};
+seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA { printf("Seleccion - IF (condicion) {sentencia} - Regla 27\n");}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{printf("Seleccion - IF (condicion) {sentencia} ELSE {} - Regla 29\n");}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{printf("Seleccion - IF (condicion) {} ELSE {sentencia} - Regla 30\n");}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{printf("Seleccion - IF (condicion) {sentencia} ELSE {sentencia} - Regla 31\n");};
 
-condicion: comparacion {/*x == 22
-                        (x == 22)*/}
-        | comparacion AND comparacion{/*x == 22 AND f < 22
-                                        (x == 22) AND f < 22
-                                        x == 22 AND (f < 22)
-                                        (x == 22) AND (f < 22)*/}
-        | comparacion OR comparacion{/*x == 22 OR f < 22
-                                        (x == 22) OR f < 22
-                                        x == 22 OR (f < 22)
-                                        (x == 22) OR (f < 22)*/}
-        | NOT comparacion{/*NOT x > 22
-                            NOT (x > 22)*/};
+condicion: comparacion {printf("Comparacion - Regla 32\n"); }
+        | comparacion AND comparacion{printf("Comparacion AND Comparacion - Regla 33\n");}
+        | comparacion OR comparacion{printf("Comparacion OR Comparacion - Regla 34\n");}
+        | NOT comparacion{printf("NOT Comparacion - Regla 35\n");};
 
-comparacion: expresion operador expresion{/*c > 33.3
-                                            4 <> 3
-                                            a == b */}
-            | PARENTESIS_ABRE expresion operador expresion PARENTESIS_CIERRA{/*(c > 33.3)
-                                                                                (4 <> 3)
-                                                                                (a == b)*/}
-            | eq{/*  EQUMAX - EQUMIN - devuelve bool */};
+comparacion: expresion operador expresion{printf("Comparacion - Regla 36\n");}
+            | PARENTESIS_ABRE expresion operador expresion PARENTESIS_CIERRA{printf("Comparacion - (expresion op expresion) Regla 37\n");}
+            | eq{printf("Comparacion - eq - Regla 38\n");};
 
-expresion: termino
-         | expresion OP_MAS termino { printf("expresion OP_MAS"); }
-         | expresion OP_MENOS termino { printf("expresion OP_MENOS"); };
+expresion: termino{printf("expresion - termino - Regla 39\n");}
+         | expresion OP_MAS termino {printf("expresion OP_MAS termino - Regla 40\n");}
+         | expresion OP_MENOS termino {printf("expresion OP_MENOS termino - Regla 41\n"); };
 
-termino: factor
-       | termino OP_MUL factor { printf("termino op_mul"); }
-       | termino OP_DIV factor { printf("termino op_div"); };
+termino: factor{printf("termino - factor - Regla 42\n");}
+       | termino OP_MUL factor {printf("termino OP_MUL factor - Regla 43\n");}
+       | termino OP_DIV factor {printf("termino OP_DIV factor - Regla 44\n");};
 
-lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
-            |  expresion { printf("factor tipo: "); };
+lista_factor: lista_factor COMA expresion  { printf("Lista_factor COMA expresion - Regla 45\n"); }
+            |  expresion { printf("lista_factor: expresion - Regla 46\n"); };
 
-factor: ID { printf("factor ID %s", $1); }
-      | ENTERO { printf("factor ENTERO %d", $1); 
+factor: ID { printf("factor ID - Regla 47\n"); }
+      | ENTERO { printf("factor ENTERO - Regla 48\n"); 
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%d", $1);
@@ -211,7 +200,7 @@ factor: ID { printf("factor ID %s", $1); }
                 yyerror("Hay un duplicado en la tabla de simbolos");
             }
             }
-      | REAL {
+      | REAL { printf("factor REAL - Regla 49\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
@@ -219,14 +208,14 @@ factor: ID { printf("factor ID %s", $1); }
                 yyerror("Hay un duplicado en la tabla de simbolos");
             }
           }
-      | long { printf("factor LONG"); };
+      | long { printf("factor LONG - Regla 50\n"); };
       
-operador: OP_MAY{}
-        | OP_MEN{}
-        | OP_MAY_IGUAL{}
-        | OP_MEN_IGUAL{}
-        | OP_IGUALIGUAL{}
-        | OP_DISTINTO{};
+operador: OP_MAY{printf("Operador OP_MAY - Regla 51\n");}
+        | OP_MEN{printf("Operador OP_MEN - Regla 52\n");}
+        | OP_MAY_IGUAL{printf("Operador OP_MAY_IGUAL - Regla 53\n");}
+        | OP_MEN_IGUAL{printf("Operador OP_MEN_IGUAL - Regla 54\n");}
+        | OP_IGUALIGUAL{printf("Operador OP_IGUALIGUAL - Regla 55\n");}
+        | OP_DISTINTO{printf("Operador OP_DISTINTO - Regla 56\n");};
 %%
 
 int main(){
