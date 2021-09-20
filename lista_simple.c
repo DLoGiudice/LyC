@@ -29,7 +29,6 @@ typedef struct listaS
 } listaSimple;
 
 listaSimple *crearListaSimple();
-
 int insertarListaSimple(listaSimple *lista, char * cadena);
 int escribirListaSimple(listaSimple *listaVariables, listaSimple * listaTipos);
 
@@ -37,15 +36,13 @@ int escribirListaSimple(listaSimple *listaVariables, listaSimple * listaTipos);
 int insertarListaSimple(listaSimple *lista, char * cadena)
 {
     t_nodoSimple *nuevoNodo;
-    nuevoNodo = (t_nodoSimple *)malloc(sizeof(t_nodoSimple));
-  
     t_datoSimple dato;
 
-     strcpy(dato.datoSimple, cadena);
-
+    nuevoNodo = (t_nodoSimple *)malloc(sizeof(t_nodoSimple));
     if (nuevoNodo == NULL)
         return 1;
 
+    strcpy(dato.datoSimple, cadena);
     nuevoNodo->dato = dato;
     nuevoNodo->siguiente = NULL;
 
@@ -53,7 +50,9 @@ int insertarListaSimple(listaSimple *lista, char * cadena)
         lista->prim = nuevoNodo;
     else
         lista->ult->siguiente = nuevoNodo;
+
     lista->ult = nuevoNodo;
+    return 0;
 }
 
 listaSimple *crearListaSimple()
@@ -63,4 +62,5 @@ listaSimple *crearListaSimple()
 
     lista->prim = NULL;
     lista->ult = NULL;
+    return lista;
 }

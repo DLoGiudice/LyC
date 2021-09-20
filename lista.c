@@ -57,7 +57,9 @@ int escribirPares(listaPPF *lista, listaSimple *listaVariables, listaSimple * li
         listaTipos->prim = listaTipos->prim->siguiente;
         free(nodoVariables);
         free(nodoTipos);
-    }   
+    }
+
+    return 0;
 }
 
 // Si devuelve un 1 fallo por que hay un duplicado
@@ -158,6 +160,8 @@ int insertarLista(listaPPF *lista, t_dato dato)
         lista->ult->siguiente = nuevoNodo;
     }
     lista->ult = nuevoNodo;
+
+    return 0;
 }
 
 listaPPF *crearLista()
@@ -167,4 +171,6 @@ listaPPF *crearLista()
 
     lista->prim = NULL;
     lista->ult = NULL;
+
+    return lista;
 }

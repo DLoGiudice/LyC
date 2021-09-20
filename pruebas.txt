@@ -11,10 +11,10 @@ DISPLAY "Inserte el Limite"
 GET limite
 
 DISPLAY "Introduzca una prediccion"
-get prediccion
+GET prediccion
 
 DISPLAY "Introduzca un mensaje final"
-get mensaje_final
+GET mensaje_final
 
 WHILE(acumulador < 1000 AND contador < 10){
     acumulador := acumulador * contador

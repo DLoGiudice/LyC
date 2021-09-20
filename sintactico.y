@@ -86,37 +86,37 @@ start: programa{};
 programa: sentencia{}; 
         | programa sentencia{};
 
-sentencia: declaracion{/* DIM pi AS REAL*/}
-          | seleccion{/* if a > e then */}
-          | asignacion{/* a := 12*/}
-          | iteracion{/*  while 2==2*/}
-          | display{/*  display*/}
-          | get{/* GET variable */};
+sentencia: declaracion {/* DIM pi AS REAL*/}
+          | seleccion {/* if a > e then */}
+          | asignacion {/* a := 12*/}
+          | iteracion {/*  while 2==2*/}
+          | display {/*  display*/}
+          | get {/* GET variable */};
 
-display: DISPLAY CADENA {printf ("Display Cadena");}
-       | DISPLAY expresion {printf ("Display expresion");};
+display: DISPLAY CADENA { printf ("Display Cadena"); }
+       | DISPLAY expresion { printf ("Display expresion"); };
 
-get: GET ID{printf("GET ID");};
+get: GET ID { printf("GET ID"); };
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
     printf("LONG DE diferentes factores \n");
 };
 
-eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {printf("EQUMAX: \n");}
-  | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {printf("EQUMIN: \n");};
+eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMAX: \n"); }
+  | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN: \n"); };
 
 iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
-    printf ("Iteracion - While");};
-asignacion: ID OP_ASIG factor {printf ("Asignacion - factor");}
+    printf ("Iteracion - While"); };
+asignacion: ID OP_ASIG factor { printf ("Asignacion - factor"); }
           | ID OP_ASIG CADENA {
-               char longitud[2] = "";
-               char nombre[33] = "_";
-               sprintf(longitud, "%d", strlen($3));
-            if (detectarInsertar(lista, crearDato(strcat(nombre,$3),"-",$3,longitud))==1){
-                 yyerror("Hay un duplicado en la tabla de simbolos");
+            char longitud[2] = "";
+            char nombre[33] = "_";
+            sprintf(longitud, "%d", (int)strlen($3));
+            if (detectarInsertar(lista, crearDato(strcat(nombre, $3),"-", $3, longitud))==1){
+                yyerror("Hay un duplicado en la tabla de simbolos");
              }
-              printf ("Asignacion - cadena");}
-          | ID OP_ASIG eq {printf ("Asignacion - EQ");};
+            printf ("Asignacion - cadena"); }
+          | ID OP_ASIG eq { printf ("Asignacion - EQ"); };
  
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
     
@@ -155,17 +155,17 @@ lista_tipo_datos: lista_tipo_datos COMA tipo_dato  {
                 contadorTipoDato++;
                 };
 
-tipo_dato: TIPO_REAL  { printf("Tipo Real ");
+tipo_dato: TIPO_REAL { printf("Tipo Real ");
         insertarListaSimple(listaTipoDato, "Real");
        }
-         | TIPO_INTEGER  { printf("Tipo Integer ");          
-        insertarListaSimple(listaTipoDato, "Integer"); 
+         | TIPO_INTEGER { printf("Tipo Integer ");
+        insertarListaSimple(listaTipoDato, "Integer");
        }
-         | TIPO_STRING { printf("Tipo String "); 
-        insertarListaSimple(listaTipoDato, "String"); 
+         | TIPO_STRING { printf("Tipo String ");
+        insertarListaSimple(listaTipoDato, "String");
        };
 
-seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA {printf("seleccion ");/*IF ( a <> 4) {sentencia}*/}
+seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA { printf("seleccion ");/*IF ( a <> 4) {sentencia}*/}
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{/*IF ( a <> 4) {sentencia} else {}*/}
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{/*IF ( a <> 4) {} else {sentencia}*/}
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{/*IF ( a <> 4) {sentencia} else {sentencia}*/};
@@ -202,7 +202,7 @@ termino: factor
 lista_factor: lista_factor COMA expresion  { printf("Lista de factores "); }
             |  expresion { printf("factor tipo: "); };
 
-factor: ID { printf("factor ID %s", $1);}
+factor: ID { printf("factor ID %s", $1); }
       | ENTERO { printf("factor ENTERO %d", $1); 
           char nombre[150] = "_";
           char valor[150];
