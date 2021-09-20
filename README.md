@@ -13,3 +13,14 @@ Actualizacion 2021-09-18
 * Limites de los valores reales (hay una version pero se puede mejorar)
 * Archivo con ejemplos.
 * Numero a las reglas.
+
+Actualizacion 2021-09-20
+* Limites de los valores reales (hay una version pero se puede mejorar)
+* Numero a las reglas.
+* No le gusta la sintaxis del WHILE.
+* No le gusta la sintaxis del LONG.
+* No se puede poner:
+  > var1 := 3  
+  > var2 := 3  
+  > No le gusta que hayan dos variables con el mismo valor.  
+  > Devuelve simbolo duplicado
