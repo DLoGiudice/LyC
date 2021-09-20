@@ -91,11 +91,12 @@ sentencia: declaracion{/* DIM pi AS REAL*/}
           | asignacion{/* a := 12*/}
           | iteracion{/*  while 2==2*/}
           | display{/*  display*/}
-          | long{/*  long([a,b,c,e]) = 4 - long de una lista*/}
-          | eq{/*  EQUMAX - EQUMIN - devuelve bool */};
+          | get{/* GET variable */};
 
 display: DISPLAY CADENA {printf ("Display Cadena");}
        | DISPLAY expresion {printf ("Display expresion");};
+
+get: GET ID{printf("GET ID");};
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
     printf("LONG DE diferentes factores \n");
@@ -187,7 +188,8 @@ comparacion: expresion operador expresion{/*c > 33.3
                                             a == b */}
             | PARENTESIS_ABRE expresion operador expresion PARENTESIS_CIERRA{/*(c > 33.3)
                                                                                 (4 <> 3)
-                                                                                (a == b)*/};
+                                                                                (a == b)*/}
+            | eq{/*  EQUMAX - EQUMIN - devuelve bool */};
 
 expresion: termino
          | expresion OP_MAS termino { printf("expresion OP_MAS"); }
