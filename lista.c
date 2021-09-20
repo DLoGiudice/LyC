@@ -78,8 +78,6 @@ int detectarInsertar(listaPPF *lista, t_dato dato)
 
 int escribirLista(listaPPF *lista)
 {
-
-    printf("ESTOY ESCRIBIENDO");
     FILE *fp;
 
     fp = fopen("ts.txt", "w+");
@@ -87,14 +85,13 @@ int escribirLista(listaPPF *lista)
         return 1;
 
     fprintf(fp, "%s\n", "NOMBRE|TIPODATO|VALOR|LONGITUD");
-    printf("NOMBRE|TIPODATO|VALOR|LONGITUD");
     while (lista->prim != NULL)
     {
         t_nodo *nodo = lista->prim;
         t_dato dato = nodo->dato;
 
         fprintf(fp, "%s|%s|%s|%s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
-        printf("%s|%s|%s|%s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
+        //printf("%s|%s|%s|%s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
 
         lista->prim = lista->prim->siguiente;
         free(nodo);

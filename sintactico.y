@@ -94,7 +94,7 @@ sentencia: declaracion {printf("Regla 3\n");}
           | get {printf("Regla 8\n");};
 
 display: DISPLAY CADENA { printf ("Display Cadena - Regla 9\n"); }
-       | DISPLAY expresion { printf ("Display expresion - Regla 10\n"); };
+       | DISPLAY ID { printf ("Display ID - Regla 10\n"); };
 
 get: GET ID { printf("GET ID - Regla 11\n"); };
 
@@ -196,17 +196,13 @@ factor: ID { printf("factor ID - Regla 47\n"); }
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%d", $1);
-            if (detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-"))==1){
-                yyerror("Hay un duplicado en la tabla de simbolos");
-            }
-            }
+          detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-"));
+          }
       | REAL { printf("factor REAL - Regla 49\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
-            if (detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-"))==1){
-                yyerror("Hay un duplicado en la tabla de simbolos");
-            }
+          detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-"));
           }
       | long { printf("factor LONG - Regla 50\n"); };
       

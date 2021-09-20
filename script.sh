@@ -1,7 +1,7 @@
 bison -dyv sintactico.y
 flex Lexico.l
-gcc y.tab.c lex.yy.c -o primera_entrega.exe
-cat pruebas_simples.txt | ./primera_entrega.exe
+gcc y.tab.c lex.yy.c -o Primera.exe
+cat pruebas.txt | ./Primera.exe
 rm -f sintactico.tab.c
 #rm -f y.output
 rm -f y.tab.h

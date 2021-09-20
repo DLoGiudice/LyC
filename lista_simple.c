@@ -30,7 +30,6 @@ typedef struct listaS
 
 listaSimple *crearListaSimple();
 int insertarListaSimple(listaSimple *lista, char * cadena);
-int escribirListaSimple(listaSimple *listaVariables, listaSimple * listaTipos);
 
 // Si retorna 1 es un error
 int insertarListaSimple(listaSimple *lista, char * cadena)

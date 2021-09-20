@@ -1,7 +1,7 @@
 */ Definicion de Variables /*
 DIM [ limite, resultador_final, prediccion ] AS [ integer, real, integer ]
 DIM [ contador, acumulador ] AS [ integer, integer ]
-DIM [mensaje_final] AS [ string ]
+DIM [ mensaje_final ] AS [ string ]
 
 */ Inicio de Programa /*
 contador := 0
@@ -17,22 +17,20 @@ DISPLAY "Introduzca un mensaje final"
 GET mensaje_final
 
 WHILE(acumulador < 1000 AND contador < 10){
-    acumulador := acumulador * contador
-    contador := contador + 1
+    acumulador := 2
+    contador := 1
     IF(acumulador >= limite){
-        DISPLAY "Se supero el limite"
-        DISPLAY acumulador
-        resultado_final := acumulador * contador + limite
+        resultado_final := limite
     } ELSE {
         DISPLAY "Debajo del limite"
     }
 }
 
-IF (EQUMAX(resultado_final - 15, [100, 110, prediccion])) {
+IF (EQUMAX(resultado_final - 15; [100, 110, prediccion])) {
     DISPLAY "Acertaste Maximo"
 }
 
-IF (EQUMIN(resultado_final + 10, [100, 110, prediccion])) {
+IF (EQUMIN(resultado_final + 10; [100, 110, prediccion])) {
     DISPLAY "Acertaste Minimo"
 }
 

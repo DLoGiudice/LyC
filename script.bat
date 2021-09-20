@@ -4,9 +4,9 @@ C:\GnuWin32\bin\bison -dyv sintactico.y
 echo "generando archivo flex.."
 C:\GnuWin32\bin\flex Lexico.l
 echo "compilando el archivo flex..se crea el compilado.exe"
-C:\MinGW\bin\gcc.exe y.tab.c lex.yy.c -o primera_entrega.exe
+C:\MinGW\bin\gcc.exe y.tab.c lex.yy.c -o Primera.exe
 echo "analizador lexico sobre pruebas.txt"
-type pruebas_simples.txt | primera_entrega.exe
+type pruebas.txt | Primera.exe
 echo "se borran archivos demas.."
 del y.tab.c
 del y.tab.h
