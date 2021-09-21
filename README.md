@@ -1,31 +1,19 @@
-# LyC
+# Lenguajes y Compiladores - Grupo 8
 
+## Bienvenido al Trabajo Practico de Lenguajes y Compiladores del **Grupo 8**.
 ### Guia de Instalacion
+1. Clonar el repositorio en un directorio de preferencia.  
+`git clone -b main https://github.com/DLoGiudice/LyC.git`
+2. Ir al directorio y correr el script con el siguiente código:  
+`.\script.bat`
+3. Luego de correr el script, en el archivo **ts.txt** se encontrará la tabla de simbolos.
 
+> El script borrará todos los archivos intermedios generados (y.tab.c, y.tab.h, y.output, lex.y.C)
 
-### Issues
+### Instrucciones de uso
+Si no se desea correr el script, dentro del repositorio encontrará el archivo `Primera.exe` con el compilador ya listo para ser utilizado.
 
-* Pila para ingresar el valor y el tipo en dim (Done, no se implemento dos pilas, sino se tomo el codigo que se tenia para lista, se copio y se renombro como lista simple, con un nodo que solo permite insertar una cadena. Se crearon dos listas, una llamada  listaTipoDato y listaListaVariables. Estas listas son listas parelelas donde se van guardando los tipos de datos y las variables. Hay un metodo en lista_simple.c que muestra por pantalla lo insertado y esto lo hace bien. Hay uqe llevar ese metodo a lista y que vaya sacando de las 2 listas nuevas y escribiendo en la ts.)
-* Limites de los valores reales 
-* Arreglar la redex de los reales, se rompe con .1234 (Done, se agrego un "?", probar a fondo).
-* Archivo con ejemplo.
-* Numero a las reglas.
-* Escritura de la tabla de simbolos. (Done)
-* Todo con _ adelante (Done)
+El mismo podra ser utilizado de la siguiente manera desde Windows: `type {nombre_de_archivo} | Primera.exe`.
 
-Actualizacion 2021-09-18
+En este repositorio se encuentra un archivo de pruebas generico `pruebas.txt` que recorré cada una de las sintaxis. El mismo podra ser utilizado de la siguiente manera: `type pruebas.txt | Primera.exe`
 
-* Limites de los valores reales (hay una version pero se puede mejorar)
-* Archivo con ejemplos.
-* Numero a las reglas.
-
-Actualizacion 2021-09-20
-* Limites de los valores reales (hay una version pero se puede mejorar)
-* Numero a las reglas. DONE
-* No le gusta la sintaxis del WHILE. DONE
-* No le gusta la sintaxis del LONG. DONE
-* No se puede poner: DONE
-  > var1 := 3  
-  > var2 := 3  
-  > No le gusta que hayan dos variables con el mismo valor.  
-  > Devuelve simbolo duplicado
