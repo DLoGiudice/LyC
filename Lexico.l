@@ -111,8 +111,8 @@ COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
                     validarEntero(yylval.value_int); 
                     return ENTERO; }
 
-{COMENTARIO}	 { printf("comentario"); }
-{COMENTARIO_ANI} { printf("comentario ani"); }
+{COMENTARIO}	 { printf("comentario\n"); }
+{COMENTARIO_ANI} { printf("comentario ani\n"); }
 
 "\n"
 "\t"
