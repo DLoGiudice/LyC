@@ -10,10 +10,11 @@
 
 > El script borrará todos los archivos intermedios generados (y.tab.c, y.tab.h, y.output, lex.y.C)
 
-### Instrucciones de uso
-Si no se desea correr el script, dentro del repositorio encontrará el archivo `Primera.exe` con el compilador ya listo para ser utilizado.
+### Instrucciones de uso - Sin compilar.
 
-El mismo podra ser utilizado de la siguiente manera desde Windows: `type {nombre_de_archivo} | Primera.exe`.
+Si no se desea correr el script para realizar la compilación, dentro del repositorio encontrará el archivo `Primera.exe` con el compilador ya listo para ser utilizado.
 
-En este repositorio se encuentra un archivo de pruebas generico `pruebas.txt` que recorré cada una de las sintaxis. El mismo podra ser utilizado de la siguiente manera: `type pruebas.txt | Primera.exe`
+El mismo podra ser utilizado de la siguiente manera desde Windows: `type {nombre_de_archivo_de_pruebas} | Primera.exe`.
+
+En este repositorio se encuentra un archivo de pruebas generico `pruebas.txt` que recorré cada una de las reglas. El mismo podra ser utilizado de la siguiente manera: `type pruebas.txt | Primera.exe`
 
