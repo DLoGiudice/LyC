@@ -8,58 +8,54 @@
 // la lista.
 
 // Struct de datos
-typedef struct s_datoSimple
-{
+typedef struct s_datoSimple {
     char datoSimple[31];
-} t_datoSimple;
+}
+t_datoSimple;
 
 // Tenemos maxima cadena y ID de 30, se le suma 1 por el /n
-typedef struct s_nodoSimple
-{
+typedef struct s_nodoSimple {
     t_datoSimple dato;
-    struct s_nodoSimple *siguiente;
-} t_nodoSimple;
+    struct s_nodoSimple * siguiente;
+}
+t_nodoSimple;
 
-typedef t_nodoSimple *t_listaSimple;
+typedef t_nodoSimple * t_listaSimple;
 
-typedef struct listaS
-{
+typedef struct listaS {
     t_listaSimple prim;
     t_listaSimple ult;
-} listaSimple;
+}
+listaSimple;
 
-listaSimple *crearListaSimple();
-int insertarListaSimple(listaSimple *lista, char * cadena);
+listaSimple * crearListaSimple();
+int insertarListaSimple(listaSimple * lista, char * cadena);
 
 // Si retorna 1 es un error
-int insertarListaSimple(listaSimple *lista, char * cadena)
-{
-    t_nodoSimple *nuevoNodo;
+int insertarListaSimple(listaSimple * lista, char * cadena) {
+    t_nodoSimple * nuevoNodo;
     t_datoSimple dato;
 
-    nuevoNodo = (t_nodoSimple *)malloc(sizeof(t_nodoSimple));
+    nuevoNodo = (t_nodoSimple * ) malloc(sizeof(t_nodoSimple));
     if (nuevoNodo == NULL)
         return 1;
-
+        
     strcpy(dato.datoSimple, cadena);
-    nuevoNodo->dato = dato;
-    nuevoNodo->siguiente = NULL;
+    nuevoNodo -> dato = dato;
+    nuevoNodo -> siguiente = NULL;
 
-    if (lista->prim == NULL)
-        lista->prim = nuevoNodo;
+    if (lista -> prim == NULL)
+        lista -> prim = nuevoNodo;
     else
-        lista->ult->siguiente = nuevoNodo;
-
-    lista->ult = nuevoNodo;
+        lista -> ult -> siguiente = nuevoNodo;
+    lista -> ult = nuevoNodo;
     return 0;
 }
 
-listaSimple *crearListaSimple()
-{
-    listaSimple *lista;
-    lista = (listaSimple *)malloc(sizeof(listaSimple));
-
-    lista->prim = NULL;
-    lista->ult = NULL;
+listaSimple * crearListaSimple() {
+    listaSimple * lista;
+    lista = (listaSimple * ) malloc(sizeof(listaSimple));
+    lista -> prim = NULL;
+    lista -> ult = NULL;
     return lista;
 }
