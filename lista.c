@@ -84,7 +84,6 @@ int escribirLista(listaPPF * lista) {
         lista -> prim = lista -> prim -> siguiente;
         free(nodo);
     }
-
     fclose(fp);
     return 0;
 }
@@ -118,7 +117,6 @@ t_dato crearDato(char * nombre, char * tipo, char * valor, char * longitud) {
 int insertarLista(listaPPF * lista, t_dato dato) {
     t_nodo * nuevoNodo;
     nuevoNodo = (t_nodo * ) malloc(sizeof(t_nodo));
-    printf("Estoy en insertarLista");
 
     if (nuevoNodo == NULL)
         return 1;
