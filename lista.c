@@ -11,7 +11,7 @@
 // Struct de datos
 typedef struct s_dato {
     char nombre[31];
-    char tipo[9];
+    char tipo[15];
     char valor[30];
     char longitud[2];
 }
@@ -75,12 +75,12 @@ int escribirLista(listaPPF * lista) {
     if (fp == NULL)
         return 1;
 
-    fprintf(fp, "%-30s|%-10s|%-10s|%-16s\n", "NOMBRE", "TIPODATO", "VALOR", "LONGITUD");
+    fprintf(fp, "%-30s|%-18s|%-10s|%-16s\n", "NOMBRE", "TIPODATO", "VALOR", "LONGITUD");
     fprintf(fp, "%s\n", "==================================================================");
     while (lista -> prim != NULL) {
         t_nodo * nodo = lista -> prim;
         t_dato dato = nodo -> dato;
-        fprintf(fp, "%-30s|%-10s|%-10s|%-16s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
+        fprintf(fp, "%-30s|%-18s|%-10s|%-16s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
         lista -> prim = lista -> prim -> siguiente;
         free(nodo);
     }

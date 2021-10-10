@@ -151,13 +151,13 @@ lista_tipo_datos: lista_tipo_datos COMA tipo_dato  {
                 printf("Tipo de dato - Regla 23\n"); };
 
 tipo_dato: TIPO_REAL { printf("Tipo Real - Regla 24\n");
-        insertarListaSimple(listaTipoDato, "Real");
+        insertarListaSimple(listaTipoDato, "CTE_FLOAT");
        }
          | TIPO_INTEGER { printf("Tipo Integer - Regla 25\n");
-        insertarListaSimple(listaTipoDato, "Integer");
+        insertarListaSimple(listaTipoDato, "CTE_INTEGER");
        }
          | TIPO_STRING { printf("Tipo String - Regla 26\n");
-        insertarListaSimple(listaTipoDato, "String"); };
+        insertarListaSimple(listaTipoDato, "CTE_STRING"); };
 
 seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA { printf("Seleccion - IF (condicion) {sentencia} - Regla 27\n");}
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{printf("Seleccion - IF (condicion) {sentencia} ELSE {} - Regla 29\n");}
