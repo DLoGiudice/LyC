@@ -41,9 +41,10 @@ TIPO_REAL       "real"
 TIPO_INTEGER    "integer"
 TIPO_STRING	    "string"
 
+CAR_VAL			({GUIONES}|":="|"+"|"-"|"*"|","|";"|"["|"]"|"("|")"|"{"|"}"|">"|"<"|">="|"<="|"=="|"<>"|"."|" ")
 COMEN_ABRE		"*/"
 COMEN_CIERRA	"/*"
-COMEN_CADENA	[^\*\/\n\r]*
+COMEN_CADENA	({CAR_VAL}|{LETRA}|{DIGITO})*
 COMENTARIO		{COMEN_ABRE}{COMEN_CADENA}{COMEN_CIERRA}
 COMENTARIO_ANI  {COMEN_ABRE}({COMEN_CADENA}|{COMENTARIO})+{COMEN_CIERRA}
 
