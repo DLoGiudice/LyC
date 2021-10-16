@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "lista.c"
+#include "lista_polaca.c"
 
 int yylex();
 int yyparse();
@@ -15,6 +16,8 @@ int contadorTipoDato = 0;
 listaPPF *lista;
 listaSimple *listaListaVariables;
 listaSimple *listaTipoDato;
+
+listaPolaca *lPolaca;
 
 %}
 
@@ -105,7 +108,12 @@ eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCH
 
 iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
     printf ("Iteracion  While (Condicion) {Programa} - Regla 15 \n"); };
-asignacion: ID OP_ASIG factor { printf ("Asignacion - factor - Regla 16\n"); }
+asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"); 
+            char valor[150];
+            sprintf(valor, "%s", $1);
+            insertarListaPolaca(lPolaca, valor);
+            insertarListaPolaca(lPolaca, ":=");
+            }
           | ID OP_ASIG CADENA {
             char longitud[2] = "";
             char nombre[33] = "_";
@@ -164,7 +172,8 @@ seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia L
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{printf("Seleccion - IF (condicion) {} ELSE {sentencia} - Regla 30\n");}
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{printf("Seleccion - IF (condicion) {sentencia} ELSE {sentencia} - Regla 31\n");};
 
-condicion: comparacion {printf("Comparacion - Regla 32\n"); }
+condicion: comparacion {
+    printf("Comparacion - Regla 32\n"); }
         | comparacion AND comparacion{printf("Comparacion AND Comparacion - Regla 33\n");}
         | comparacion OR comparacion{printf("Comparacion OR Comparacion - Regla 34\n");}
         | NOT comparacion{printf("NOT Comparacion - Regla 35\n"); };
@@ -174,28 +183,42 @@ comparacion: expresion operador expresion{printf("Comparacion - Regla 36\n");}
             | eq{printf("Comparacion - eq - Regla 38\n"); };
 
 expresion: termino{printf("expresion - termino - Regla 39\n");}
-         | expresion OP_MAS termino {printf("expresion OP_MAS termino - Regla 40\n");}
-         | expresion OP_MENOS termino {printf("expresion OP_MENOS termino - Regla 41\n"); };
+         | expresion OP_MAS termino {printf("expresion OP_MAS termino - Regla 40\n");
+                insertarListaPolaca(lPolaca, "OP_MAS");}
+         | expresion OP_MENOS termino {printf("expresion OP_MENOS termino - Regla 41\n");
+                insertarListaPolaca(lPolaca, "OP_MENOS");
+                };
 
 termino: factor{printf("termino - factor - Regla 42\n");}
-       | termino OP_MUL factor {printf("termino OP_MUL factor - Regla 43\n");}
-       | termino OP_DIV factor {printf("termino OP_DIV factor - Regla 44\n"); };
+       | termino OP_MUL factor {printf("termino OP_MUL factor - Regla 43\n");
+       insertarListaPolaca(lPolaca, "OP_MUL");}
+       | termino OP_DIV factor {printf("termino OP_DIV factor - Regla 44\n"); 
+       insertarListaPolaca(lPolaca, "OP_DIV");
+       };
 
 lista_factor: lista_factor COMA expresion  { printf("Lista_factor COMA expresion - Regla 45\n"); }
             |  expresion { printf("lista_factor: expresion - Regla 46\n"); };
 
-factor: ID { printf("factor ID - Regla 47\n"); }
-      | ENTERO { printf("factor ENTERO - Regla 48\n"); 
+factor: ID {
+    insertarListaPolaca(lPolaca, $1); 
+    printf("factor ID - Regla 47\n"); }
+      | ENTERO {
+          printf("factor ENTERO - Regla 48\n"); 
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%d", $1);
+          insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
-      | REAL { printf("factor REAL - Regla 49\n");
+      | REAL { 
+          printf("factor REAL - Regla 49\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
+          insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
-      | long { printf("factor LONG - Regla 50\n"); };
+      | long { 
+          // insertarListaPolaca(lPolaca, $1);
+          printf("factor LONG - Regla 50\n"); };
       
 operador: OP_MAY{printf("Operador OP_MAY - Regla 51\n");}
         | OP_MEN{printf("Operador OP_MEN - Regla 52\n");}
@@ -209,8 +232,10 @@ int main(){
     lista = crearLista();
     listaTipoDato = crearListaSimple();
     listaListaVariables = crearListaSimple();
+    lPolaca = crearListaPolaca();
     yyparse();
     escribirLista(lista);
+    escribirListaPolaca(lPolaca);    
 }
 
 void yyerror (char const *s) {
