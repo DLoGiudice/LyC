@@ -95,10 +95,25 @@ sentencia: declaracion {printf("Regla 3\n");}
           | display {printf("Regla 7\n");}
           | get {printf("Regla 8\n"); };
 
-display: DISPLAY CADENA { printf ("Display Cadena - Regla 9\n"); }
-       | DISPLAY ID { printf ("Display ID - Regla 10\n"); };
+display: DISPLAY CADENA { printf ("Display Cadena - Regla 9\n"); 
+          char valor[150];
+          sprintf(valor, "%s", $2);
+          insertarListaPolaca(lPolaca, "DISPLAY");
+          insertarListaPolaca(lPolaca, valor);
+          }
+       | DISPLAY ID { printf ("Display ID - Regla 10\n"); 
+          char valor[150];
+          sprintf(valor, "%s", $2);
+          insertarListaPolaca(lPolaca, "DISPLAY");
+          insertarListaPolaca(lPolaca, valor);
+          };
 
-get: GET ID { printf("GET ID - Regla 11\n"); };
+get: GET ID { printf("GET ID - Regla 11\n"); 
+          char valor[150];
+          sprintf(valor, "%s", $2);
+          insertarListaPolaca(lPolaca, "GET");
+          insertarListaPolaca(lPolaca, valor);
+          };
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
     printf("LONG ([lista]) - Regla 12\n"); };
@@ -106,7 +121,7 @@ long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS
 eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMAX(expresion;[lista]) - Regla 13\n"); }
   | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN(expresion;[lista]) - Regla 14\n"); };
 
-iteracion: WHILE PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
+iteracion: WHILE {printf ("CHAU_________________");} PARENTESIS_ABRE condicion {printf ("HOLA_________________");} PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
     printf ("Iteracion  While (Condicion) {Programa} - Regla 15 \n"); };
 asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"); 
             char valor[150];
