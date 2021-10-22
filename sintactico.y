@@ -12,6 +12,7 @@ void yyerror(char const *str);
 //Variables para verificar la coincidencia de lista de variables y lista de tipos.
 int contadorListaVariables = 0;
 int contadorTipoDato = 0;
+int contLong = 0;
 
 listaPPF *lista;
 listaSimple *listaListaVariables;
@@ -116,6 +117,10 @@ get: GET ID { printf("GET ID - Regla 11\n");
           };
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
+    printf("cont long %d", contLong);
+    char valor[150];
+    sprintf(valor, "%d", contLong);
+    insertarListaPolaca(lPolaca, valor);
     printf("LONG ([lista]) - Regla 12\n"); };
 
 eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMAX(expresion;[lista]) - Regla 13\n"); }
@@ -124,10 +129,11 @@ eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCH
 iteracion: WHILE {printf ("CHAU_________________");} PARENTESIS_ABRE condicion {printf ("HOLA_________________");} PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
     printf ("Iteracion  While (Condicion) {Programa} - Regla 15 \n"); };
 asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"); 
-            char valor[150];
-            sprintf(valor, "%s", $1);
-            insertarListaPolaca(lPolaca, valor);
+           // char valor[150];
+           // sprintf(valor, "%s", $1);
+           // insertarListaPolaca(lPolaca, valor);
             insertarListaPolaca(lPolaca, ":=");
+            insertarListaPolaca(lPolaca, $1);
             }
           | ID OP_ASIG CADENA {
             char longitud[2] = "";
@@ -136,6 +142,11 @@ asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"
             if (detectarInsertar(lista, crearDato(strcat(nombre, $3),"-", $3, longitud))==1){
                 yyerror("Hay un duplicado en la tabla de simbolos");
              }
+            char valor[150];
+            sprintf(valor, "%s", $3);
+            insertarListaPolaca(lPolaca, valor);
+            insertarListaPolaca(lPolaca, ":=");
+            insertarListaPolaca(lPolaca, $1);
             printf ("Asignacion - cadena - Regla 17\n"); }
           | ID OP_ASIG eq { printf ("Asignacion - EQ - Regla 18\n"); };
  
@@ -211,25 +222,28 @@ termino: factor{printf("termino - factor - Regla 42\n");}
        insertarListaPolaca(lPolaca, "OP_DIV");
        };
 
-lista_factor: lista_factor COMA expresion  { printf("Lista_factor COMA expresion - Regla 45\n"); }
-            |  expresion { printf("lista_factor: expresion - Regla 46\n"); };
+lista_factor: lista_factor COMA expresion  { printf("Lista_factor COMA expresion - Regla 45\n"); 
+            //insertarListaPolaca(lPolaca, ",");
+            contLong++;}
+            |  expresion { printf("lista_factor: expresion - Regla 46\n"); 
+            contLong = 1;};
 
 factor: ID {
-    insertarListaPolaca(lPolaca, $1); 
+    //insertarListaPolaca(lPolaca, $1); 
     printf("factor ID - Regla 47\n"); }
       | ENTERO {
           printf("factor ENTERO - Regla 48\n"); 
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%d", $1);
-          insertarListaPolaca(lPolaca, valor);
+        //  insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
       | REAL { 
           printf("factor REAL - Regla 49\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
-          insertarListaPolaca(lPolaca, valor);
+        //  insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
       | long { 
           // insertarListaPolaca(lPolaca, $1);
