@@ -30,6 +30,7 @@ listaPolaca;
 
 listaPolaca * crearListaPolaca();
 int insertarListaPolaca(listaPolaca * lista, char * cadena);
+int celdaActual(listaPolaca * lista);
 
 // Si retorna 1 es un error
 int insertarListaPolaca(listaPolaca * lista, char * cadena) {
@@ -60,12 +61,9 @@ int escribirListaPolaca(listaPolaca * lista) {
     if (fp == NULL)
         return 1;
 
-   // fprintf(fp, "%-30s|%-18s|%-10s|%-16s\n", "NOMBRE", "TIPODATO", "VALOR", "LONGITUD");
-   // fprintf(fp, "%s\n", "==================================================================");
     while (lista -> prim != NULL) {
         t_nodoPolaca * nodo = lista -> prim;
         t_datoPolaca dato = nodo -> dato;
-      //  fprintf(fp, "%-30s|%-18s|%-10s|%-16s\n", dato.nombre, dato.tipo, dato.valor, dato.longitud);
         fprintf(fp, "%d - %s \n", con, dato.datoPolaca);
         lista -> prim = lista -> prim -> siguiente;
         free(nodo);
@@ -81,4 +79,18 @@ listaPolaca * crearListaPolaca() {
     lista -> prim = NULL;
     lista -> ult = NULL;
     return lista;
+}
+
+
+int celdaActual(listaPolaca * lista) {
+    int celdaActual = 0;
+    t_nodoPolaca * auxiliar;
+
+    auxiliar = lista -> prim;
+    while (auxiliar != NULL) {
+        auxiliar = auxiliar -> siguiente;
+        celdaActual++;
+    }
+
+    return celdaActual;
 }

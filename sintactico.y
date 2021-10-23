@@ -13,10 +13,12 @@ void yyerror(char const *str);
 int contadorListaVariables = 0;
 int contadorTipoDato = 0;
 int __banderaEquMax = 0;
+int __celdaActual = 0;
 
 listaPPF *lista;
 listaSimple *listaListaVariables;
 listaSimple *listaTipoDato;
+listaSimple *listaEqu;
 
 listaPolaca *lPolaca;
 
@@ -129,12 +131,12 @@ eq: EQUMAX PARENTESIS_ABRE expresion {
         insertarListaPolaca(lPolaca, "@max");
         insertarListaPolaca(lPolaca, "CMP");
         insertarListaPolaca(lPolaca, "BNE");
-        // ApilarCeldaActual
         insertarListaPolaca(lPolaca, " "); // Avanzar
         insertarListaPolaca(lPolaca, "FALSE");
         insertarListaPolaca(lPolaca, "TRUE");
         // DesapilarCeldaActual. Asignar numero de celda actual a numero de celda desapilada
-
+        
+        // insertarEnPolacaEnLugarEspecial
     }
   | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN(expresion;[lista]) - Regla 14\n"); };
 
@@ -231,20 +233,22 @@ termino: factor{printf("termino - factor - Regla 42\n");}
 lista_factor: lista_factor COMA expresion {
                 printf("Lista_factor COMA expresion - Regla 45\n");
                  if (__banderaEquMax == 1) {
+                    char valor[150];
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, ":=");
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, "@max");
                     insertarListaPolaca(lPolaca, "CMP");
                     insertarListaPolaca(lPolaca, "BLE");
-                    // ApilarNumeroPolaca.
-                    // Avanzar
+                    sprintf(valor, "%d", celdaActual(lPolaca));
+                    insertarListaSimple(listaEqu, valor);
                     insertarListaPolaca(lPolaca, " ");
                     // Detecto maximo, asigna a Aux
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, "@max");
                     insertarListaPolaca(lPolaca, ":=");
                     // salto = DesapilarNumeroPolaca
+                    printf("DATO DE PILA %s\n", desapilarDeLista(listaEqu));
                     // insertarListaPolaca(lPolaca[salto], actual)
                 }
             }
@@ -289,6 +293,8 @@ int main(){
     lista = crearLista();
     listaTipoDato = crearListaSimple();
     listaListaVariables = crearListaSimple();
+    listaEqu = crearListaSimple();
+
     lPolaca = crearListaPolaca();
     yyparse();
     escribirLista(lista);

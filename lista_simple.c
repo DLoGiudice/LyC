@@ -30,6 +30,7 @@ listaSimple;
 
 listaSimple * crearListaSimple();
 int insertarListaSimple(listaSimple * lista, char * cadena);
+const char * desapilarDeLista(listaSimple * lista);
 
 // Si retorna 1 es un error
 int insertarListaSimple(listaSimple * lista, char * cadena) {
@@ -58,4 +59,30 @@ listaSimple * crearListaSimple() {
     lista -> prim = NULL;
     lista -> ult = NULL;
     return lista;
+}
+
+const char * desapilarDeLista(listaSimple * lista) {
+    t_datoSimple topeDePila;
+    t_nodoSimple * auxiliar;
+
+    auxiliar = lista -> prim;
+
+    if ( lista -> prim -> siguiente == NULL) {
+        // 1 elemento
+        topeDePila = lista -> prim -> dato;
+        free(lista -> prim);
+        lista -> prim = lista -> ult = NULL;
+    } else {
+        // Me paro en el anteultimo
+        while (auxiliar -> siguiente -> siguiente != NULL ) {
+            auxiliar = auxiliar -> siguiente;
+        }
+
+        topeDePila = auxiliar -> siguiente -> dato;
+        free(auxiliar->siguiente);
+        lista->ult = auxiliar;
+    }
+
+    printf("LA PTM 2 %s  \n\n", topeDePila.datoSimple);
+    return topeDePila.datoSimple;
 }
