@@ -12,6 +12,7 @@ void yyerror(char const *str);
 //Variables para verificar la coincidencia de lista de variables y lista de tipos.
 int contadorListaVariables = 0;
 int contadorTipoDato = 0;
+int __banderaEquMax = 0;
 
 listaPPF *lista;
 listaSimple *listaListaVariables;
@@ -118,7 +119,23 @@ get: GET ID { printf("GET ID - Regla 11\n");
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
     printf("LONG ([lista]) - Regla 12\n"); };
 
-eq: EQUMAX PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMAX(expresion;[lista]) - Regla 13\n"); }
+eq: EQUMAX PARENTESIS_ABRE expresion {
+        __banderaEquMax = 1;
+        insertarListaPolaca(lPolaca, "@master");
+        insertarListaPolaca(lPolaca, ":=");
+    } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { 
+        printf("EQUMAX(expresion;[lista]) - Regla 13\n");
+        insertarListaPolaca(lPolaca, "@master");
+        insertarListaPolaca(lPolaca, "@max");
+        insertarListaPolaca(lPolaca, "CMP");
+        insertarListaPolaca(lPolaca, "BNE");
+        // ApilarCeldaActual
+        insertarListaPolaca(lPolaca, " "); // Avanzar
+        insertarListaPolaca(lPolaca, "FALSE");
+        insertarListaPolaca(lPolaca, "TRUE");
+        // DesapilarCeldaActual. Asignar numero de celda actual a numero de celda desapilada
+
+    }
   | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN(expresion;[lista]) - Regla 14\n"); };
 
 iteracion: WHILE {printf ("CHAU_________________");} PARENTESIS_ABRE condicion {printf ("HOLA_________________");} PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
@@ -211,8 +228,33 @@ termino: factor{printf("termino - factor - Regla 42\n");}
        insertarListaPolaca(lPolaca, "OP_DIV");
        };
 
-lista_factor: lista_factor COMA expresion  { printf("Lista_factor COMA expresion - Regla 45\n"); }
-            |  expresion { printf("lista_factor: expresion - Regla 46\n"); };
+lista_factor: lista_factor COMA expresion {
+                printf("Lista_factor COMA expresion - Regla 45\n");
+                 if (__banderaEquMax == 1) {
+                    insertarListaPolaca(lPolaca, "@aux");
+                    insertarListaPolaca(lPolaca, ":=");
+                    insertarListaPolaca(lPolaca, "@aux");
+                    insertarListaPolaca(lPolaca, "@max");
+                    insertarListaPolaca(lPolaca, "CMP");
+                    insertarListaPolaca(lPolaca, "BLE");
+                    // ApilarNumeroPolaca.
+                    // Avanzar
+                    insertarListaPolaca(lPolaca, " ");
+                    // Detecto maximo, asigna a Aux
+                    insertarListaPolaca(lPolaca, "@aux");
+                    insertarListaPolaca(lPolaca, "@max");
+                    insertarListaPolaca(lPolaca, ":=");
+                    // salto = DesapilarNumeroPolaca
+                    // insertarListaPolaca(lPolaca[salto], actual)
+                }
+            }
+            | expresion { 
+                printf("lista_factor: expresion - Regla 46\n");
+                if (__banderaEquMax == 1) {
+                    insertarListaPolaca(lPolaca, "@max");
+                    insertarListaPolaca(lPolaca, ":=");
+                }
+            };
 
 factor: ID {
     insertarListaPolaca(lPolaca, $1); 
