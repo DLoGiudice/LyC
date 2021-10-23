@@ -30,7 +30,7 @@ listaSimple;
 
 listaSimple * crearListaSimple();
 int insertarListaSimple(listaSimple * lista, char * cadena);
-const char * desapilarDeLista(listaSimple * lista);
+const char * desapilarDeLista(listaSimple * lista, char *);
 
 // Si retorna 1 es un error
 int insertarListaSimple(listaSimple * lista, char * cadena) {
@@ -61,7 +61,7 @@ listaSimple * crearListaSimple() {
     return lista;
 }
 
-const char * desapilarDeLista(listaSimple * lista) {
+const char * desapilarDeLista(listaSimple * lista, char * valor) {
     t_datoSimple topeDePila;
     t_nodoSimple * auxiliar;
 
@@ -83,6 +83,5 @@ const char * desapilarDeLista(listaSimple * lista) {
         lista->ult = auxiliar;
     }
 
-    printf("LA PTM 2 %s  \n\n", topeDePila.datoSimple);
-    return topeDePila.datoSimple;
+    valor = topeDePila.datoSimple; 
 }

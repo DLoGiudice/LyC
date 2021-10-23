@@ -248,7 +248,8 @@ lista_factor: lista_factor COMA expresion {
                     insertarListaPolaca(lPolaca, "@max");
                     insertarListaPolaca(lPolaca, ":=");
                     // salto = DesapilarNumeroPolaca
-                    printf("DATO DE PILA %s\n", desapilarDeLista(listaEqu));
+                    desapilarDeLista(listaEqu, valor);
+                    //insertarListaPolacaCeldaEspecifica(lPolaca[salto], actual)
                     // insertarListaPolaca(lPolaca[salto], actual)
                 }
             }
