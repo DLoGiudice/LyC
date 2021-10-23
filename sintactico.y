@@ -13,7 +13,7 @@ void yyerror(char const *str);
 int contadorListaVariables = 0;
 int contadorTipoDato = 0;
 int __banderaEquMax = 0;
-int __celdaActual = 0;
+int __celdaActual_2 = 0;
 
 listaPPF *lista;
 listaSimple *listaListaVariables;
@@ -233,23 +233,31 @@ termino: factor{printf("termino - factor - Regla 42\n");}
 lista_factor: lista_factor COMA expresion {
                 printf("Lista_factor COMA expresion - Regla 45\n");
                  if (__banderaEquMax == 1) {
-                    char valor[150];
+                    char __posicionDestino[150];
+                    char __celdaActual[150];
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, ":=");
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, "@max");
                     insertarListaPolaca(lPolaca, "CMP");
                     insertarListaPolaca(lPolaca, "BLE");
-                    sprintf(valor, "%d", celdaActual(lPolaca));
-                    insertarListaSimple(listaEqu, valor);
-                    insertarListaPolaca(lPolaca, " ");
+                    // Apilo celdaActual
+                    sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+                    printf("CELDA ACTUAL 1: %s\n", __celdaActual);
+                    insertarListaSimple(listaEqu, __celdaActual);
+
+                    insertarListaPolaca(lPolaca, " "); // Avanzar
                     // Detecto maximo, asigna a Aux
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, "@max");
                     insertarListaPolaca(lPolaca, ":=");
-                    // salto = DesapilarNumeroPolaca
-                    desapilarDeLista(listaEqu, valor);
-                    //insertarListaPolacaCeldaEspecifica(lPolaca[salto], actual)
+
+                    // Desapilo la posicion en donde voy a guardar la nueva celda actual.
+                    desapilarDeLista(listaEqu, __posicionDestino);
+                    sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+                    printf("posicion__Destino: %s\n", __posicionDestino);
+                    printf("CELDA ACTUAL 2: %s\n", __celdaActual);
+                    insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
                     // insertarListaPolaca(lPolaca[salto], actual)
                 }
             }

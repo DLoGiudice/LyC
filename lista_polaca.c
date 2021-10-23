@@ -31,6 +31,7 @@ listaPolaca;
 listaPolaca * crearListaPolaca();
 int insertarListaPolaca(listaPolaca * lista, char * cadena);
 int celdaActual(listaPolaca * lista);
+int insertarListaPolacaCeldaEspecifica(listaPolaca * lista, char * cadena, char * posicion);
 
 // Si retorna 1 es un error
 int insertarListaPolaca(listaPolaca * lista, char * cadena) {
@@ -51,6 +52,24 @@ int insertarListaPolaca(listaPolaca * lista, char * cadena) {
         lista -> ult -> siguiente = nuevoNodo;
     lista -> ult = nuevoNodo;
     return 0;
+}
+
+int insertarListaPolacaNodoEspecifica(listaPolaca * lista, char * cadena, char * posicion) {
+    t_nodoPolaca * auxiliar;
+    int celdaActual = 0;
+    int posicionInt = 0;
+
+    auxiliar = lista -> prim;
+    posicionInt = atoi(posicion);
+    printf("POSICIONINT %d \n\n", posicionInt);
+    while (celdaActual != posicionInt) {
+        auxiliar = auxiliar -> siguiente;
+        celdaActual++;
+    }
+
+    strcpy(auxiliar -> dato.datoPolaca, cadena);
+
+    return 1;
 }
 
 int escribirListaPolaca(listaPolaca * lista) {
@@ -92,5 +111,5 @@ int celdaActual(listaPolaca * lista) {
         celdaActual++;
     }
 
-    return celdaActual;
+    return celdaActual + 1;
 }
