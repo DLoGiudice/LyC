@@ -30,7 +30,7 @@ listaSimple;
 
 listaSimple * crearListaSimple();
 int insertarListaSimple(listaSimple * lista, char * cadena);
-const char * desapilarDeLista(listaSimple * lista, char *);
+char * desapilarDeLista(listaSimple * lista, char *);
 
 // Si retorna 1 es un error
 int insertarListaSimple(listaSimple * lista, char * cadena) {
@@ -61,7 +61,7 @@ listaSimple * crearListaSimple() {
     return lista;
 }
 
-const char * desapilarDeLista(listaSimple * lista, char * valor) {
+char * desapilarDeLista(listaSimple * lista, char * valor) {
     t_datoSimple topeDePila;
     t_nodoSimple * auxiliar;
 

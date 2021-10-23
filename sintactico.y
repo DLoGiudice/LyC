@@ -235,6 +235,7 @@ lista_factor: lista_factor COMA expresion {
                  if (__banderaEquMax == 1) {
                     char __posicionDestino[150];
                     char __celdaActual[150];
+                    char * aux;
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, ":=");
                     insertarListaPolaca(lPolaca, "@aux");
@@ -253,9 +254,9 @@ lista_factor: lista_factor COMA expresion {
                     insertarListaPolaca(lPolaca, ":=");
 
                     // Desapilo la posicion en donde voy a guardar la nueva celda actual.
-                    desapilarDeLista(listaEqu, __posicionDestino);
+                    aux = desapilarDeLista(listaEqu, __posicionDestino);
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-                    printf("posicion__Destino: %s\n", __posicionDestino);
+                    printf("posicion__Destino: %s\n", aux);
                     printf("CELDA ACTUAL 2: %s\n", __celdaActual);
                     insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
                     // insertarListaPolaca(lPolaca[salto], actual)
