@@ -258,7 +258,7 @@ lista_factor: lista_factor COMA expresion {
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
                     printf("posicion__Destino: %s\n", aux);
                     printf("CELDA ACTUAL 2: %s\n", __celdaActual);
-                    insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
+                    insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, aux);
                     // insertarListaPolaca(lPolaca[salto], actual)
                 }
             }
