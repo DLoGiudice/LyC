@@ -121,22 +121,34 @@ get: GET ID { printf("GET ID - Regla 11\n");
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
     printf("LONG ([lista]) - Regla 12\n"); };
 
-eq: EQUMAX PARENTESIS_ABRE expresion {
+eq: EQUMAX PARENTESIS_ABRE {
         __banderaEquMax = 1;
+        // Chequiar si esto es asi o solo devolvemos FALSE//TRUE
+        insertarListaPolaca(lPolaca, "FALSE");
+        insertarListaPolaca(lPolaca, "@equmax");
+        insertarListaPolaca(lPolaca, ":=");
+    }expresion {
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, ":=");
-    } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { 
+    } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
+        char __posicionDestinoEquMax[150];
+        char __celdaActualEquMax[150];
+
         printf("EQUMAX(expresion;[lista]) - Regla 13\n");
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, "@max");
         insertarListaPolaca(lPolaca, "CMP");
         insertarListaPolaca(lPolaca, "BNE");
+        sprintf(__celdaActualEquMax, "%d", celdaActual(lPolaca));
+        insertarListaSimple(listaEqu, __celdaActualEquMax);
         insertarListaPolaca(lPolaca, " "); // Avanzar
-        insertarListaPolaca(lPolaca, "FALSE");
         insertarListaPolaca(lPolaca, "TRUE");
-        // DesapilarCeldaActual. Asignar numero de celda actual a numero de celda desapilada
-        
-        // insertarEnPolacaEnLugarEspecial
+        insertarListaPolaca(lPolaca, "@equmax");
+        insertarListaPolaca(lPolaca, ":=");
+        // Salto al final si es FALSE
+        desapilarDeLista(listaEqu, __posicionDestinoEquMax);
+        sprintf(__celdaActualEquMax, "%d", celdaActual(lPolaca));
+        insertarListaPolacaNodoEspecifica(lPolaca, __celdaActualEquMax, __posicionDestinoEquMax);
     }
   | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN(expresion;[lista]) - Regla 14\n"); };
 
@@ -243,7 +255,6 @@ lista_factor: lista_factor COMA expresion {
                     insertarListaPolaca(lPolaca, "BLE");
                     // Apilo celdaActual
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-                    printf("CELDA ACTUAL 1: %s\n", __celdaActual);
                     insertarListaSimple(listaEqu, __celdaActual);
 
                     insertarListaPolaca(lPolaca, " "); // Avanzar
@@ -251,12 +262,10 @@ lista_factor: lista_factor COMA expresion {
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, "@max");
                     insertarListaPolaca(lPolaca, ":=");
-
                     // Desapilo la posicion en donde voy a guardar la nueva celda actual.
                     desapilarDeLista(listaEqu, __posicionDestino);
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
                     insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
-                    // insertarListaPolaca(lPolaca[salto], actual)
                 }
             }
             | expresion { 
