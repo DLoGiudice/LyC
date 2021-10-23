@@ -84,4 +84,6 @@ const char * desapilarDeLista(listaSimple * lista, char * valor) {
     }
 
     valor = topeDePila.datoSimple; 
+    printf("QUE HAY ACA: %s", valor);
+    return valor;
 }
