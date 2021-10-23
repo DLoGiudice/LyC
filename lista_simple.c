@@ -83,7 +83,7 @@ char * desapilarDeLista(listaSimple * lista, char * valor) {
         lista->ult = auxiliar;
     }
 
-    valor = topeDePila.datoSimple; 
+    strcpy(valor, topeDePila.datoSimple); 
     printf("QUE HAY ACA: %s", valor);
     return valor;
 }
