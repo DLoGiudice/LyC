@@ -13,6 +13,7 @@ void yyerror(char const *str);
 int contadorListaVariables = 0;
 int contadorTipoDato = 0;
 int __banderaEquMax = 0;
+int __banderaIf = 0;
 
 int contLong = 0;
 
@@ -20,6 +21,7 @@ listaPPF *lista;
 listaSimple *listaListaVariables;
 listaSimple *listaTipoDato;
 listaSimple *listaEqu;
+listaSimple *listaIf;
 
 listaPolaca *lPolaca;
 
@@ -89,8 +91,20 @@ listaPolaca *lPolaca;
 
 start: programa{printf("Regla 0\n"); printf("COMPILACION OK\n"); };
 
-programa: sentencia{printf("Regla 1\n");}
-        | programa sentencia{printf("Regla 2\n"); };
+programa: sentencia{
+           char __posicionDestino[150];
+           char __celdaActual[150];
+           desapilarDeLista(listaIf, __posicionDestino);
+           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+           insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);    
+            printf("Regla 1\n");}
+        | programa sentencia{
+           char __posicionDestino[150];
+           char __celdaActual[150];
+           desapilarDeLista(listaIf, __posicionDestino);
+           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+           insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
+           printf("Regla 2\n");};
 
 sentencia: declaracion {printf("Regla 3\n");}
           | seleccion {printf("Regla 4\n");}
@@ -224,10 +238,10 @@ tipo_dato: TIPO_REAL { printf("Tipo Real - Regla 24\n");
          | TIPO_STRING { printf("Tipo String - Regla 26\n");
         insertarListaSimple(listaTipoDato, "CTE_STRING"); };
 
-seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA { printf("Seleccion - IF (condicion) {sentencia} - Regla 27\n");}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{printf("Seleccion - IF (condicion) {sentencia} ELSE {} - Regla 29\n");}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{printf("Seleccion - IF (condicion) {} ELSE {sentencia} - Regla 30\n");}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE sentencia LLAVE_CIERRA ELSE LLAVE_ABRE sentencia LLAVE_CIERRA{printf("Seleccion - IF (condicion) {sentencia} ELSE {sentencia} - Regla 31\n");};
+seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA { printf("Seleccion - IF (condicion) {programa} - Regla 27\n");}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{printf("Seleccion - IF (condicion) {programa} ELSE {} - Regla 29\n");}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE programa LLAVE_CIERRA{printf("Seleccion - IF (condicion) {} ELSE {programa} - Regla 30\n");}
+        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA ELSE LLAVE_ABRE programa LLAVE_CIERRA{printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 31\n");};
 
 condicion: comparacion {
     printf("Comparacion - Regla 32\n"); }
@@ -235,8 +249,14 @@ condicion: comparacion {
         | comparacion OR comparacion{printf("Comparacion OR Comparacion - Regla 34\n");}
         | NOT comparacion{printf("NOT Comparacion - Regla 35\n"); };
 
-comparacion: expresion operador expresion{printf("Comparacion - Regla 36\n");}
-            | PARENTESIS_ABRE expresion operador expresion PARENTESIS_CIERRA{printf("Comparacion - (expresion op expresion) Regla 37\n");}
+comparacion: expresion {
+            insertarListaPolaca(lPolaca, "CMP");    
+            }
+            operador expresion{printf("Comparacion - Regla 36\n");}
+            | PARENTESIS_ABRE expresion {
+            insertarListaPolaca(lPolaca, "CMP"); 
+            }
+            operador expresion PARENTESIS_CIERRA{printf("Comparacion - (expresion op expresion) Regla 37\n");}
             | eq{printf("Comparacion - eq - Regla 38\n"); };
 
 expresion: termino{printf("expresion - termino - Regla 39\n");}
@@ -311,12 +331,66 @@ factor: ID {
           // insertarListaPolaca(lPolaca, $1);
           printf("factor LONG - Regla 50\n"); };
       
-operador: OP_MAY{printf("Operador OP_MAY - Regla 51\n");}
-        | OP_MEN{printf("Operador OP_MEN - Regla 52\n");}
-        | OP_MAY_IGUAL{printf("Operador OP_MAY_IGUAL - Regla 53\n");}
-        | OP_MEN_IGUAL{printf("Operador OP_MEN_IGUAL - Regla 54\n");}
-        | OP_IGUALIGUAL{printf("Operador OP_IGUALIGUAL - Regla 55\n");}
-        | OP_DISTINTO{printf("Operador OP_DISTINTO - Regla 56\n"); };
+operador: OP_MAY{
+            insertarListaPolaca(lPolaca, "BLE");
+            char __posicionDestino[150];
+            char __celdaActual[150];
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+            // Detecto maximo, asigna a Aux
+            printf("Operador OP_MAY - Regla 51\n");}
+        | OP_MEN{
+            insertarListaPolaca(lPolaca, "BGE");
+                        char __posicionDestino[150];
+            char __celdaActual[150];
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+            // Detecto maximo, asigna a Aux
+            printf("Operador OP_MEN - Regla 52\n");}
+        | OP_MAY_IGUAL{
+            insertarListaPolaca(lPolaca, "BLT");
+                        char __posicionDestino[150];
+            char __celdaActual[150];
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+            // Detecto maximo, asigna a Aux
+            printf("Operador OP_MAY_IGUAL - Regla 53\n");}
+        | OP_MEN_IGUAL{
+            insertarListaPolaca(lPolaca, "BGT");
+                        char __posicionDestino[150];
+            char __celdaActual[150];
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+            // Detecto maximo, asigna a Aux
+            printf("Operador OP_MEN_IGUAL - Regla 54\n");}
+        | OP_IGUALIGUAL{
+            insertarListaPolaca(lPolaca, "BNE");
+                        char __posicionDestino[150];
+            char __celdaActual[150];
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+            // Detecto maximo, asigna a Aux
+            printf("Operador OP_IGUALIGUAL - Regla 55\n");}
+        | OP_DISTINTO{
+            insertarListaPolaca(lPolaca, "BEQ");
+                        char __posicionDestino[150];
+            char __celdaActual[150];
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+            // Detecto maximo, asigna a Aux
+            printf("Operador OP_DISTINTO - Regla 56\n"); };
 %%
 
 int main(){
@@ -324,6 +398,7 @@ int main(){
     listaTipoDato = crearListaSimple();
     listaListaVariables = crearListaSimple();
     listaEqu = crearListaSimple();
+    listaIf = crearListaSimple();
 
     lPolaca = crearListaPolaca();
     yyparse();
