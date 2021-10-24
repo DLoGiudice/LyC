@@ -166,8 +166,8 @@ iteracion: WHILE {
             printf("__CeldaActual %s \n \n", __celdaActual);
 
             insertarListaSimple(listaWhile, __celdaActual);
-            insertarListaPolaca(lPolaca, "ET-home"); // Etiqueta
-            printf("INSERTE ETIQUETA; ET-home \n \n");
+            insertarListaPolaca(lPolaca, "ET"); // Etiqueta
+            printf("INSERTE ETIQUETA; ET \n \n");
 } PARENTESIS_ABRE condicion {
                 char __posicionDestino[150];
             char __celdaActual[150];
@@ -294,7 +294,7 @@ tipo_dato: TIPO_REAL { printf("Tipo Real - Regla 24\n");
          | TIPO_STRING { printf("Tipo String - Regla 26\n");
         insertarListaSimple(listaTipoDato, "CTE_STRING"); };
 
-seleccion:| IF PARENTESIS_ABRE condicion {
+seleccion: IF PARENTESIS_ABRE condicion {
             char __posicionDestino[150];
             char __celdaActual[150];
             // Apilo celdaActual
