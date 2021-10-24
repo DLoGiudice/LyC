@@ -62,7 +62,6 @@ int insertarListaPolacaNodoEspecifica(listaPolaca * lista, char * cadena, char *
     auxiliar = lista -> prim;
     posicionInt = atoi(posicion);
     posicionInt = posicionInt -1;
-    printf("POSICIONINT %d \n\n", posicionInt);
     while (celdaActual != posicionInt) {
         auxiliar = auxiliar -> siguiente;
         celdaActual++;

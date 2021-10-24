@@ -65,9 +65,6 @@ listaSimple * crearListaSimple() {
 }
 
 char * desapilarDeLista(listaSimple * lista, char * valor) {
-
-    printf("ESTOY EN DESAPILAR PAPA \n \n");
-
     t_datoSimple topeDePila;
     t_nodoSimple * auxiliar;
 
@@ -91,6 +88,5 @@ char * desapilarDeLista(listaSimple * lista, char * valor) {
     }
 
     strcpy(valor, topeDePila.datoSimple);
-    printf("VALOR ANTES DE RETURN %s", valor); 
     return valor;
 }
