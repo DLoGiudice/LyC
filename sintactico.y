@@ -91,20 +91,8 @@ listaPolaca *lPolaca;
 
 start: programa{printf("Regla 0\n"); printf("COMPILACION OK\n"); };
 
-programa: sentencia{
-           char __posicionDestino[150];
-           char __celdaActual[150];
-           desapilarDeLista(listaIf, __posicionDestino);
-           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-           insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);    
-            printf("Regla 1\n");}
-        | programa sentencia{
-           char __posicionDestino[150];
-           char __celdaActual[150];
-           desapilarDeLista(listaIf, __posicionDestino);
-           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-           insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
-           printf("Regla 2\n");};
+programa: sentencia{printf("Regla 1\n");}
+        | programa sentencia{printf("Regla 2\n"); };
 
 sentencia: declaracion {printf("Regla 3\n");}
           | seleccion {printf("Regla 4\n");}
@@ -115,9 +103,17 @@ sentencia: declaracion {printf("Regla 3\n");}
 
 display: DISPLAY CADENA { printf ("Display Cadena - Regla 9\n"); 
           char valor[150];
+ char __celdaActual[150];
+           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+           printf ("DISPLAY APENAS ENTRO: %s \n \n", __celdaActual);
+          
           sprintf(valor, "%s", $2);
           insertarListaPolaca(lPolaca, "DISPLAY");
           insertarListaPolaca(lPolaca, valor);
+
+          
+           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+           printf ("DISPLAY: %s \n \n", __celdaActual);
           }
        | DISPLAY ID { printf ("Display ID - Regla 10\n"); 
           char valor[150];
@@ -238,10 +234,97 @@ tipo_dato: TIPO_REAL { printf("Tipo Real - Regla 24\n");
          | TIPO_STRING { printf("Tipo String - Regla 26\n");
         insertarListaSimple(listaTipoDato, "CTE_STRING"); };
 
-seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA { printf("Seleccion - IF (condicion) {programa} - Regla 27\n");}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA ELSE LLAVE_ABRE LLAVE_CIERRA{printf("Seleccion - IF (condicion) {programa} ELSE {} - Regla 29\n");}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE LLAVE_CIERRA ELSE LLAVE_ABRE programa LLAVE_CIERRA{printf("Seleccion - IF (condicion) {} ELSE {programa} - Regla 30\n");}
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA ELSE LLAVE_ABRE programa LLAVE_CIERRA{printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 31\n");};
+seleccion:| IF PARENTESIS_ABRE condicion {
+            char __posicionDestino[150];
+            char __celdaActual[150];
+            // Apilo celdaActual
+
+
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            
+            printf("__CeldaActual %s \n \n", __celdaActual);
+
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+} PARENTESIS_CIERRA LLAVE_ABRE sentencia {
+           char __posicionDestino[150];
+           char __celdaActual[150];
+           insertarListaPolaca(lPolaca, "BI");
+           desapilarDeLista(listaIf, __posicionDestino);
+           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+
+           // La ppt dice que hay que sumar 1    
+           int __celdaActualInt = atoi(__celdaActual);
+           printf ("__celdaActual pre suma %d \n \n", __celdaActualInt);
+           __celdaActualInt++;
+           printf ("__celdaActual post suma %d \n \n", __celdaActualInt);
+            
+           sprintf(__celdaActual, "%d", __celdaActualInt);
+           printf ("Posicion destino ya sumado 1: %s \n \n", __celdaActual);
+
+           insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
+           printf("__celdaActual, __posicionDestino %s,%s \n \n", __celdaActual, __posicionDestino);
+
+
+
+           __celdaActualInt = atoi(__celdaActual);
+           printf ("__celdaActual pre suma %d \n \n", __celdaActualInt);
+           __celdaActualInt--;
+           printf ("__celdaActual post suma %d \n \n", __celdaActualInt);
+            
+           sprintf(__celdaActual, "%d", __celdaActualInt);
+           printf ("Posicion destino ya sumado 1: %s \n \n", __celdaActual);
+
+
+
+           
+           insertarListaSimple(listaIf, __celdaActual);
+           printf ("QUE ESTOY APILANDO: %s \n \n", __celdaActual);
+           insertarListaPolaca(lPolaca, " "); // Avanzar
+           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+           printf ("CELDA ACTUAL LUEGO DE AVANZAR: %s \n \n", __celdaActual);
+
+} LLAVE_CIERRA ELSE LLAVE_ABRE sentencia {
+           char __posicionDestino[150];
+           char __celdaActual[150];
+
+
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            printf ("ELSE APENAS ENTRO %s \n \n", __celdaActual);
+
+
+
+           desapilarDeLista(listaIf, __posicionDestino);
+           
+           printf("ELSE __posicionDestino: %s \n \n", __posicionDestino);
+           
+           sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+
+
+            // La ppt dice que hay que sumar 1    
+           int __celdaActualInt = atoi(__celdaActual);
+           printf ("ELSE__celdaActual pre suma %d \n \n", __celdaActualInt);
+           __celdaActualInt;
+           printf ("ELSE__celdaActual post suma %d \n \n", __celdaActualInt);
+            
+           sprintf(__celdaActual, "%d", __celdaActualInt);
+           printf ("Posicion destino ya sumado 1: %s \n \n", __celdaActual);
+           insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
+           
+           printf("ELSE __celdaActual, __posicionDestino %s,%s \n \n", __celdaActual, __posicionDestino);
+
+
+            __celdaActualInt = atoi(__celdaActual);
+           printf ("__celdaActual pre suma %d \n \n", __celdaActualInt);
+           __celdaActualInt--;
+           printf ("__celdaActual post suma %d \n \n", __celdaActualInt);
+            
+           sprintf(__celdaActual, "%d", __celdaActualInt);
+           printf ("Posicion destino ya sumado 1: %s \n \n", __celdaActual);
+
+
+
+} LLAVE_CIERRA{printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 31\n");};
 
 condicion: comparacion {
     printf("Comparacion - Regla 32\n"); }
@@ -333,63 +416,21 @@ factor: ID {
       
 operador: OP_MAY{
             insertarListaPolaca(lPolaca, "BLE");
-            char __posicionDestino[150];
-            char __celdaActual[150];
-            // Apilo celdaActual
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-            // Detecto maximo, asigna a Aux
             printf("Operador OP_MAY - Regla 51\n");}
         | OP_MEN{
             insertarListaPolaca(lPolaca, "BGE");
-                        char __posicionDestino[150];
-            char __celdaActual[150];
-            // Apilo celdaActual
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-            // Detecto maximo, asigna a Aux
             printf("Operador OP_MEN - Regla 52\n");}
         | OP_MAY_IGUAL{
             insertarListaPolaca(lPolaca, "BLT");
-                        char __posicionDestino[150];
-            char __celdaActual[150];
-            // Apilo celdaActual
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-            // Detecto maximo, asigna a Aux
             printf("Operador OP_MAY_IGUAL - Regla 53\n");}
         | OP_MEN_IGUAL{
             insertarListaPolaca(lPolaca, "BGT");
-                        char __posicionDestino[150];
-            char __celdaActual[150];
-            // Apilo celdaActual
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-            // Detecto maximo, asigna a Aux
             printf("Operador OP_MEN_IGUAL - Regla 54\n");}
         | OP_IGUALIGUAL{
             insertarListaPolaca(lPolaca, "BNE");
-                        char __posicionDestino[150];
-            char __celdaActual[150];
-            // Apilo celdaActual
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-            // Detecto maximo, asigna a Aux
             printf("Operador OP_IGUALIGUAL - Regla 55\n");}
         | OP_DISTINTO{
             insertarListaPolaca(lPolaca, "BEQ");
-                        char __posicionDestino[150];
-            char __celdaActual[150];
-            // Apilo celdaActual
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-            // Detecto maximo, asigna a Aux
             printf("Operador OP_DISTINTO - Regla 56\n"); };
 %%
 
