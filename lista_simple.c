@@ -42,6 +42,9 @@ int insertarListaSimple(listaSimple * lista, char * cadena) {
         return 1;
         
     strcpy(dato.datoSimple, cadena);
+
+    printf("CADENA %s", cadena);
+
     nuevoNodo -> dato = dato;
     nuevoNodo -> siguiente = NULL;
 
@@ -62,6 +65,9 @@ listaSimple * crearListaSimple() {
 }
 
 char * desapilarDeLista(listaSimple * lista, char * valor) {
+
+    printf("ESTOY EN DESAPILAR PAPA \n \n");
+
     t_datoSimple topeDePila;
     t_nodoSimple * auxiliar;
 
@@ -80,9 +86,11 @@ char * desapilarDeLista(listaSimple * lista, char * valor) {
 
         topeDePila = auxiliar -> siguiente -> dato;
         free(auxiliar->siguiente);
+        auxiliar->siguiente = NULL;
         lista->ult = auxiliar;
     }
 
-    strcpy(valor, topeDePila.datoSimple); 
+    strcpy(valor, topeDePila.datoSimple);
+    printf("VALOR ANTES DE RETURN %s", valor); 
     return valor;
 }
