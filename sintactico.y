@@ -275,7 +275,7 @@ seleccion: IF PARENTESIS_ABRE condicion {
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
             insertarListaSimple(listaIf, __celdaActual);
             insertarListaPolaca(lPolaca, " "); // Avanzar
-        } PARENTESIS_CIERRA LLAVE_ABRE sentencia {
+        } PARENTESIS_CIERRA LLAVE_ABRE programa {
             char __posicionDestino[150];
             char __celdaActual[150];
 
@@ -295,7 +295,7 @@ seleccion: IF PARENTESIS_ABRE condicion {
             insertarListaPolaca(lPolaca, " "); // Avanzar
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
 
-        } LLAVE_CIERRA ELSE LLAVE_ABRE sentencia {
+        } LLAVE_CIERRA ELSE LLAVE_ABRE programa {
             char __posicionDestino[150];
             char __celdaActual[150];
 
@@ -310,7 +310,9 @@ seleccion: IF PARENTESIS_ABRE condicion {
             __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt--;
             sprintf(__celdaActual, "%d", __celdaActualInt);
-        } LLAVE_CIERRA { printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 31\n"); }
+        } LLAVE_CIERRA { 
+            printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 31\n");
+        };
 
 condicion: comparacion {
     printf("Comparacion - Regla 32\n"); }

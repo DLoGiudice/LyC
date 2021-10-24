@@ -43,7 +43,6 @@ int insertarListaSimple(listaSimple * lista, char * cadena) {
         
     strcpy(dato.datoSimple, cadena);
 
-    printf("CADENA %s", cadena);
 
     nuevoNodo -> dato = dato;
     nuevoNodo -> siguiente = NULL;
