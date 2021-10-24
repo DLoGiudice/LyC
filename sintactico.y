@@ -171,7 +171,7 @@ eq: EQUMAX PARENTESIS_ABRE {
     }
   | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN(expresion;[lista]) - Regla 14\n"); };
 
-iteracion: WHILE {printf ("CHAU_________________");} PARENTESIS_ABRE condicion {printf ("HOLA_________________");} PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
+iteracion: WHILE {printf ("CHAU________________");} PARENTESIS_ABRE condicion {printf ("HOLA_________________");} PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
     printf ("Iteracion  While (Condicion) {Programa} - Regla 15 \n"); };
 asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"); 
            // char valor[150];
