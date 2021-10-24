@@ -13,6 +13,8 @@ void yyerror(char const *str);
 int contadorListaVariables = 0;
 int contadorTipoDato = 0;
 int __banderaEquMax = 0;
+int __banderaEquMin = 0;
+
 
 int contLong = 0;
 
@@ -293,18 +295,18 @@ lista_factor: lista_factor COMA expresion {
                     insertarListaPolaca(lPolaca, "@aux");
                     insertarListaPolaca(lPolaca, "OP_ASIG");
                     insertarListaPolaca(lPolaca, "@aux");
-                    // Inserto @max o @min dependiendo la bandera. Igual me parece que es al pedo. Quizas necesitamos un nombre generico
-                    // (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min")
+                    // Inserto @max o @min dependiendo la bandera.
                     insertarListaPolaca(lPolaca, maxOMin);
                     insertarListaPolaca(lPolaca, "CMP");
                     // Inserto BLE o BGE dependiendio si es EQUMAX o EQUMIN
-                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "BLE") : insertarListaPolaca(lPolaca, "BGE")
+                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "BLE") : insertarListaPolaca(lPolaca, "BGE");
                     // Apilo celdaActual
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
                     insertarListaSimple(listaEqu, __celdaActual);
                     insertarListaPolaca(lPolaca, " "); // Avanzar
                     // Detecto maximo, asigna a Aux
                     insertarListaPolaca(lPolaca, "@aux");
+                    // Inserto @max o @min dependiendo la bandera.
                     insertarListaPolaca(lPolaca, maxOMin);
                     insertarListaPolaca(lPolaca, "OP_ASIG");
                     // Desapilo la posicion en donde voy a guardar la nueva celda actual.
@@ -318,7 +320,7 @@ lista_factor: lista_factor COMA expresion {
             | expresion { 
                 printf("lista_factor: expresion - Regla 46\n");
                 if (__banderaEquMax == 1 || __banderaEquMin == 1 ) {
-                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min")
+                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min");
                     insertarListaPolaca(lPolaca, "OP_ASIG");
                 } else {
                     contLong = 1;
