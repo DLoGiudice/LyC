@@ -16,7 +16,7 @@ GET prediccion
 DISPLAY "Introduzca un mensaje final"
 GET mensaje_final
 
-WHILE(acumulador < 1000 AND contador < 10){
+WHILE (22 < 33){
     acumulador := 2
     contador := 1
     IF(acumulador >= limite){
@@ -24,18 +24,6 @@ WHILE(acumulador < 1000 AND contador < 10){
     } ELSE {
         DISPLAY "Debajo del limite"
     }
-}
-
-IF (EQUMAX(resultado_final - 15; [100, 110, prediccion])) {
-    DISPLAY "Acertaste Maximo"
-}
-
-IF (EQUMIN(resultado_final + 10; [100, 110, prediccion])) {
-    DISPLAY "Acertaste Minimo"
-}
-
-IF (LONG([100, 110, prediccion]) == resultado_final) {
-    DISPLAY "Longitud"
 }
 
 DISPLAY mensaje_final

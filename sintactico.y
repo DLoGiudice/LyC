@@ -113,6 +113,12 @@ display: DISPLAY CADENA {
         sprintf(valor, "%s", $2);
         insertarListaPolaca(lPolaca, "DISPLAY");
         insertarListaPolaca(lPolaca, valor);
+        }
+       | DISPLAY ID { printf ("Display ID - Regla 10\n"); 
+        char valor[150];
+        sprintf(valor, "%s", $2);
+        insertarListaPolaca(lPolaca, "DISPLAY");
+        insertarListaPolaca(lPolaca, valor);
         };
 
 get: GET ID { 
