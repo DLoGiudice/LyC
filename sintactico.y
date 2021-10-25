@@ -15,6 +15,8 @@ int contadorTipoDato = 0;
 int __banderaEquMax = 0;
 int __banderaIf = 0;
 char * __operador__comparador;
+int __banderaEquMin = 0;
+
 
 int contLong = 0;
 
@@ -157,8 +159,38 @@ eq: EQUMAX PARENTESIS_ABRE {
         desapilarDeLista(listaEqu, __posicionDestinoEquMax);
         sprintf(__celdaActualEquMax, "%d", celdaActual(lPolaca));
         insertarListaPolacaNodoEspecifica(lPolaca, __celdaActualEquMax, __posicionDestinoEquMax);
+        __banderaEquMax = 0;
     }
-  | EQUMIN PARENTESIS_ABRE expresion PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA { printf("EQUMIN(expresion;[lista]) - Regla 14\n"); };
+  | EQUMIN PARENTESIS_ABRE {
+        __banderaEquMin = 1;
+        // Chequiar si esto es asi o solo devolvemos FALSE//TRUE
+        insertarListaPolaca(lPolaca, "FALSE");
+        insertarListaPolaca(lPolaca, "@equmin");
+        insertarListaPolaca(lPolaca, ":=");
+  } expresion {
+        insertarListaPolaca(lPolaca, "@master");
+        insertarListaPolaca(lPolaca, ":=");
+  } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
+        char __posicionDestinoEquMin[150];
+        char __celdaActualEquMin[150];
+
+        printf("EQUMIN(expresion;[lista]) - Regla 14\n");
+        insertarListaPolaca(lPolaca, "@master");
+        insertarListaPolaca(lPolaca, "@min");
+        insertarListaPolaca(lPolaca, "CMP");
+        insertarListaPolaca(lPolaca, "BNE");
+        sprintf(__celdaActualEquMin, "%d", celdaActual(lPolaca));
+        insertarListaSimple(listaEqu, __celdaActualEquMin);
+        insertarListaPolaca(lPolaca, " "); // Avanzar
+        insertarListaPolaca(lPolaca, "TRUE");
+        insertarListaPolaca(lPolaca, "@equmin");
+        insertarListaPolaca(lPolaca, ":=");
+        // Salto al final si es FALSE
+        desapilarDeLista(listaEqu, __posicionDestinoEquMin);
+        sprintf(__celdaActualEquMin, "%d", celdaActual(lPolaca));
+        insertarListaPolacaNodoEspecifica(lPolaca, __celdaActualEquMin, __posicionDestinoEquMin);
+        __banderaEquMin = 0;
+    };
 
 iteracion: WHILE {
             char __posicionDestino[150];
@@ -315,10 +347,10 @@ seleccion: IF PARENTESIS_ABRE condicion {
         };
 
 condicion: comparacion {
-    printf("Comparacion - Regla 32\n"); }
+            printf("Comparacion - Regla 32\n"); }
         | comparacion AND comparacion{printf("Comparacion AND Comparacion - Regla 33\n");}
         | comparacion OR comparacion{printf("Comparacion OR Comparacion - Regla 34\n");}
-        | NOT comparacion{printf("NOT Comparacion - Regla 35\n"); };
+        | NOT comparacion {printf("NOT Comparacion - Regla 35\n"); };
 
 comparacion: expresion {
              } operador expresion{printf("Comparacion - Regla 36\n");}
@@ -344,24 +376,28 @@ termino: factor{printf("termino - factor - Regla 42\n");}
 
 lista_factor: lista_factor COMA expresion {
                 printf("Lista_factor COMA expresion - Regla 45\n");
-                 if (__banderaEquMax == 1) {
+                 if (__banderaEquMax == 1 || __banderaEquMin == 1 ) {
+                    char * maxOMin = (__banderaEquMax == 1) ? "@max" : "@min";
                     char __posicionDestino[150];
                     char __celdaActual[150];
+
                     insertarListaPolaca(lPolaca, "@aux");
-                    insertarListaPolaca(lPolaca, ":=");
+                    insertarListaPolaca(lPolaca, "OP_ASIG");
                     insertarListaPolaca(lPolaca, "@aux");
-                    insertarListaPolaca(lPolaca, "@max");
+                    // Inserto @max o @min dependiendo la bandera.
+                    insertarListaPolaca(lPolaca, maxOMin);
                     insertarListaPolaca(lPolaca, "CMP");
-                    insertarListaPolaca(lPolaca, "BLE");
+                    // Inserto BLE o BGE dependiendio si es EQUMAX o EQUMIN
+                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "BLE") : insertarListaPolaca(lPolaca, "BGE");
                     // Apilo celdaActual
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
                     insertarListaSimple(listaEqu, __celdaActual);
-
                     insertarListaPolaca(lPolaca, " "); // Avanzar
                     // Detecto maximo, asigna a Aux
                     insertarListaPolaca(lPolaca, "@aux");
-                    insertarListaPolaca(lPolaca, "@max");
-                    insertarListaPolaca(lPolaca, ":=");
+                    // Inserto @max o @min dependiendo la bandera.
+                    insertarListaPolaca(lPolaca, maxOMin);
+                    insertarListaPolaca(lPolaca, "OP_ASIG");
                     // Desapilo la posicion en donde voy a guardar la nueva celda actual.
                     desapilarDeLista(listaEqu, __posicionDestino);
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
@@ -372,9 +408,9 @@ lista_factor: lista_factor COMA expresion {
             }
             | expresion { 
                 printf("lista_factor: expresion - Regla 46\n");
-                if (__banderaEquMax == 1) {
-                    insertarListaPolaca(lPolaca, "@max");
-                    insertarListaPolaca(lPolaca, ":=");
+                if (__banderaEquMax == 1 || __banderaEquMin == 1 ) {
+                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min");
+                    insertarListaPolaca(lPolaca, "OP_ASIG");
                 } else {
                     contLong = 1;
                 }
