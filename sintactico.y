@@ -14,6 +14,7 @@ int contadorListaVariables = 0;
 int contadorTipoDato = 0;
 int __banderaEquMax = 0;
 int __banderaIf = 0;
+int __banderaAnd = 0;
 char * __operador__comparador;
 
 int contLong = 0;
@@ -167,26 +168,16 @@ iteracion: WHILE {
             
             printf("__CeldaActual %s \n \n", __celdaActual);
 
-            insertarListaSimple(listaWhile, __celdaActual);
+            insertarListaSimple(listaIf, __celdaActual);
             insertarListaPolaca(lPolaca, "ET"); // Etiqueta
             printf("INSERTE ETIQUETA; ET \n \n");
-        } PARENTESIS_ABRE condicion {
-                char __posicionDestino[150];
-            char __celdaActual[150];
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            
-            printf("__CeldaActual %s \n \n", __celdaActual);
-
-            insertarListaSimple(listaWhile, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-            printf("FIN CONDICION WHILE \n \n");
-        } PARENTESIS_CIERRA LLAVE_ABRE programa {
+        } PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa {
             char __posicionDestino[150];
             char __celdaActual[150];
             char __auxString[150];
 
             insertarListaPolaca(lPolaca, "BI"); // Inserto BI
-            desapilarDeLista(listaWhile, __posicionDestino);
+            desapilarDeLista(listaIf, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
 
             // La ppt dice que hay que sumar 1    
@@ -196,7 +187,7 @@ iteracion: WHILE {
             // Inserto el la posicion que saque de pila el auxiliar que ya le sume 1.
             insertarListaPolacaNodoEspecifica(lPolaca, __auxString, __posicionDestino);
             //Saco de pila
-            desapilarDeLista(listaWhile, __posicionDestino);
+            desapilarDeLista(listaIf, __posicionDestino);
             //Obtengo actual y inserto
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
             insertarListaPolaca(lPolaca, " "); // AVANZO
@@ -366,7 +357,6 @@ condicion: comparacion {
             char __posicionDestino[150];
             char __celdaActual[150];
             char __posicionSaltoOr[150];
-            __banderaOr = 1;
 
             // Desapilo antes de insertar. Para el OR.
             desapilarDeLista(listaIf, __posicionSaltoOr);
