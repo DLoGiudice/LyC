@@ -89,3 +89,12 @@ char * desapilarDeLista(listaSimple * lista, char * valor) {
     strcpy(valor, topeDePila.datoSimple);
     return valor;
 }
+
+// Devuelvo 1 si vacia
+int listaVacia(listaSimple * lista) {
+    if (lista -> prim == NULL) {
+        return 1;
+    }
+
+    return 0;
+}
