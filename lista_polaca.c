@@ -32,6 +32,7 @@ listaPolaca * crearListaPolaca();
 int insertarListaPolaca(listaPolaca * lista, char * cadena);
 int celdaActual(listaPolaca * lista);
 int insertarListaPolacaCeldaEspecifica(listaPolaca * lista, char * cadena, char * posicion);
+int printListaPolaca(listaPolaca * lista);
 
 // Si retorna 1 es un error
 int insertarListaPolaca(listaPolaca * lista, char * cadena) {
@@ -89,6 +90,19 @@ int escribirListaPolaca(listaPolaca * lista) {
         con ++;
     }
     fclose(fp);
+    return 0;
+}
+
+int printListaPolaca(listaPolaca * lista) {
+    int con = 1;
+    t_nodoPolaca * auxiliar;
+
+    auxiliar = lista -> prim;
+    while (auxiliar != NULL) {
+        printf("%d - %s \n", con, auxiliar -> dato.datoPolaca);
+        auxiliar = auxiliar -> siguiente;
+        con ++;
+    }
     return 0;
 }
 

@@ -264,18 +264,7 @@ tipo_dato: TIPO_REAL { printf("Tipo Real - Regla 24\n");
          | TIPO_STRING { printf("Tipo String - Regla 26\n");
         insertarListaSimple(listaTipoDato, "CTE_STRING"); };
 
-seleccion: IF PARENTESIS_ABRE condicion {
-            char __posicionDestino[150];
-            char __celdaActual[150];
-
-            insertarListaPolaca(lPolaca, "CMP");
-            insertarListaPolaca(lPolaca, __operador__comparador);
-            __operador__comparador = "";
-            // Apilo celdaActual
-            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar
-        } PARENTESIS_CIERRA LLAVE_ABRE programa {
+seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa {
             char __posicionDestino[150];
             char __celdaActual[150];
 
@@ -288,6 +277,14 @@ seleccion: IF PARENTESIS_ABRE condicion {
             __celdaActualInt++;
             sprintf(__celdaActual, "%d", __celdaActualInt);
             insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
+
+            // Para el AND: If pila vacia, sigo (significa solo una condicion). 
+            // sino pongo el mismo valor que antes ya que si alguna es falsa ya salta al ELSE
+            if (!listaVacia(listaIf)) {
+                desapilarDeLista(listaIf, __posicionDestino);
+                insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
+            }
+
             __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt--;
             sprintf(__celdaActual, "%d", __celdaActualInt);
@@ -310,14 +307,83 @@ seleccion: IF PARENTESIS_ABRE condicion {
             __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt--;
             sprintf(__celdaActual, "%d", __celdaActualInt);
+
         } LLAVE_CIERRA { 
             printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 31\n");
         };
 
 condicion: comparacion {
-    printf("Comparacion - Regla 32\n"); }
-        | comparacion AND comparacion{printf("Comparacion AND Comparacion - Regla 33\n");}
-        | comparacion OR comparacion{printf("Comparacion OR Comparacion - Regla 34\n");}
+            printf("Comparacion - Regla 32\n");
+            char __posicionDestino[150];
+            char __celdaActual[150];
+
+            insertarListaPolaca(lPolaca, "CMP");
+            insertarListaPolaca(lPolaca, __operador__comparador);
+            __operador__comparador = "";
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+        }
+        | comparacion {
+            char __posicionDestino[150];
+            char __celdaActual[150];
+
+            insertarListaPolaca(lPolaca, "CMP");
+            insertarListaPolaca(lPolaca, __operador__comparador);
+            __operador__comparador = "";
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+        } AND comparacion {
+            char __posicionDestino[150];
+            char __celdaActual[150];
+            __banderaAnd = 1;
+
+            printf("Comparacion AND Comparacion - Regla 33\n");
+            insertarListaPolaca(lPolaca, "CMP");
+            insertarListaPolaca(lPolaca, __operador__comparador);
+            __operador__comparador = "";
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar          
+        }
+        | comparacion {
+            char __posicionDestino[150];
+            char __celdaActual[150];
+
+            insertarListaPolaca(lPolaca, "CMP");
+            insertarListaPolaca(lPolaca, __operador__comparador);
+            __operador__comparador = "";
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+        } OR comparacion{
+            printf("Comparacion OR Comparacion - Regla 34\n");
+            char __posicionDestino[150];
+            char __celdaActual[150];
+            char __posicionSaltoOr[150];
+            __banderaOr = 1;
+
+            // Desapilo antes de insertar. Para el OR.
+            desapilarDeLista(listaIf, __posicionSaltoOr);
+
+            insertarListaPolaca(lPolaca, "CMP");
+            insertarListaPolaca(lPolaca, __operador__comparador);
+            __operador__comparador = "";
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+
+            // Como es un OR, si es verdadera la primera condicion, salta aca. Al inicio del programa
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionSaltoOr);
+
+        }
         | NOT comparacion{printf("NOT Comparacion - Regla 35\n"); };
 
 comparacion: expresion {

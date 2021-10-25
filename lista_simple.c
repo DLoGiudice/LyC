@@ -89,3 +89,26 @@ char * desapilarDeLista(listaSimple * lista, char * valor) {
     strcpy(valor, topeDePila.datoSimple);
     return valor;
 }
+
+int printLista(listaSimple * lista) {
+    t_nodoSimple * auxiliar;
+
+    auxiliar = lista -> prim;
+
+    printf("__LISTA__\n");
+    while (auxiliar != NULL ) {
+        printf("%s\n", auxiliar -> dato.datoSimple);
+        auxiliar = auxiliar -> siguiente;
+    }
+    printf("__FIN__LISTA__\n");
+    return 1;
+}
+
+// Devuelvo 1 si vacia
+int listaVacia(listaSimple * lista) {
+    if (lista -> prim == NULL) {
+        return 1;
+    }
+
+    return 0;
+}
