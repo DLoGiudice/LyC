@@ -344,7 +344,7 @@ seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LL
             __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt--;
             sprintf(__celdaActual, "%d", __celdaActualInt); 
-            printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 31\n");
+            printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 27\n");
         }
         | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
             char __posicionDestino[150];
@@ -362,10 +362,10 @@ seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LL
                 insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
             }
 
-            printf("Seleccion - IF (condicion) {sentencia} - Regla 27\n");};
+            printf("Seleccion - IF (condicion) {sentencia} - Regla 28\n");};
 
 condicion: comparacion {
-            printf("Comparacion - Regla 32\n");
+            printf("Comparacion - Regla 29\n");
             char __posicionDestino[150];
             char __celdaActual[150];
 
@@ -393,7 +393,7 @@ condicion: comparacion {
             char __celdaActual[150];
             __banderaAnd = 1;
 
-            printf("Comparacion AND Comparacion - Regla 33\n");
+            printf("Comparacion AND Comparacion - Regla 30\n");
             insertarListaPolaca(lPolaca, "CMP");
             insertarListaPolaca(lPolaca, __operador__comparador);
             __operador__comparador = "";
@@ -414,7 +414,7 @@ condicion: comparacion {
             insertarListaSimple(listaIf, __celdaActual);
             insertarListaPolaca(lPolaca, " "); // Avanzar
         } OR comparacion{
-            printf("Comparacion OR Comparacion - Regla 34\n");
+            printf("Comparacion OR Comparacion - Regla 31\n");
             char __posicionDestino[150];
             char __celdaActual[150];
             char __posicionSaltoOr[150];
@@ -435,32 +435,32 @@ condicion: comparacion {
             insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionSaltoOr);
 
         }
-        | NOT comparacion{printf("NOT Comparacion - Regla 35\n"); };
+        | NOT comparacion{printf("NOT Comparacion - Regla 32\n"); };
 
 comparacion: expresion {
-             } operador expresion{printf("Comparacion - Regla 36\n");}
+             } operador expresion{printf("Comparacion - Regla 33\n");}
            | PARENTESIS_ABRE expresion {
-             } operador expresion PARENTESIS_CIERRA {printf("Comparacion - (expresion op expresion) Regla 37\n");}
-           | eq{printf("Comparacion - eq - Regla 38\n"); };
+             } operador expresion PARENTESIS_CIERRA {printf("Comparacion - (expresion op expresion) Regla 34\n");}
+           | eq{printf("Comparacion - eq - Regla 35\n"); };
 
-expresion: termino{printf("expresion - termino - Regla 39\n");}
-         | expresion OP_MAS termino {printf("expresion OP_MAS termino - Regla 40\n");
+expresion: termino{printf("expresion - termino - Regla 36\n");}
+         | expresion OP_MAS termino {printf("expresion OP_MAS termino - Regla 37\n");
                 insertarListaPolaca(lPolaca, "OP_MAS");}
-         | expresion OP_MENOS termino {printf("expresion OP_MENOS termino - Regla 41\n");
+         | expresion OP_MENOS termino {printf("expresion OP_MENOS termino - Regla 38\n");
                 insertarListaPolaca(lPolaca, "OP_MENOS");
                 };
 
-termino: factor{printf("termino - factor - Regla 42\n");}
+termino: factor{printf("termino - factor - Regla 39\n");}
        | termino OP_MUL factor {
-            printf("termino OP_MUL factor - Regla 43\n");
+            printf("termino OP_MUL factor - Regla 40\n");
             insertarListaPolaca(lPolaca, "OP_MUL");}
        | termino OP_DIV factor {
-            printf("termino OP_DIV factor - Regla 44\n"); 
+            printf("termino OP_DIV factor - Regla 41\n"); 
             insertarListaPolaca(lPolaca, "OP_DIV");
        };
 
 lista_factor: lista_factor COMA expresion {
-                printf("Lista_factor COMA expresion - Regla 45\n");
+                printf("Lista_factor COMA expresion - Regla 42\n");
                  if (__banderaEquMax == 1 || __banderaEquMin == 1 ) {
                     char * maxOMin = (__banderaEquMax == 1) ? "@max" : "@min";
                     char __posicionDestino[150];
@@ -492,7 +492,7 @@ lista_factor: lista_factor COMA expresion {
                 }
             }
             | expresion { 
-                printf("lista_factor: expresion - Regla 46\n");
+                printf("lista_factor: expresion - Regla 43\n");
                 if (__banderaEquMax == 1 || __banderaEquMin == 1 ) {
                     (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min");
                     insertarListaPolaca(lPolaca, "OP_ASIG");
@@ -502,48 +502,48 @@ lista_factor: lista_factor COMA expresion {
             };
 factor: ID {
         insertarListaPolaca(lPolaca, $1); 
-        printf("factor ID - Regla 47\n"); }
+        printf("factor ID - Regla 44\n"); }
       | ENTERO {
-          printf("factor ENTERO - Regla 48\n"); 
+          printf("factor ENTERO - Regla 45\n"); 
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%d", $1);
           insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
       | REAL { 
-          printf("factor REAL - Regla 49\n");
+          printf("factor REAL - Regla 46\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
           insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
       | long { 
-          printf("factor LONG - Regla 50\n"); };
+          printf("factor LONG - Regla 47\n"); };
       
 operador: OP_MAY{
             __operador__comparador = "BLE";
             // insertarListaPolaca(lPolaca, "BLE");
-            printf("Operador OP_MAY - Regla 51\n");}
+            printf("Operador OP_MAY - Regla 48\n");}
         | OP_MEN{
             __operador__comparador = "BGE";
             // insertarListaPolaca(lPolaca, "BGE");
-            printf("Operador OP_MEN - Regla 52\n");}
+            printf("Operador OP_MEN - Regla 49\n");}
         | OP_MAY_IGUAL{
             __operador__comparador = "BLT";
             // insertarListaPolaca(lPolaca, "BLT");
-            printf("Operador OP_MAY_IGUAL - Regla 53\n");}
+            printf("Operador OP_MAY_IGUAL - Regla 50\n");}
         | OP_MEN_IGUAL{
             __operador__comparador = "BGT";
             // insertarListaPolaca(lPolaca, "BGT");
-            printf("Operador OP_MEN_IGUAL - Regla 54\n");}
+            printf("Operador OP_MEN_IGUAL - Regla 51\n");}
         | OP_IGUALIGUAL{
             __operador__comparador = "BNE";
             // insertarListaPolaca(lPolaca, "BNE");
-            printf("Operador OP_IGUALIGUAL - Regla 55\n");}
+            printf("Operador OP_IGUALIGUAL - Regla 52\n");}
         | OP_DISTINTO{
             __operador__comparador = "BEQ";
             // insertarListaPolaca(lPolaca, "BEQ");
-            printf("Operador OP_DISTINTO - Regla 56\n"); };
+            printf("Operador OP_DISTINTO - Regla 53\n"); };
 %%
 
 int main(){
