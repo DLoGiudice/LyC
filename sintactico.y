@@ -27,6 +27,7 @@ listaSimple *listaTipoDato;
 listaSimple *listaEqu;
 listaSimple *listaIf;
 listaSimple *listaWhile;
+listaSimple *listaComparacion;
 
 listaPolaca *lPolaca;
 
@@ -227,8 +228,8 @@ iteracion: WHILE {
 
             // Para el AND: If pila vacia, sigo (significa solo una condicion). 
             // sino pongo el mismo valor que antes ya que si alguna es falsa ya salta al ELSE
-            if (!listaVacia(listaIf)) {
-                desapilarDeLista(listaIf, __posicionDestino);
+            if (!listaVacia(listaComparacion)) {
+                desapilarDeLista(listaComparacion, __posicionDestino);
                 insertarListaPolacaNodoEspecifica(lPolaca, __auxString, __posicionDestino);
             }
 
@@ -317,8 +318,8 @@ seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LL
 
             // Para el AND: If pila vacia, sigo (significa solo una condicion). 
             // sino pongo el mismo valor que antes ya que si alguna es falsa ya salta al ELSE
-            if (!listaVacia(listaIf)) {
-                desapilarDeLista(listaIf, __posicionDestino);
+            if (!listaVacia(listaComparacion)) {
+                desapilarDeLista(listaComparacion, __posicionDestino);
                 insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
             }
 
@@ -357,8 +358,8 @@ seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LL
 
             // Para el AND: If pila vacia, sigo (significa solo una condicion). 
             // sino pongo el mismo valor que antes ya que si alguna es falsa ya salta al ELSE
-            if (!listaVacia(listaIf)) {
-                desapilarDeLista(listaIf, __posicionDestino);
+            if (!listaVacia(listaComparacion)) {
+                desapilarDeLista(listaComparacion, __posicionDestino);
                 insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
             }
 
@@ -386,7 +387,7 @@ condicion: comparacion {
             __operador__comparador = "";
             // Apilo celdaActual
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaSimple(listaComparacion, __celdaActual);
             insertarListaPolaca(lPolaca, " "); // Avanzar
         } AND comparacion {
             char __posicionDestino[150];
@@ -552,6 +553,7 @@ int main(){
     listaListaVariables = crearListaSimple();
     listaEqu = crearListaSimple();
     listaIf = crearListaSimple();
+    listaComparacion = crearListaSimple();
 
     lPolaca = crearListaPolaca();
     yyparse();

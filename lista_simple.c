@@ -31,6 +31,7 @@ listaSimple;
 listaSimple * crearListaSimple();
 int insertarListaSimple(listaSimple * lista, char * cadena);
 char * desapilarDeLista(listaSimple * lista, char *);
+int printLista(listaSimple * lista);
 
 // Si retorna 1 es un error
 int insertarListaSimple(listaSimple * lista, char * cadena) {
@@ -97,4 +98,18 @@ int listaVacia(listaSimple * lista) {
     }
 
     return 0;
+}
+
+int printLista(listaSimple * lista) {
+    t_nodoSimple * auxiliar;
+
+    auxiliar = lista -> prim;
+
+    printf("__LISTA__\n");
+    while (auxiliar != NULL ) {
+        printf("%s\n", auxiliar -> dato.datoSimple);
+        auxiliar = auxiliar -> siguiente;
+    }
+    printf("__FIN__LISTA__\n");
+    return 1;
 }
