@@ -2,28 +2,34 @@
 DIM [ limite, resultador_final, prediccion ] AS [ integer, real, integer ]
 DIM [ contador, acumulador ] AS [ integer, integer ]
 DIM [ mensaje_final ] AS [ string ]
-
+ 
 */ Inicio de Programa /*
 contador := 0
-acumulador := 1
-
-DISPLAY "Inserte el Limite"
-GET limite
-
-DISPLAY "Introduzca una prediccion"
-GET prediccion
-
-DISPLAY "Introduzca un mensaje final"
 GET mensaje_final
-
-WHILE (22 < 33){
+ 
+WHILE(acumulador < 1000 AND contador < 10){ 
     acumulador := 2
     contador := 1
-    IF(acumulador >= limite){
+    IF(acumulador >= limite OR contador < 5){
         resultado_final := limite
     } ELSE {
         DISPLAY "Debajo del limite"
     }
 }
+ 
+IF (EQUMAX(resultado_final - 15; [100, 110, prediccion + acumulador])) {
+    IF (acumulador > contador AND contador > 4 ) {
+        DISPLAY "Acertaste Maximo"
+    }
 
+    DISPLAY acumulador
+}
+ 
+IF (EQUMIN(resultado_final + 10; [100, 110, prediccion])) {
+    DISPLAY "Acertaste Minimo"
+}
+ 
+IF (LONG([100, 110, prediccion]) == resultado_final) {
+    DISPLAY "Longitud"
+}
 DISPLAY mensaje_final
