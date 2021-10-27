@@ -15,8 +15,12 @@ int contadorTipoDato = 0;
 int __banderaEquMax = 0;
 int __banderaIf = 0;
 int __banderaAnd = 0;
+int __lista_while = 0;
+int __lista_if = 0;
+int __cantidad_if = 0;
 char * __operador__comparador;
 int __banderaEquMin = 0;
+int __if_anidados = 0;
 
 
 int contLong = 0;
@@ -26,7 +30,10 @@ listaSimple *listaListaVariables;
 listaSimple *listaTipoDato;
 listaSimple *listaEqu;
 listaSimple *listaIf;
+listaSimple *listaIf2;
 listaSimple *listaWhile;
+listaSimple *listaWhileInicio;
+listaSimple *listaComparacion;
 
 listaPolaca *lPolaca;
 
@@ -106,24 +113,24 @@ sentencia: declaracion {printf("Regla 3\n");}
           | display {printf("Regla 7\n");}
           | get {printf("Regla 8\n"); };
 
-display: DISPLAY CADENA { 
-        printf ("Display Cadena - Regla 9\n"); 
+display: DISPLAY CADENA {
+        printf ("Display Cadena - Regla 9\n");
         char valor[150];
         char __celdaActual[150];
         sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-        sprintf(valor, "%s", $2);
+        sprintf(valor, "\"%s\"", $2);
         insertarListaPolaca(lPolaca, "DISPLAY");
         insertarListaPolaca(lPolaca, valor);
         }
-       | DISPLAY ID { printf ("Display ID - Regla 10\n"); 
+       | DISPLAY ID { printf ("Display ID - Regla 10\n");
         char valor[150];
         sprintf(valor, "%s", $2);
         insertarListaPolaca(lPolaca, "DISPLAY");
         insertarListaPolaca(lPolaca, valor);
         };
 
-get: GET ID { 
-        printf("GET ID - Regla 11\n"); 
+get: GET ID {
+        printf("GET ID - Regla 11\n");
         char valor[150];
         sprintf(valor, "%s", $2);
         insertarListaPolaca(lPolaca, "GET");
@@ -140,10 +147,6 @@ long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS
 
 eq: EQUMAX PARENTESIS_ABRE {
         __banderaEquMax = 1;
-        // Chequiar si esto es asi o solo devolvemos FALSE//TRUE
-        insertarListaPolaca(lPolaca, "FALSE");
-        insertarListaPolaca(lPolaca, "@equmax");
-        insertarListaPolaca(lPolaca, ":=");
     }expresion {
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, ":=");
@@ -154,29 +157,15 @@ eq: EQUMAX PARENTESIS_ABRE {
         printf("EQUMAX(expresion;[lista]) - Regla 13\n");
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, "@max");
-        insertarListaPolaca(lPolaca, "CMP");
-        insertarListaPolaca(lPolaca, "BNE");
+        __operador__comparador = "BNE";
         sprintf(__celdaActualEquMax, "%d", celdaActual(lPolaca));
-        insertarListaSimple(listaEqu, __celdaActualEquMax);
-        insertarListaPolaca(lPolaca, " "); // Avanzar
-        insertarListaPolaca(lPolaca, "TRUE");
-        insertarListaPolaca(lPolaca, "@equmax");
-        insertarListaPolaca(lPolaca, ":=");
-        // Salto al final si es FALSE
-        desapilarDeLista(listaEqu, __posicionDestinoEquMax);
-        sprintf(__celdaActualEquMax, "%d", celdaActual(lPolaca));
-        insertarListaPolacaNodoEspecifica(lPolaca, __celdaActualEquMax, __posicionDestinoEquMax);
         __banderaEquMax = 0;
     }
   | EQUMIN PARENTESIS_ABRE {
         __banderaEquMin = 1;
-        // Chequiar si esto es asi o solo devolvemos FALSE//TRUE
-        insertarListaPolaca(lPolaca, "FALSE");
-        insertarListaPolaca(lPolaca, "@equmin");
-        insertarListaPolaca(lPolaca, ":=");
   } expresion {
         insertarListaPolaca(lPolaca, "@master");
-        insertarListaPolaca(lPolaca, ":=");
+        insertarListaPolaca(lPolaca, "OP_ASIG");
   } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
         char __posicionDestinoEquMin[150];
         char __celdaActualEquMin[150];
@@ -184,18 +173,8 @@ eq: EQUMAX PARENTESIS_ABRE {
         printf("EQUMIN(expresion;[lista]) - Regla 14\n");
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, "@min");
-        insertarListaPolaca(lPolaca, "CMP");
-        insertarListaPolaca(lPolaca, "BNE");
+        __operador__comparador = "BNE";
         sprintf(__celdaActualEquMin, "%d", celdaActual(lPolaca));
-        insertarListaSimple(listaEqu, __celdaActualEquMin);
-        insertarListaPolaca(lPolaca, " "); // Avanzar
-        insertarListaPolaca(lPolaca, "TRUE");
-        insertarListaPolaca(lPolaca, "@equmin");
-        insertarListaPolaca(lPolaca, ":=");
-        // Salto al final si es FALSE
-        desapilarDeLista(listaEqu, __posicionDestinoEquMin);
-        sprintf(__celdaActualEquMin, "%d", celdaActual(lPolaca));
-        insertarListaPolacaNodoEspecifica(lPolaca, __celdaActualEquMin, __posicionDestinoEquMin);
         __banderaEquMin = 0;
     };
 
@@ -203,45 +182,45 @@ iteracion: WHILE {
             char __posicionDestino[150];
             char __celdaActual[150];
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            
-            printf("__CeldaActual %s \n \n", __celdaActual);
 
-            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaSimple(listaWhileInicio, __celdaActual);
             insertarListaPolaca(lPolaca, "ET"); // Etiqueta
-            printf("INSERTE ETIQUETA; ET \n \n");
-        } PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
+        } PARENTESIS_ABRE {
+            __lista_while = 1;
+        } condicion {
+            __lista_while = 0;
+        } PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
             char __posicionDestino[150];
             char __celdaActual[150];
             char __auxString[150];
+            int __celdaActualInt;
 
-            insertarListaPolaca(lPolaca, "BI"); // Inserto BI
-            desapilarDeLista(listaIf, __posicionDestino);
+            insertarListaPolaca(lPolaca, "BI");
+            // Inserto posicion de la etiqueta
+            desapilarDeLista(listaWhile, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-
-            // La ppt dice que hay que sumar 1    
-            int __celdaActualInt = atoi(__celdaActual);
+            __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt++;
             sprintf(__auxString, "%d", __celdaActualInt);
             // Inserto el la posicion que saque de pila el auxiliar que ya le sume 1.
             insertarListaPolacaNodoEspecifica(lPolaca, __auxString, __posicionDestino);
 
-            // Para el AND: If pila vacia, sigo (significa solo una condicion). 
+            // Para el AND: If pila vacia, sigo (significa solo una condicion).
             // sino pongo el mismo valor que antes ya que si alguna es falsa ya salta al ELSE
-            if (!listaVacia(listaIf)) {
-                desapilarDeLista(listaIf, __posicionDestino);
+            if (!listaVacia(listaWhile)) {
+                desapilarDeLista(listaWhile, __posicionDestino);
                 insertarListaPolacaNodoEspecifica(lPolaca, __auxString, __posicionDestino);
             }
 
-            //Saco de pila
-            desapilarDeLista(listaIf, __posicionDestino);
-            //Obtengo actual y inserto
+             //Saco de pila inserto posicion de la etiqueta en celda actual.
+            desapilarDeLista(listaWhileInicio, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaPolaca(lPolaca, " "); // AVANZO
+            insertarListaPolaca(lPolaca, " ");
             insertarListaPolacaNodoEspecifica(lPolaca, __posicionDestino, __celdaActual);
             printf ("Iteracion  While (Condicion) {Programa} - Regla 15 \n");
         };
 
-asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"); 
+asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n");
             insertarListaPolaca(lPolaca, $1);
             insertarListaPolaca(lPolaca, "OP_ASIG");
             }
@@ -259,7 +238,7 @@ asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"
             insertarListaPolaca(lPolaca, "OP_ASIG");
             printf ("Asignacion - cadena - Regla 17\n"); }
           | ID OP_ASIG eq { printf ("Asignacion - EQ - Regla 18\n"); };
- 
+
 declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE lista_tipo_datos CORCHETE_CIERRA {
         if(contadorListaVariables == contadorTipoDato){
             if (escribirPares(lista,listaListaVariables,listaTipoDato)==1)
@@ -271,24 +250,24 @@ declaracion: DIM CORCHETE_ABRE lista_variables CORCHETE_CIERRA AS CORCHETE_ABRE 
         contadorTipoDato = 0;
         printf("DECLARACION - DIM [Lista variables] AS [lista tipo de dato] - Regla 19\n"); };
 
-lista_variables: lista_variables COMA ID { 
+lista_variables: lista_variables COMA ID {
                 contadorListaVariables++;
                 char nombre[33] = "_";
                 strcat(nombre, $3);
-                insertarListaSimple(listaListaVariables, nombre);     
+                insertarListaSimple(listaListaVariables, nombre);
                 printf("Lista de Variables - Regla 20\n"); }
-               | ID  { 
+               | ID  {
                    contadorListaVariables++;
                 char nombre[33] = "_";
                 strcat(nombre, $1);
-                insertarListaSimple(listaListaVariables, nombre);    
+                insertarListaSimple(listaListaVariables, nombre);
                    printf("ID - Regla 21\n"); };
 
-lista_tipo_datos: lista_tipo_datos COMA tipo_dato  { 
+lista_tipo_datos: lista_tipo_datos COMA tipo_dato  {
                 contadorTipoDato++;
                 printf("Lista de Tipos de datos - Regla 22\n"); }
                 |tipo_dato
-                { 
+                {
                 contadorTipoDato++;
                 printf("Tipo de dato - Regla 23\n"); };
 
@@ -301,31 +280,38 @@ tipo_dato: TIPO_REAL { printf("Tipo Real - Regla 24\n");
          | TIPO_STRING { printf("Tipo String - Regla 26\n");
         insertarListaSimple(listaTipoDato, "CTE_STRING"); };
 
-seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA ELSE {
+seleccion: IF PARENTESIS_ABRE inicio_lista_if condicion fin_lista_if PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA ELSE {
             char __posicionDestino[150];
             char __celdaActual[150];
+            int __celdaActualInt;
+
+            if (__cantidad_if == 1) {
+                listaComparacion = listaIf;
+            } else {
+                listaComparacion = listaIf2;
+            }
 
             insertarListaPolaca(lPolaca, "BI");
-            desapilarDeLista(listaIf, __posicionDestino);
+            desapilarDeLista(listaComparacion, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
 
-            // La ppt dice que hay que sumar 1    
-            int __celdaActualInt = atoi(__celdaActual);
+            // La ppt dice que hay que sumar 1
+            __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt++;
             sprintf(__celdaActual, "%d", __celdaActualInt);
             insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
 
-            // Para el AND: If pila vacia, sigo (significa solo una condicion). 
+            // Para el AND: If pila vacia, sigo (significa solo una condicion).
             // sino pongo el mismo valor que antes ya que si alguna es falsa ya salta al ELSE
-            if (!listaVacia(listaIf)) {
-                desapilarDeLista(listaIf, __posicionDestino);
+            if (!listaVacia(listaComparacion)) {
+                desapilarDeLista(listaComparacion, __posicionDestino);
                 insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
             }
 
             __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt--;
             sprintf(__celdaActual, "%d", __celdaActualInt);
-            insertarListaSimple(listaIf, __celdaActual);
+            insertarListaSimple(listaComparacion, __celdaActual);
             insertarListaPolaca(lPolaca, " "); // Avanzar
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
 
@@ -334,35 +320,51 @@ seleccion: IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LL
             char __celdaActual[150];
 
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            desapilarDeLista(listaIf, __posicionDestino);
+            desapilarDeLista(listaComparacion, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            // La ppt dice que hay que sumar 1    
+            // La ppt dice que hay que sumar 1
             int __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt;
             sprintf(__celdaActual, "%d", __celdaActualInt);
             insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
             __celdaActualInt = atoi(__celdaActual);
             __celdaActualInt--;
-            sprintf(__celdaActual, "%d", __celdaActualInt); 
+            sprintf(__celdaActual, "%d", __celdaActualInt);
+            __cantidad_if--;
             printf("Seleccion - IF (condicion) {programa} ELSE {programa} - Regla 27\n");
         }
-        | IF PARENTESIS_ABRE condicion PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
+        | IF PARENTESIS_ABRE inicio_lista_if condicion fin_lista_if PARENTESIS_CIERRA LLAVE_ABRE programa LLAVE_CIERRA {
             char __posicionDestino[150];
             char __celdaActual[150];
+            if (__cantidad_if == 1) {
+                listaComparacion = listaIf;
+            } else {
+                listaComparacion = listaIf2;
+            }
 
-            desapilarDeLista(listaIf, __posicionDestino);
+            desapilarDeLista(listaComparacion, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
 
             insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
 
-            // Para el AND: If pila vacia, sigo (significa solo una condicion). 
+            // Para el AND: If pila vacia, sigo (significa solo una condicion).
             // sino pongo el mismo valor que antes ya que si alguna es falsa ya salta al ELSE
-            if (!listaVacia(listaIf)) {
-                desapilarDeLista(listaIf, __posicionDestino);
+            if (!listaVacia(listaComparacion)) {
+                desapilarDeLista(listaComparacion, __posicionDestino);
                 insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionDestino);
             }
 
+            __cantidad_if--;
             printf("Seleccion - IF (condicion) {sentencia} - Regla 28\n");};
+
+inicio_lista_if: {
+            __lista_if = 1;
+            __cantidad_if++;
+            };
+
+fin_lista_if: {
+            __lista_if = 0;
+            };
 
 condicion: comparacion {
             printf("Comparacion - Regla 29\n");
@@ -374,7 +376,16 @@ condicion: comparacion {
             __operador__comparador = "";
             // Apilo celdaActual
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
+            if( __lista_if == 1) {
+                if (__cantidad_if == 1) {
+                    insertarListaSimple(listaIf, __celdaActual);
+                } else {
+                    insertarListaSimple(listaIf2, __celdaActual);
+                }
+            }
+
+            if( __lista_while == 1)
+                insertarListaSimple(listaWhile, __celdaActual);
             insertarListaPolaca(lPolaca, " "); // Avanzar
         }
         | comparacion {
@@ -386,7 +397,16 @@ condicion: comparacion {
             __operador__comparador = "";
             // Apilo celdaActual
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
+            if( __lista_if == 1) {
+                if (__cantidad_if == 1) {
+                    insertarListaSimple(listaIf, __celdaActual);
+                } else {
+                    insertarListaSimple(listaIf2, __celdaActual);
+                }
+            }
+
+            if( __lista_while == 1)
+                insertarListaSimple(listaWhile, __celdaActual);
             insertarListaPolaca(lPolaca, " "); // Avanzar
         } AND comparacion {
             char __posicionDestino[150];
@@ -399,8 +419,18 @@ condicion: comparacion {
             __operador__comparador = "";
             // Apilo celdaActual
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
-            insertarListaPolaca(lPolaca, " "); // Avanzar          
+            if( __lista_if == 1) {
+                if (__cantidad_if == 1) {
+                    insertarListaSimple(listaIf, __celdaActual);
+                } else {
+                    insertarListaSimple(listaIf2, __celdaActual);
+                }
+            }
+
+            if( __lista_while == 1)
+                insertarListaSimple(listaWhile, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+
         }
         | comparacion {
             char __posicionDestino[150];
@@ -411,7 +441,16 @@ condicion: comparacion {
             __operador__comparador = "";
             // Apilo celdaActual
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
+            if( __lista_if == 1) {
+                if (__cantidad_if == 1) {
+                    insertarListaSimple(listaIf, __celdaActual);
+                } else {
+                    insertarListaSimple(listaIf2, __celdaActual);
+                }
+            }
+
+            if( __lista_while == 1)
+                insertarListaSimple(listaWhile, __celdaActual);
             insertarListaPolaca(lPolaca, " "); // Avanzar
         } OR comparacion{
             printf("Comparacion OR Comparacion - Regla 31\n");
@@ -420,14 +459,28 @@ condicion: comparacion {
             char __posicionSaltoOr[150];
 
             // Desapilo antes de insertar. Para el OR.
-            desapilarDeLista(listaIf, __posicionSaltoOr);
+            if( __lista_if == 1)
+                desapilarDeLista(listaIf, __posicionSaltoOr);
+
+            if( __lista_while == 1)
+                desapilarDeLista(listaWhile, __posicionSaltoOr);
 
             insertarListaPolaca(lPolaca, "CMP");
             insertarListaPolaca(lPolaca, __operador__comparador);
             __operador__comparador = "";
             // Apilo celdaActual
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-            insertarListaSimple(listaIf, __celdaActual);
+            if( __lista_if == 1) {
+                if (__cantidad_if == 1) {
+                    insertarListaSimple(listaIf, __celdaActual);
+                } else {
+                    insertarListaSimple(listaIf2, __celdaActual);
+                }
+            }
+
+            if( __lista_while == 1)
+                insertarListaSimple(listaWhile, __celdaActual);
+
             insertarListaPolaca(lPolaca, " "); // Avanzar
 
             // Como es un OR, si es verdadera la primera condicion, salta aca. Al inicio del programa
@@ -455,7 +508,7 @@ termino: factor{printf("termino - factor - Regla 39\n");}
             printf("termino OP_MUL factor - Regla 40\n");
             insertarListaPolaca(lPolaca, "OP_MUL");}
        | termino OP_DIV factor {
-            printf("termino OP_DIV factor - Regla 41\n"); 
+            printf("termino OP_DIV factor - Regla 41\n");
             insertarListaPolaca(lPolaca, "OP_DIV");
        };
 
@@ -491,7 +544,7 @@ lista_factor: lista_factor COMA expresion {
                     contLong++;
                 }
             }
-            | expresion { 
+            | expresion {
                 printf("lista_factor: expresion - Regla 43\n");
                 if (__banderaEquMax == 1 || __banderaEquMin == 1 ) {
                     (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min");
@@ -501,25 +554,25 @@ lista_factor: lista_factor COMA expresion {
                 }
             };
 factor: ID {
-        insertarListaPolaca(lPolaca, $1); 
+        insertarListaPolaca(lPolaca, $1);
         printf("factor ID - Regla 44\n"); }
       | ENTERO {
-          printf("factor ENTERO - Regla 45\n"); 
+          printf("factor ENTERO - Regla 45\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%d", $1);
           insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
-      | REAL { 
+      | REAL {
           printf("factor REAL - Regla 46\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
           insertarListaPolaca(lPolaca, valor);
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
-      | long { 
+      | long {
           printf("factor LONG - Regla 47\n"); };
-      
+
 operador: OP_MAY{
             __operador__comparador = "BLE";
             // insertarListaPolaca(lPolaca, "BLE");
@@ -552,11 +605,15 @@ int main(){
     listaListaVariables = crearListaSimple();
     listaEqu = crearListaSimple();
     listaIf = crearListaSimple();
+    listaIf2 = crearListaSimple();
+    listaWhile = crearListaSimple();
+    listaWhileInicio = crearListaSimple();
+    listaComparacion = crearListaSimple();
 
     lPolaca = crearListaPolaca();
     yyparse();
     escribirLista(lista);
-    escribirListaPolaca(lPolaca);    
+    escribirListaPolaca(lPolaca);
 }
 
 void yyerror (char const *s) {
