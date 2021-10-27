@@ -1,16 +1,3 @@
-Cosas que hicimos:
-
-    Cambiamos en agignacion al regla para factor a expresion, ahora se puede asignar una expresion.
-    Creamos lista_polaca (la usamos como una pila), con insertar polaca.
-    Creamos el archivo intermedia.txt, que se escribe lo que esta en lista_polaca.
-    Hicimos el ejemplo de la ppt (x := z * 17.1 + 8) y lo fuimos insertando segun las reglas.
-
-Cosas que faltan:
-    Hacerlo en todas las demas reglas.
-    Semantica para las sentecias de control (No se puede poner codigo en medio de una regla, en el caso del if deberia ir en condicion).
-
---------------------------------------------------------------------------------------------
-
 # Lenguajes y Compiladores - Grupo 8
 
 ## Bienvenido al Trabajo Practico de Lenguajes y Compiladores del **Grupo 8**.
