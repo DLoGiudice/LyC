@@ -4,9 +4,12 @@
 
 int generarAssembler(char *, char *);
 void imprimirEncabezado(FILE *);
+void imprimirCodigoEstaticoCuerpo(FILE *);
+void imprimirSenialDeFin(FILE *);
 void imprimirTablaDeSimbolos(FILE *, FILE *);
 void guardarSimbolo(char *, char *, FILE *);
-void eliminar_espacios(char *);
+void eliminarEspacios(char *);
+void contructorConstantes(char *, char *);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
@@ -29,13 +32,29 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     // Paso a Paso
     imprimirEncabezado(archivoAssembler);
     imprimirTablaDeSimbolos(archivoAssembler, archivoTablaDeSimbolos);
-    // imprimirCodigoEstaticoCuerpo()
+    imprimirCodigoEstaticoCuerpo(archivoAssembler);
     // imprimirCodigoIntermedio()
-    // imprimirSenialDeFin()
+    imprimirSenialDeFin(archivoAssembler);
 
     fclose(archivoTablaDeSimbolos);
     fclose(archivoIntermedia);
     fclose(archivoAssembler);
+}
+
+void imprimirSenialDeFin(FILE * archivo){
+    fprintf(archivo, "\n");
+    fprintf(archivo, "mov\tax,4c00h\n");
+    fprintf(archivo, "int\t21h\n");
+    fprintf(archivo, "\n");
+    fprintf(archivo, "End\n\n");    
+}
+
+void imprimirCodigoEstaticoCuerpo(FILE * archivo){
+    fprintf(archivo, "\n");
+    fprintf(archivo, "CODE\n");
+    fprintf(archivo, "mov\tAX,@DATA\n");
+    fprintf(archivo, "mov\tDS,AX\n");
+    fprintf(archivo, "mov\tes,ax\t;\n\n");    
 }
 
 void imprimirEncabezado(FILE * archivo) {
@@ -55,7 +74,7 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
 
     while(!feof(tablaDeSimbolos)) {
         fgets(linea,tam_char,tablaDeSimbolos);
-        eliminar_espacios(linea);
+        eliminarEspacios(linea);
 
         // Salteo las primeras dos lineas de encabezado.
         // Pura mantenibilidad y flexibilidad. Calida'
@@ -63,6 +82,9 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
             lineas_encabezado++;
             continue;
         }
+        
+        
+       // printf("GUARDAR SIMBOLOS");
         
         guardarSimbolo(linea, delimitador, archivo);
     }
@@ -74,11 +96,21 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
     int cont_columnas = 0;
     char * simbolo;
     char * valor;
+    int flagString = 0;
 
     while(ptr != NULL)
 	{
         if (cont_columnas == 0) {
             simbolo = ptr;
+        }
+
+        if (cont_columnas == 1) {
+            valor = ptr;
+            printf("CTE_STRING %s ", valor);
+            if (strcmp(valor,"CTE_STRING")==0){
+                printf("CTE_STRING");
+                flagString = 1;
+            }
         }
 
         if (cont_columnas == 2) {
@@ -88,7 +120,17 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
         }
 
         if (cont_columnas == 3) {
-            fprintf(archivo, "%-30s | dd | %-10s\n", simbolo, valor);
+            if (strcmp(valor,"-") == 0)
+                valor = "?";
+
+            if (flagString == 1 && strcmp(valor,"?") != 0){
+                char cadena[100] = "";
+                contructorConstantes(cadena, valor);
+                strcpy(valor,cadena);
+                printf ("VALOR: %s", cadena);
+            }
+
+            fprintf(archivo, "%s\tdd\t%s\n", simbolo, valor);
             cont_columnas = 0;
         }
 
@@ -97,7 +139,7 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
 	}
 }
 
-void eliminar_espacios(char* s) {
+void eliminarEspacios(char* s) {
     // https://stackoverflow.com/questions/1726302/remove-spaces-from-a-string-in-c
     char* d = s;
     do {
@@ -107,8 +149,17 @@ void eliminar_espacios(char* s) {
     } while (*s++ = *d++);
 }
 
+void contructorConstantes(char * cadena, char * s){
+   // _Ingreseun    db    "Ingrese un",'$', 10 dup (?)
+    char *aux1 = ",'$', ";
+    char *aux2 = " dup (?)";
+    char lenString[2];
+    //Resto 2 por las comillas
+    int len = strlen(s) - 2;
 
-
-
-
-
+    sprintf(lenString, "%d", len);
+    strcat(cadena,s);
+    strcat(cadena,aux1);
+    strcat(cadena,lenString);
+    strcat(cadena,aux2);
+}
