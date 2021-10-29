@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "lista.c"
 #include "lista_polaca.c"
+#include "assembler.c"
 
 int yylex();
 int yyparse();
@@ -614,6 +615,7 @@ int main(){
     yyparse();
     escribirLista(lista);
     escribirListaPolaca(lPolaca);
+    generarAssembler("./ts.txt", "./intermedia.txt");
 }
 
 void yyerror (char const *s) {
