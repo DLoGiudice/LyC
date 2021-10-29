@@ -82,6 +82,8 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
         }
 
         if (cont_columnas == 2) {
+            // Pasar valor a float si es Int
+            // Para usar el copro sin problemas.
             valor = ptr;
         }
 
