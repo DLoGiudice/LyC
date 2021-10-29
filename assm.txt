@@ -1,0 +1,21 @@
+.MODEL LARGE
+.386
+.STACK 200h
+
+.DATA
+_limite                        | dd | -         
+_resultador_final              | dd | -         
+_prediccion                    | dd | -         
+_contador                      | dd | -         
+_acumulador                    | dd | -         
+_mensaje_final                 | dd | -         
+_0                             | dd | 0         
+_1000                          | dd | 1000      
+_10                            | dd | 10        
+_2                             | dd | 2         
+_1                             | dd | 1         
+_5                             | dd | 5         
+_15                            | dd | 15        
+_100                           | dd | 100       
+_110                           | dd | 110       
+_4                             | dd | 4         
