@@ -1,6 +1,7 @@
 # Lenguajes y Compiladores - Grupo 8
 
 ## Bienvenido al Trabajo Practico de Lenguajes y Compiladores del **Grupo 8**.
+## Segunda Entrega se encuentra en el tag v2.0
 ### Guia de Instalacion
 1. Clonar el repositorio en un directorio de preferencia.  
 `git clone -b main https://github.com/DLoGiudice/LyC.git`
