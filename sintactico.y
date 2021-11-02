@@ -117,25 +117,28 @@ sentencia: declaracion {printf("Regla 3\n");}
 display: DISPLAY CADENA {
         printf ("Display Cadena - Regla 9\n");
         char valor[150];
+        char nombre[150] = "_";
         char __celdaActual[150];
         sprintf(__celdaActual, "%d", celdaActual(lPolaca));
         sprintf(valor, "\"%s\"", $2);
         insertarListaPolaca(lPolaca, "DISPLAY");
-        insertarListaPolaca(lPolaca, valor);
+        insertarListaPolaca(lPolaca, strcat(nombre, valor));
         }
        | DISPLAY ID { printf ("Display ID - Regla 10\n");
         char valor[150];
+        char nombre[150] = "_";
         sprintf(valor, "%s", $2);
         insertarListaPolaca(lPolaca, "DISPLAY");
-        insertarListaPolaca(lPolaca, valor);
+        insertarListaPolaca(lPolaca, strcat(nombre, valor));
         };
 
 get: GET ID {
         printf("GET ID - Regla 11\n");
+        char nombre[150] = "_";
         char valor[150];
         sprintf(valor, "%s", $2);
         insertarListaPolaca(lPolaca, "GET");
-        insertarListaPolaca(lPolaca, valor);
+        insertarListaPolaca(lPolaca, strcat(nombre, valor));
         };
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
@@ -222,7 +225,10 @@ iteracion: WHILE {
         };
 
 asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n");
-            insertarListaPolaca(lPolaca, $1);
+            char nombre[150] = "_";
+            char valor[150];
+            sprintf(valor, "%s", $1);
+            insertarListaPolaca(lPolaca, strcat(nombre, valor));
             insertarListaPolaca(lPolaca, "OP_ASIG");
             }
           | ID OP_ASIG CADENA {
@@ -555,21 +561,24 @@ lista_factor: lista_factor COMA expresion {
                 }
             };
 factor: ID {
-        insertarListaPolaca(lPolaca, $1);
+        char nombre[150] = "_";
+        char valor[150];
+        sprintf(valor, "%s", $1);
+        insertarListaPolaca(lPolaca, strcat(nombre, valor));
         printf("factor ID - Regla 44\n"); }
       | ENTERO {
           printf("factor ENTERO - Regla 45\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%d", $1);
-          insertarListaPolaca(lPolaca, valor);
+          insertarListaPolaca(lPolaca, strcat(nombre, valor));
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
       | REAL {
           printf("factor REAL - Regla 46\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
-          insertarListaPolaca(lPolaca, valor);
+          insertarListaPolaca(lPolaca, strcat(nombre, valor));
           detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
       | long {
           printf("factor LONG - Regla 47\n"); };
