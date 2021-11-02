@@ -153,6 +153,7 @@ eq: EQUMAX PARENTESIS_ABRE {
         __banderaEquMax = 1;
     }expresion {
         insertarListaPolaca(lPolaca, "@master");
+        detectarInsertar(lista, crearDato("_@master", "-", "-", "-"));
         insertarListaPolaca(lPolaca, ":=");
     } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
         char __posicionDestinoEquMax[150];
@@ -161,6 +162,7 @@ eq: EQUMAX PARENTESIS_ABRE {
         printf("EQUMAX(expresion;[lista]) - Regla 13\n");
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, "@max");
+         detectarInsertar(lista, crearDato("_@max", "-", "-", "-"));
         __operador__comparador = "BNE";
         sprintf(__celdaActualEquMax, "%d", celdaActual(lPolaca));
         __banderaEquMax = 0;
@@ -169,6 +171,7 @@ eq: EQUMAX PARENTESIS_ABRE {
         __banderaEquMin = 1;
   } expresion {
         insertarListaPolaca(lPolaca, "@master");
+        detectarInsertar(lista, crearDato("_@master", "-", "-", "-"));
         insertarListaPolaca(lPolaca, "OP_ASIG");
   } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
         char __posicionDestinoEquMin[150];
@@ -177,6 +180,7 @@ eq: EQUMAX PARENTESIS_ABRE {
         printf("EQUMIN(expresion;[lista]) - Regla 14\n");
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, "@min");
+        detectarInsertar(lista, crearDato("_@min", "-", "-", "-"));
         __operador__comparador = "BNE";
         sprintf(__celdaActualEquMin, "%d", celdaActual(lPolaca));
         __banderaEquMin = 0;
@@ -527,6 +531,7 @@ lista_factor: lista_factor COMA expresion {
                     char __celdaActual[150];
 
                     insertarListaPolaca(lPolaca, "@aux");
+                    detectarInsertar(lista, crearDato("_@aux", "-", "-", "-"));
                     insertarListaPolaca(lPolaca, "OP_ASIG");
                     insertarListaPolaca(lPolaca, "@aux");
                     // Inserto @max o @min dependiendo la bandera.
@@ -572,40 +577,34 @@ factor: ID {
           char valor[150];
           sprintf(valor, "%d", $1);
           insertarListaPolaca(lPolaca, strcat(nombre, valor));
-          detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
+          detectarInsertar(lista, crearDato(nombre, "-", valor, "-")); }
       | REAL {
           printf("factor REAL - Regla 46\n");
           char nombre[150] = "_";
           char valor[150];
           sprintf(valor, "%.4f", $1);
           insertarListaPolaca(lPolaca, strcat(nombre, valor));
-          detectarInsertar(lista, crearDato(strcat(nombre, valor), "-", valor, "-")); }
+          detectarInsertar(lista, crearDato(nombre, "-", valor, "-")); }
       | long {
           printf("factor LONG - Regla 47\n"); };
 
 operador: OP_MAY{
             __operador__comparador = "BLE";
-            // insertarListaPolaca(lPolaca, "BLE");
             printf("Operador OP_MAY - Regla 48\n");}
         | OP_MEN{
             __operador__comparador = "BGE";
-            // insertarListaPolaca(lPolaca, "BGE");
             printf("Operador OP_MEN - Regla 49\n");}
         | OP_MAY_IGUAL{
             __operador__comparador = "BLT";
-            // insertarListaPolaca(lPolaca, "BLT");
             printf("Operador OP_MAY_IGUAL - Regla 50\n");}
         | OP_MEN_IGUAL{
             __operador__comparador = "BGT";
-            // insertarListaPolaca(lPolaca, "BGT");
             printf("Operador OP_MEN_IGUAL - Regla 51\n");}
         | OP_IGUALIGUAL{
             __operador__comparador = "BNE";
-            // insertarListaPolaca(lPolaca, "BNE");
             printf("Operador OP_IGUALIGUAL - Regla 52\n");}
         | OP_DISTINTO{
             __operador__comparador = "BEQ";
-            // insertarListaPolaca(lPolaca, "BEQ");
             printf("Operador OP_DISTINTO - Regla 53\n"); };
 %%
 
