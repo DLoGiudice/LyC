@@ -173,6 +173,16 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
             printf("SOY OPERANDO WIII!\n");
             // desapilar 1 si es unitario
             // desapilar 2 si es binario
+            //switch(stringLeido){
+            //    case CMP:{
+                    //hacer algo
+            //    break;
+        	//}
+            //default:
+			//end
+			//break;
+		    //}
+
         } else {
             printf("soy operador =(\n");
             // Apilar
@@ -182,12 +192,13 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 
 int esOperando(char * stringLeido){
     // Array de Strings = Matriz de chars
+    int i;
     int cantidadDeOperandos = 1; // Actualizar a medida que incorporamos operandos
     int longitudOperando = 100; 
     char operandos[1][100] = {"OP_ASIG"}; // Agregar operandos
     int encontrado = 0;
     
-    for(int i=0; i<cantidadDeOperandos; i++)
+    for(i=0; i<cantidadDeOperandos; i++)
     {
         if(strcmp(operandos[i], stringLeido) == 0)
         {
