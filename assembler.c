@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "helpers.h"
+#include "operadores.h"
+
+#define CANT_OPERANDOS 5
+#define LONG_OPERANDOS 100
 
 int generarAssembler(char *, char *);
 void imprimirEncabezado(FILE *);
@@ -11,8 +15,9 @@ void imprimirSenialDeFin(FILE *);
 void imprimirTablaDeSimbolos(FILE *, FILE *);
 void guardarSimbolo(char *, char *, FILE *);
 void contructorConstantes(char *, char *);
-int esOperando(char *);
+int esOperando(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
+int esUnario (char*);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
@@ -162,15 +167,33 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     char linea[tam_char];
     char * stringLeido;
     int delimitador = '-'; // Necesita comillas simples para funcionar
+    char operandos[CANT_OPERANDOS][LONG_OPERANDOS] = {"OP_ASIG", "GET", "DISPLAY", "NOT", "AS"}; // Agregar operandos
+    int operandos_paridad[CANT_OPERANDOS] = {1, 0, 0, 0, 0}; // Agregar operandos
+    int indice_operando;
+    char * valorDesapilado;
+
+    listaSimple *lista;
+    lista = crearListaSimple();
 
     while(!feof(archivoIntermedia)) {
-        fgets(linea,tam_char,archivoIntermedia);
+        fgets(linea, tam_char, archivoIntermedia);
         
         stringLeido = strrchr(linea, delimitador);
         stringLeido = limpiarStringLeido(stringLeido);
 
-        if (esOperando(stringLeido) == 1) {
-            printf("SOY OPERANDO WIII!\n");
+        indice_operando = esOperando(operandos,stringLeido);
+        if (indice_operando > -1) {
+
+            if(operandos_paridad[indice_operando] == 0){
+                valorDesapilado = desapilarDeLista(lista, valorDesapilado);
+                
+                printf("___VALOR DESAPILADO\n %s", valorDesapilado);
+                // SOy un unario
+            }
+            else{
+
+            }
+
             // desapilar 1 si es unitario
             // desapilar 2 si es binario
             //switch(stringLeido){
@@ -185,29 +208,35 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 
         } else {
             printf("soy operador =(\n");
+            insertarListaSimple(lista, stringLeido);
+
             // Apilar
         }
     }
 }
 
-int esOperando(char * stringLeido){
-    // Array de Strings = Matriz de chars
-    int i;
-    int cantidadDeOperandos = 1; // Actualizar a medida que incorporamos operandos
-    int longitudOperando = 100; 
-    char operandos[1][100] = {"OP_ASIG"}; // Agregar operandos
-    int encontrado = 0;
-    
-    for(i=0; i<cantidadDeOperandos; i++)
-    {
-        if(strcmp(operandos[i], stringLeido) == 0)
-        {
-            encontrado = 1;
-            break;
-        }
-    }
+int esUnario (char* operador){
 
-    return encontrado;
+    if(strcmp(operador,"GET"))
+        return 1;
+    
+    if(strcmp(operador,"DISPLAY"))
+        return 1;
+
+    if(strcmp(operador,"NOT"))
+        return 1;
+
+    if(strcmp(operador,"AS"))
+        return 1;
+}
+
+int esOperando(char operandos[CANT_OPERANDOS][LONG_OPERANDOS], char * stringLeido){
+    // Array de Strings = Matriz de chars
+    int indice;
+    for(indice=0; indice < CANT_OPERANDOS; indice++)
+        if(strcmp(operandos[indice], stringLeido) == 0)
+            return indice;
+    return -1;
 }
 
 char * limpiarStringLeido(char * cadena) {
