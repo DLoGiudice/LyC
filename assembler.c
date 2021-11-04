@@ -1,15 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "helpers.h"
 
 int generarAssembler(char *, char *);
 void imprimirEncabezado(FILE *);
 void imprimirCodigoEstaticoCuerpo(FILE *);
+void imprimirCodigoIntermedio(FILE *, FILE *);
 void imprimirSenialDeFin(FILE *);
 void imprimirTablaDeSimbolos(FILE *, FILE *);
 void guardarSimbolo(char *, char *, FILE *);
-void eliminarEspacios(char *);
 void contructorConstantes(char *, char *);
+int esOperando(char *);
+char * limpiarStringLeido(char *);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
@@ -33,7 +36,7 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     imprimirEncabezado(archivoAssembler);
     imprimirTablaDeSimbolos(archivoAssembler, archivoTablaDeSimbolos);
     imprimirCodigoEstaticoCuerpo(archivoAssembler);
-    // imprimirCodigoIntermedio()
+    imprimirCodigoIntermedio(archivoAssembler, archivoIntermedia);
     imprimirSenialDeFin(archivoAssembler);
 
     fclose(archivoTablaDeSimbolos);
@@ -139,16 +142,6 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
 	}
 }
 
-void eliminarEspacios(char* s) {
-    // https://stackoverflow.com/questions/1726302/remove-spaces-from-a-string-in-c
-    char* d = s;
-    do {
-        while (*d == ' ') {
-            ++d;
-        }
-    } while (*s++ = *d++);
-}
-
 void contructorConstantes(char * cadena, char * s){
    // _Ingreseun    db    "Ingrese un",'$', 10 dup (?)
     char *aux1 = ",'$', ";
@@ -163,3 +156,56 @@ void contructorConstantes(char * cadena, char * s){
     strcat(cadena,lenString);
     strcat(cadena,aux2);
 }
+
+void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
+    int tam_char = 150;
+    char linea[tam_char];
+    char * stringLeido;
+    int delimitador = '-'; // Necesita comillas simples para funcionar
+
+    while(!feof(archivoIntermedia)) {
+        fgets(linea,tam_char,archivoIntermedia);
+        
+        stringLeido = strrchr(linea, delimitador);
+        stringLeido = limpiarStringLeido(stringLeido);
+
+        if (esOperando(stringLeido) == 1) {
+            printf("SOY OPERANDO WIII!\n");
+            // desapilar 1 si es unitario
+            // desapilar 2 si es binario
+        } else {
+            printf("soy operador =(\n");
+            // Apilar
+        }
+    }
+}
+
+int esOperando(char * stringLeido){
+    // Array de Strings = Matriz de chars
+    int cantidadDeOperandos = 1; // Actualizar a medida que incorporamos operandos
+    int longitudOperando = 100; 
+    char operandos[1][100] = {"OP_ASIG"}; // Agregar operandos
+    int encontrado = 0;
+    
+    for(int i=0; i<cantidadDeOperandos; i++)
+    {
+        if(strcmp(operandos[i], stringLeido) == 0)
+        {
+            encontrado = 1;
+            break;
+        }
+    }
+
+    return encontrado;
+}
+
+char * limpiarStringLeido(char * cadena) {
+    // Elimino "-" y espacio restante
+    cadena++; 
+    eliminarEspacios(cadena);
+    
+    // Elimino \n del final
+    cadena[strlen(cadena) - 1] = 0;
+    return cadena;
+}
+
