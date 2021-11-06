@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "helpers.h"
-#include "operadores.h"
 
-#define CANT_OPERANDOS 5
+#define CANT_OPERANDOS 7
 #define LONG_OPERANDOS 100
 
 int generarAssembler(char *, char *);
@@ -15,9 +14,10 @@ void imprimirSenialDeFin(FILE *);
 void imprimirTablaDeSimbolos(FILE *, FILE *);
 void guardarSimbolo(char *, char *, FILE *);
 void contructorConstantes(char *, char *);
-int esOperando(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
+int esOperador(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
 int esUnario (char*);
+int escribirBinario(char *, char *, char *);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
@@ -167,10 +167,11 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     char linea[tam_char];
     char * stringLeido;
     int delimitador = '-'; // Necesita comillas simples para funcionar
-    char operandos[CANT_OPERANDOS][LONG_OPERANDOS] = {"OP_ASIG", "GET", "DISPLAY", "NOT", "AS"}; // Agregar operandos
-    int operandos_paridad[CANT_OPERANDOS] = {1, 0, 0, 0, 0}; // Agregar operandos
-    int indice_operando;
-    char * valorDesapilado;
+    char operadores[CANT_OPERANDOS][LONG_OPERANDOS] = {"OP_ASIG", "OP_MAS", "OP_MUL", "GET", "DISPLAY", "NOT", "AS"}; // Agregar operandos
+    int operandor_paridad[CANT_OPERANDOS] = {1, 1, 1, 0, 0, 0, 0}; // Agregar operandos
+    int indice_operador;
+    char valorDesapilado_1[LONG_OPERANDOS];
+    char valorDesapilado_2[LONG_OPERANDOS];
 
     listaSimple *lista;
     lista = crearListaSimple();
@@ -181,38 +182,57 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         stringLeido = strrchr(linea, delimitador);
         stringLeido = limpiarStringLeido(stringLeido);
 
-        indice_operando = esOperando(operandos,stringLeido);
-        if (indice_operando > -1) {
+        indice_operador = esOperador(operadores,stringLeido);
+        printf("\nindice_operador, %d", indice_operador);
 
-            if(operandos_paridad[indice_operando] == 0){
-                valorDesapilado = desapilarDeLista(lista, valorDesapilado);
+        // Cuando agarramos un operando (ejemplo 12) agregamos un FLD adelante y abajo escribimos un
+        // FSTP con un @auxN (N -> numero). LO QUE SE VA A PILANDO SON LOS AUXILIARES, SIEMPRE QUE SE
+        // HAGA UNA OPERACION SE CREA UN AUXILIAR Y SE APILA EL MISMO.
+        // Cuando viene un operador (op_mas) se desapilan 2 o 1 (segundo binario o unario) y se opera
+        // CON LOS AUXILIARES!!!! y el resultado se APILA en un nuevo axilar 
+
+
+
+
+        if (indice_operador != -1) {
+
+            if(operandor_paridad[indice_operador] == 0){
+                desapilarDeLista(lista, valorDesapilado_1);
                 
-                printf("___VALOR DESAPILADO\n %s", valorDesapilado);
+                printf("_VALOR DESAPILADO %s", valorDesapilado_1);
                 // SOy un unario
             }
             else{
+                desapilarDeLista(lista, valorDesapilado_1);
+                printf("___VALOR DESAPILADO %s", valorDesapilado_1);
+                desapilarDeLista(lista, valorDesapilado_2);
+                printf("___VALOR DESAPILADO %s", valorDesapilado_2);
 
+                // OP_SUM 12, 78
+                escribirBinario(operadores[indice_operador], valorDesapilado_1, valorDesapilado_2);
+
+                // funcion que le paso el operador y los 2 operandos y se encarga de hacer lo que debe,
+                // es decir, escribir en el assm.txt
             }
 
-            // desapilar 1 si es unitario
-            // desapilar 2 si es binario
-            //switch(stringLeido){
-            //    case CMP:{
-                    //hacer algo
-            //    break;
-        	//}
-            //default:
-			//end
-			//break;
-		    //}
-
         } else {
-            printf("soy operador =(\n");
+            printf("soy operando =(\n");
+            printf("Estoy insertando, %s\n", stringLeido);
             insertarListaSimple(lista, stringLeido);
 
             // Apilar
         }
     }
+}
+
+int escribirBinario(char * operando, char * valor1, char * valor2){
+    printf("\n\n\nESCRIBIR BINARIO\n");
+    printf("VAlor operando %s\n", operando);
+    printf("VAlor valor1 %s\n", valor1);
+    printf("VAlor valor2 %s\n", valor2);
+
+       
+
 }
 
 int esUnario (char* operador){
@@ -230,12 +250,13 @@ int esUnario (char* operador){
         return 1;
 }
 
-int esOperando(char operandos[CANT_OPERANDOS][LONG_OPERANDOS], char * stringLeido){
+int esOperador(char operandos[CANT_OPERANDOS][LONG_OPERANDOS], char * stringLeido){
     // Array de Strings = Matriz de chars
     int indice;
     for(indice=0; indice < CANT_OPERANDOS; indice++)
-        if(strcmp(operandos[indice], stringLeido) == 0)
+        if(strcmp(operandos[indice], stringLeido) == 0){
             return indice;
+            }
     return -1;
 }
 
