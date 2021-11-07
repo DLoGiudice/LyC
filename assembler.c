@@ -53,27 +53,32 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     fclose(archivoAssembler);
 }
 
-void imprimirSenialDeFin(FILE * archivo){
-    fprintf(archivo, "\n");
-    fprintf(archivo, "mov\tax,4c00h\n");
-    fprintf(archivo, "int\t21h\n");
-    fprintf(archivo, "\n");
-    fprintf(archivo, "End\n\n");    
+void imprimirEncabezado(FILE * archivo) {
+    fprintf(archivo, "include\tmacros2.asm\n");
+    fprintf(archivo, "include\tnumber.asm\n\n");
+    fprintf(archivo, ".MODEL LARGE\n");
+    fprintf(archivo, ".386\n");
+    fprintf(archivo, ".STACK 200h\n\n");
 }
 
 void imprimirCodigoEstaticoCuerpo(FILE * archivo){
     fprintf(archivo, "\n");
-    fprintf(archivo, "CODE\n");
+    fprintf(archivo, ".CODE\n");
     fprintf(archivo, "mov\tAX,@DATA\n");
     fprintf(archivo, "mov\tDS,AX\n");
     fprintf(archivo, "mov\tes,ax\t;\n\n");    
 }
 
-void imprimirEncabezado(FILE * archivo) {
-    fprintf(archivo, ".MODEL LARGE\n");
-    fprintf(archivo, ".386\n");
-    fprintf(archivo, ".STACK 200h\n\n");
+void imprimirSenialDeFin(FILE * archivo){
+    fprintf(archivo, "\n");
+    fprintf(archivo, "mov\tah, 1 ; pausa, espera que oprima una tecla\n");
+    fprintf(archivo, "int\t21h ; AH=1 es el servicio de lectura\n");
+    fprintf(archivo, "mov\tax,4c00h ; Sale del Dos\n");
+    fprintf(archivo, "int\t21h ; Enviamos la interripcion 21h\n");
+    fprintf(archivo, "\n");
+    fprintf(archivo, "End\n\n");
 }
+
 
 void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
     int tam_char = 150;
