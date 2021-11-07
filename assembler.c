@@ -12,12 +12,15 @@ void imprimirCodigoEstaticoCuerpo(FILE *);
 void imprimirCodigoIntermedio(FILE *, FILE *);
 void imprimirSenialDeFin(FILE *);
 void imprimirTablaDeSimbolos(FILE *, FILE *);
+
+void escribirAssembler(FILE *, char *, int *);
+
 void guardarSimbolo(char *, char *, FILE *);
 void contructorConstantes(char *, char *);
 int esOperador(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
 int esUnario (char*);
-int escribirBinario(char *, char *, char *);
+int escribirBinario(FILE *, char *, char *, char *, int *, listaSimple *);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
@@ -147,6 +150,14 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
 	}
 }
 
+void escribirAssembler(FILE *archivo, char * valor, int *nroAuxiliar){
+        printf("FLD\t%s\n", valor);
+        fprintf(archivo, "FLD\t%s\n", valor);
+        
+        printf("FSTP\t@aux%d\n", *nroAuxiliar);
+        fprintf(archivo, "FSTP\t@aux%d\n", *nroAuxiliar);
+}
+
 void contructorConstantes(char * cadena, char * s){
    // _Ingreseun    db    "Ingrese un",'$', 10 dup (?)
     char *aux1 = ",'$', ";
@@ -172,6 +183,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     int indice_operador;
     char valorDesapilado_1[LONG_OPERANDOS];
     char valorDesapilado_2[LONG_OPERANDOS];
+    int nroAuxiliar = 0;
 
     listaSimple *lista;
     lista = crearListaSimple();
@@ -197,7 +209,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         if (indice_operador != -1) {
 
             if(operandor_paridad[indice_operador] == 0){
-                desapilarDeLista(lista, valorDesapilado_1);
+          //      desapilarDeLista(lista, valorDesapilado_1);
                 
                 printf("_VALOR DESAPILADO %s", valorDesapilado_1);
                 // SOy un unario
@@ -209,7 +221,9 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                 printf("___VALOR DESAPILADO %s", valorDesapilado_2);
 
                 // OP_SUM 12, 78
-                escribirBinario(operadores[indice_operador], valorDesapilado_1, valorDesapilado_2);
+                escribirBinario(output, operadores[indice_operador], valorDesapilado_1, valorDesapilado_2,  &nroAuxiliar, lista);
+
+                nroAuxiliar = nroAuxiliar + 1;  
 
                 // funcion que le paso el operador y los 2 operandos y se encarga de hacer lo que debe,
                 // es decir, escribir en el assm.txt
@@ -218,21 +232,48 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         } else {
             printf("soy operando =(\n");
             printf("Estoy insertando, %s\n", stringLeido);
-            insertarListaSimple(lista, stringLeido);
+            
+            char aux[10]= "@aux";
+            char numero[5];
+            
+            sprintf(numero, "%d", nroAuxiliar);
+            strcat(aux, numero);
+            printf("\nSOY aux %s_", aux);
 
+            insertarListaSimple(lista, aux);
+            
+            escribirAssembler(output, stringLeido, &nroAuxiliar);
+            
+            nroAuxiliar = nroAuxiliar + 1;
+            // @aux2    
             // Apilar
         }
     }
 }
 
-int escribirBinario(char * operando, char * valor1, char * valor2){
+int escribirBinario(FILE * archivo, char * operando, char * valor1, char * valor2, int * nroAuxiliar, listaSimple * lista){
     printf("\n\n\nESCRIBIR BINARIO\n");
     printf("VAlor operando %s\n", operando);
     printf("VAlor valor1 %s\n", valor1);
     printf("VAlor valor2 %s\n", valor2);
 
-       
+    printf("FLD\t%s\n", valor2);
+    fprintf(archivo, "FLD\t%s\n", valor2);
+        
+    printf("FLD\t@aux%s\n", valor1);
+    fprintf(archivo, "FLD\t%s\n", valor1);
 
+    fprintf(archivo, "FMUL\n");
+    
+    char aux[10]= "@aux";
+    char numero[5];           
+    sprintf(numero, "%d", *nroAuxiliar);
+    strcat(aux, numero);
+    printf("\nSOY aux %s_", aux);
+
+    insertarListaSimple(lista, aux);
+
+    fprintf(archivo, "FSTP\t@aux%d\n", *nroAuxiliar);
 }
 
 int esUnario (char* operador){
