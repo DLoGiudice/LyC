@@ -3,8 +3,9 @@
 #include <string.h>
 #include "helpers.h"
 
-#define CANT_OPERANDOS 7
+#define CANT_OPERANDOS 9
 #define LONG_OPERANDOS 100
+#define CANT_INSTRUCCIONES 4
 
 int generarAssembler(char *, char *);
 void imprimirEncabezado(FILE *);
@@ -19,14 +20,14 @@ void guardarSimbolo(char *, char *, FILE *);
 void contructorConstantes(char *, char *);
 int esOperador(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
-int esUnario (char*);
 int escribirBinario(FILE *, char *, char *, char *, int *, listaSimple *);
+char * buscarInstruccion(char *);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     FILE* archivoTablaDeSimbolos = fopen(tablaDeSimbolos, "r" );
     FILE* archivoIntermedia = fopen(intermedia, "r" );
-    FILE* archivoAssembler = fopen("assm.txt", "w");
+    FILE* archivoAssembler = fopen("assm.asm", "w");
 
     if (archivoTablaDeSimbolos == NULL) {
         return 1;
@@ -80,6 +81,7 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
     int lineas_encabezado = 0;
     char simbolo[32];
     char * delimitador = "|";
+    int indice;
 
     fprintf(archivo, ".DATA\n\n");
 
@@ -98,6 +100,11 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
        // printf("GUARDAR SIMBOLOS");
         
         guardarSimbolo(linea, delimitador, archivo);
+    }
+
+    // imprimo AUX
+    for(indice=0; indice < 10; indice++) {
+        fprintf(archivo, "@aux%d\tdd\t?\n", indice);
     }
 }
 
@@ -178,8 +185,8 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     char linea[tam_char];
     char * stringLeido;
     int delimitador = '-'; // Necesita comillas simples para funcionar
-    char operadores[CANT_OPERANDOS][LONG_OPERANDOS] = {"OP_ASIG", "OP_MAS", "OP_MUL", "GET", "DISPLAY", "NOT", "AS"}; // Agregar operandos
-    int operandor_paridad[CANT_OPERANDOS] = {1, 1, 1, 0, 0, 0, 0}; // Agregar operandos
+    char operadores[CANT_OPERANDOS][LONG_OPERANDOS] = {"OP_ASIG", "OP_MAS", "OP_MUL", "OP_DIV", "OP_MENOS", "GET", "DISPLAY", "NOT", "AS"}; // Agregar operandos
+    int operandor_paridad[CANT_OPERANDOS] = {1, 1, 1, 1, 1, 0, 0, 0, 0}; // Agregar operandos
     int indice_operador;
     char valorDesapilado_1[LONG_OPERANDOS];
     char valorDesapilado_2[LONG_OPERANDOS];
@@ -203,11 +210,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         // Cuando viene un operador (op_mas) se desapilan 2 o 1 (segundo binario o unario) y se opera
         // CON LOS AUXILIARES!!!! y el resultado se APILA en un nuevo axilar 
 
-
-
-
         if (indice_operador != -1) {
-
             if(operandor_paridad[indice_operador] == 0){
           //      desapilarDeLista(lista, valorDesapilado_1);
                 
@@ -215,10 +218,13 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                 // SOy un unario
             }
             else{
+                if(strcmp(operadores[indice_operador], "OP_ASIG") == 0) {
+                    printLista(lista);
+                } 
                 desapilarDeLista(lista, valorDesapilado_1);
                 printf("___VALOR DESAPILADO %s", valorDesapilado_1);
                 desapilarDeLista(lista, valorDesapilado_2);
-                printf("___VALOR DESAPILADO %s", valorDesapilado_2);
+                printf("___VALOR DESAPILADO %s\n", valorDesapilado_2);
 
                 // OP_SUM 12, 78
                 escribirBinario(output, operadores[indice_operador], valorDesapilado_1, valorDesapilado_2,  &nroAuxiliar, lista);
@@ -252,6 +258,8 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 }
 
 int escribirBinario(FILE * archivo, char * operando, char * valor1, char * valor2, int * nroAuxiliar, listaSimple * lista){
+    char * instruccionAssembler;
+
     printf("\n\n\nESCRIBIR BINARIO\n");
     printf("VAlor operando %s\n", operando);
     printf("VAlor valor1 %s\n", valor1);
@@ -259,12 +267,17 @@ int escribirBinario(FILE * archivo, char * operando, char * valor1, char * valor
 
     printf("FLD\t%s\n", valor2);
     fprintf(archivo, "FLD\t%s\n", valor2);
-        
-    printf("FLD\t@aux%s\n", valor1);
-    fprintf(archivo, "FLD\t%s\n", valor1);
 
-    fprintf(archivo, "FMUL\n");
-    
+    if(strcmp(operando, "OP_ASIG") != 0) {
+        printf("FLD\t@aux%s\n", valor1);
+        fprintf(archivo, "FLD\t%s\n", valor1);
+
+        instruccionAssembler = buscarInstruccion(operando);
+        fprintf(archivo, "%s\n", instruccionAssembler);
+    } else {
+        *nroAuxiliar = *nroAuxiliar - 1;
+    }
+
     char aux[10]= "@aux";
     char numero[5];           
     sprintf(numero, "%d", *nroAuxiliar);
@@ -274,21 +287,6 @@ int escribirBinario(FILE * archivo, char * operando, char * valor1, char * valor
     insertarListaSimple(lista, aux);
 
     fprintf(archivo, "FSTP\t@aux%d\n", *nroAuxiliar);
-}
-
-int esUnario (char* operador){
-
-    if(strcmp(operador,"GET"))
-        return 1;
-    
-    if(strcmp(operador,"DISPLAY"))
-        return 1;
-
-    if(strcmp(operador,"NOT"))
-        return 1;
-
-    if(strcmp(operador,"AS"))
-        return 1;
 }
 
 int esOperador(char operandos[CANT_OPERANDOS][LONG_OPERANDOS], char * stringLeido){
@@ -311,3 +309,16 @@ char * limpiarStringLeido(char * cadena) {
     return cadena;
 }
 
+char * buscarInstruccion(char * operando){
+    char operadores[CANT_INSTRUCCIONES][LONG_OPERANDOS] = {"OP_MAS", "OP_MUL", "OP_DIV", "OP_MENOS"}; // Agregar operandos
+    char instrucciones[CANT_INSTRUCCIONES][LONG_OPERANDOS] = {"FADD", "FMUL", "FDIV", "FSUB"}; // Agregar operandos
+    int i;
+
+    for(i=0; i < CANT_INSTRUCCIONES; i++) {
+        if(strcmp(operadores[i], operando) == 0) {
+            return instrucciones[i];
+        }
+    }
+
+    return "-1";
+}
