@@ -195,9 +195,9 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     listaSimple *lista;
     lista = crearListaSimple();
 
+    fgets(linea, tam_char, archivoIntermedia);
+
     while(!feof(archivoIntermedia)) {
-        fgets(linea, tam_char, archivoIntermedia);
-        
         stringLeido = strrchr(linea, delimitador);
         stringLeido = limpiarStringLeido(stringLeido);
 
@@ -254,6 +254,8 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
             // @aux2    
             // Apilar
         }
+
+        fgets(linea, tam_char, archivoIntermedia);
     }
 }
 
