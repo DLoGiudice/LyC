@@ -577,6 +577,7 @@ factor: ID {
           char valor[150];
           sprintf(valor, "%d", $1);
           insertarListaPolaca(lPolaca, strcat(nombre, valor));
+          strcat(valor, ".0");
           detectarInsertar(lista, crearDato(nombre, "-", valor, "-")); }
       | REAL {
           printf("factor REAL - Regla 46\n");

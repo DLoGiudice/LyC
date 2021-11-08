@@ -54,9 +54,9 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
 }
 
 void imprimirEncabezado(FILE * archivo) {
-    fprintf(archivo, "include\tmacros2.asm\n");
-    fprintf(archivo, "include\tnumber.asm\n\n");
-    fprintf(archivo, ".MODEL LARGE\n");
+    fprintf(archivo, "include macros2.asm\n");
+    fprintf(archivo, "include number.asm\n\n");
+    fprintf(archivo, ".MODEL SMALL\n");
     fprintf(archivo, ".386\n");
     fprintf(archivo, ".STACK 200h\n\n");
 }
@@ -90,21 +90,14 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
 
     fprintf(archivo, ".DATA\n\n");
 
-    while(!feof(tablaDeSimbolos)) {
-        fgets(linea,tam_char,tablaDeSimbolos);
-        eliminarEspacios(linea);
+    fgets(linea,tam_char,tablaDeSimbolos);
+    fgets(linea,tam_char,tablaDeSimbolos);
+    fgets(linea,tam_char,tablaDeSimbolos);
 
-        // Salteo las primeras dos lineas de encabezado.
-        // Pura mantenibilidad y flexibilidad. Calida'
-        if (lineas_encabezado < 2) {
-            lineas_encabezado++;
-            continue;
-        }
-        
-        
-       // printf("GUARDAR SIMBOLOS");
-        
+    while(!feof(tablaDeSimbolos)) {
+        eliminarEspacios(linea);        
         guardarSimbolo(linea, delimitador, archivo);
+        fgets(linea,tam_char,tablaDeSimbolos);
     }
 
     // imprimo AUX
@@ -129,16 +122,12 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
 
         if (cont_columnas == 1) {
             valor = ptr;
-            printf("CTE_STRING %s ", valor);
             if (strcmp(valor,"CTE_STRING")==0){
-                printf("CTE_STRING");
                 flagString = 1;
             }
         }
 
         if (cont_columnas == 2) {
-            // Pasar valor a float si es Int
-            // Para usar el copro sin problemas.
             valor = ptr;
         }
 
@@ -150,7 +139,6 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
                 char cadena[100] = "";
                 contructorConstantes(cadena, valor);
                 strcpy(valor,cadena);
-                printf ("VALOR: %s", cadena);
             }
 
             fprintf(archivo, "%s\tdd\t%s\n", simbolo, valor);
