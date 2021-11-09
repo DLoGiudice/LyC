@@ -201,8 +201,17 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 
         if (indice_operador != -1) {
             if(operandor_paridad[indice_operador] == 0){
-                // desapilarDeLista(lista, valorDesapilado_1);
-                // SOy un unario
+                // Soy un unario
+
+                if(strcmp(operadores[indice_operador], "DISPLAY") == 0) {
+                    // Display entero solamente por ahora
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                } else {
+                    desapilarDeLista(lista, valorDesapilado_1);
+                }
             }
             else{
                 desapilarDeLista(lista, valorDesapilado_1);
