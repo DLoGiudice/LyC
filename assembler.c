@@ -151,10 +151,7 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
 }
 
 void escribirAssembler(FILE *archivo, char * valor, int *nroAuxiliar){
-        printf("FLD\t%s\n", valor);
         fprintf(archivo, "FLD\t%s\n", valor);
-        
-        printf("FSTP\t@aux%d\n", *nroAuxiliar);
         fprintf(archivo, "FSTP\t@aux%d\n", *nroAuxiliar);
 }
 
@@ -195,7 +192,6 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         stringLeido = limpiarStringLeido(stringLeido);
 
         indice_operador = esOperador(operadores,stringLeido);
-        printf("\nindice_operador, %d", indice_operador);
 
         // Cuando agarramos un operando (ejemplo 12) agregamos un FLD adelante y abajo escribimos un
         // FSTP con un @auxN (N -> numero). LO QUE SE VA A PILANDO SON LOS AUXILIARES, SIEMPRE QUE SE
@@ -205,47 +201,38 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 
         if (indice_operador != -1) {
             if(operandor_paridad[indice_operador] == 0){
-          //      desapilarDeLista(lista, valorDesapilado_1);
-                
-                printf("_VALOR DESAPILADO %s", valorDesapilado_1);
+                // desapilarDeLista(lista, valorDesapilado_1);
                 // SOy un unario
             }
             else{
-                if(strcmp(operadores[indice_operador], "OP_ASIG") == 0) {
-                    printLista(lista);
-                } 
                 desapilarDeLista(lista, valorDesapilado_1);
-                printf("___VALOR DESAPILADO %s", valorDesapilado_1);
-                desapilarDeLista(lista, valorDesapilado_2);
-                printf("___VALOR DESAPILADO %s\n", valorDesapilado_2);
 
-                // OP_SUM 12, 78
-                escribirBinario(output, operadores[indice_operador], valorDesapilado_1, valorDesapilado_2,  &nroAuxiliar, lista);
-
-                nroAuxiliar = nroAuxiliar + 1;  
-
-                // funcion que le paso el operador y los 2 operandos y se encarga de hacer lo que debe,
-                // es decir, escribir en el assm.txt
+                if(strcmp(operadores[indice_operador], "OP_ASIG") == 0) {
+                    fprintf(output, "FLD\t%s\n", valorDesapilado_1);
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    fprintf(output, "FSTP\t%s\n", stringLeido);
+                    fprintf(output, "FFREE\n");
+                } else {
+                    desapilarDeLista(lista, valorDesapilado_2);
+                    // OP_SUM 12, 78
+                    escribirBinario(output, operadores[indice_operador], valorDesapilado_1, valorDesapilado_2,  &nroAuxiliar, lista);
+                    nroAuxiliar = nroAuxiliar + 1;  
+                    // funcion que le paso el operador y los 2 operandos y se encarga de hacer lo que debe,
+                    // es decir, escribir en el assm.txt
+                }
             }
 
         } else {
-            printf("soy operando =(\n");
-            printf("Estoy insertando, %s\n", stringLeido);
-            
             char aux[10]= "@aux";
             char numero[5];
             
             sprintf(numero, "%d", nroAuxiliar);
             strcat(aux, numero);
-            printf("\nSOY aux %s_", aux);
-
             insertarListaSimple(lista, aux);
-            
             escribirAssembler(output, stringLeido, &nroAuxiliar);
-            
             nroAuxiliar = nroAuxiliar + 1;
-            // @aux2    
-            // Apilar
         }
 
         fgets(linea, tam_char, archivoIntermedia);
@@ -254,31 +241,17 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 
 int escribirBinario(FILE * archivo, char * operando, char * valor1, char * valor2, int * nroAuxiliar, listaSimple * lista){
     char instruccionAssembler[150];
-
-    printf("\n\n\nESCRIBIR BINARIO\n");
-    printf("VAlor operando %s\n", operando);
-    printf("VAlor valor1 %s\n", valor1);
-    printf("VAlor valor2 %s\n", valor2);
-
-    printf("FLD\t%s\n", valor2);
-    fprintf(archivo, "FLD\t%s\n", valor2);
-
-    if(strcmp(operando, "OP_ASIG") != 0) {
-        printf("FLD\t@aux%s\n", valor1);
-        fprintf(archivo, "FLD\t%s\n", valor1);
-
-        buscarInstruccion(operando, instruccionAssembler);
-        printf("%s", instruccionAssembler);
-        fprintf(archivo, "%s\n", instruccionAssembler);
-    } else {
-        *nroAuxiliar = *nroAuxiliar - 1;
-    }
-
     char aux[10]= "@aux";
     char numero[5];           
+    
+    fprintf(archivo, "FLD\t%s\n", valor2);
+    fprintf(archivo, "FLD\t%s\n", valor1);
+
+    buscarInstruccion(operando, instruccionAssembler);
+    fprintf(archivo, "%s\n", instruccionAssembler);
+
     sprintf(numero, "%d", *nroAuxiliar);
     strcat(aux, numero);
-    printf("\nSOY aux %s_", aux);
 
     insertarListaSimple(lista, aux);
 

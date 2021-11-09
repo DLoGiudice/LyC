@@ -232,8 +232,8 @@ asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"
             char nombre[150] = "_";
             char valor[150];
             sprintf(valor, "%s", $1);
-            insertarListaPolaca(lPolaca, strcat(nombre, valor));
             insertarListaPolaca(lPolaca, "OP_ASIG");
+            insertarListaPolaca(lPolaca, strcat(nombre, valor));
             }
           | ID OP_ASIG CADENA {
             char longitud[2] = "";
@@ -245,8 +245,8 @@ asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"
             char valor[150];
             sprintf(valor, "%s", $3);
             insertarListaPolaca(lPolaca, valor);
-            insertarListaPolaca(lPolaca, $1);
             insertarListaPolaca(lPolaca, "OP_ASIG");
+            insertarListaPolaca(lPolaca, $1);
             printf ("Asignacion - cadena - Regla 17\n"); }
           | ID OP_ASIG eq { printf ("Asignacion - EQ - Regla 18\n"); };
 
