@@ -21,7 +21,7 @@ void contructorConstantes(char *, char *);
 int esOperador(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
 int escribirBinario(FILE *, char *, char *, char *, int *, listaSimple *);
-char * buscarInstruccion(char *);
+void buscarInstruccion(char *, char *);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
@@ -253,7 +253,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 }
 
 int escribirBinario(FILE * archivo, char * operando, char * valor1, char * valor2, int * nroAuxiliar, listaSimple * lista){
-    char * instruccionAssembler;
+    char instruccionAssembler[150];
 
     printf("\n\n\nESCRIBIR BINARIO\n");
     printf("VAlor operando %s\n", operando);
@@ -267,7 +267,8 @@ int escribirBinario(FILE * archivo, char * operando, char * valor1, char * valor
         printf("FLD\t@aux%s\n", valor1);
         fprintf(archivo, "FLD\t%s\n", valor1);
 
-        instruccionAssembler = buscarInstruccion(operando);
+        buscarInstruccion(operando, instruccionAssembler);
+        printf("%s", instruccionAssembler);
         fprintf(archivo, "%s\n", instruccionAssembler);
     } else {
         *nroAuxiliar = *nroAuxiliar - 1;
@@ -304,16 +305,17 @@ char * limpiarStringLeido(char * cadena) {
     return cadena;
 }
 
-char * buscarInstruccion(char * operando){
+void buscarInstruccion(char * operando, char * instruccionAssembler){
     char operadores[CANT_INSTRUCCIONES][LONG_OPERANDOS] = {"OP_MAS", "OP_MUL", "OP_DIV", "OP_MENOS"}; // Agregar operandos
     char instrucciones[CANT_INSTRUCCIONES][LONG_OPERANDOS] = {"FADD", "FMUL", "FDIV", "FSUB"}; // Agregar operandos
     int i;
 
     for(i=0; i < CANT_INSTRUCCIONES; i++) {
         if(strcmp(operadores[i], operando) == 0) {
-            return instrucciones[i];
+            strcpy(instruccionAssembler, instrucciones[i]);
+            return;
         }
     }
 
-    return "-1";
+    return;
 }
