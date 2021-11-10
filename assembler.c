@@ -22,6 +22,7 @@ int esOperador(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
 int escribirBinario(FILE *, char *, char *, char *, int *, listaSimple *);
 void buscarInstruccion(char *, char *);
+void buscarSalto(char *, char *);
 
 
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
@@ -173,24 +174,53 @@ void contructorConstantes(char * cadena, char * s){
 void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     int tam_char = 150;
     char linea[tam_char];
+    char numeroInstruccion[tam_char];
     char * stringLeido;
     int delimitador = '-'; // Necesita comillas simples para funcionar
-    char operadores[CANT_OPERANDOS][LONG_OPERANDOS] = {"OP_ASIG", "OP_MAS", "OP_MUL", "OP_DIV", "OP_MENOS", "GET", "DISPLAY", "NOT", "AS"}; // Agregar operandos
-    int operandor_paridad[CANT_OPERANDOS] = {1, 1, 1, 1, 1, 0, 0, 0, 0}; // Agregar operandos
+                                                       
+    char operadores[CANT_OPERANDOS][LONG_OPERANDOS] = {"CMP",
+                                                       "OP_MAS",
+                                                       "OP_MUL",
+                                                       "OP_DIV",
+                                                       "OP_MENOS",
+                                                       "OP_ASIG",
+                                                       "GET",
+                                                       "DISPLAY",
+                                                       "NOT"
+                                                       };
+                                                       
+    int operandor_paridad[CANT_OPERANDOS] = {2, /*CMP*/
+                                             2, /*OP_MAS*/
+                                             2, /*OP_MUL*/
+                                             2, /*OP_DIV*/
+                                             2, /*OP_MENOS*/
+                                             1, /*OP_ASIG*/
+                                             0, /*GET*/
+                                             0, /*DISPLAY*/
+                                             0  /*NOT*/
+                                             };
     int indice_operador;
     char valorDesapilado_1[LONG_OPERANDOS];
     char valorDesapilado_2[LONG_OPERANDOS];
     int nroAuxiliar = 0;
+    char saltoAssembler[150];
 
     listaSimple *lista;
+    listaSimple *listaSaltos;
     lista = crearListaSimple();
+    listaSaltos = crearListaSimple();
 
     fgets(linea, tam_char, archivoIntermedia);
 
     while(!feof(archivoIntermedia)) {
+        // Obtengo numero instruccion. strtok es destructivo.
+        strcpy(numeroInstruccion, linea);
+        strtok(numeroInstruccion, "-");
+        eliminarEspacios(numeroInstruccion);
+
+        // Obtengo instruccion
         stringLeido = strrchr(linea, delimitador);
         stringLeido = limpiarStringLeido(stringLeido);
-
         indice_operador = esOperador(operadores,stringLeido);
 
         // Cuando agarramos un operando (ejemplo 12) agregamos un FLD adelante y abajo escribimos un
@@ -198,41 +228,86 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         // HAGA UNA OPERACION SE CREA UN AUXILIAR Y SE APILA EL MISMO.
         // Cuando viene un operador (op_mas) se desapilan 2 o 1 (segundo binario o unario) y se opera
         // CON LOS AUXILIARES!!!! y el resultado se APILA en un nuevo axilar 
+        
+        if (listaVacia(listaSaltos) != 1) {
+            // busco Tope De Pila (hacer funcion)
+            if (strcmp(listaSaltos -> prim -> dato.datoSimple, numeroInstruccion) == 0) {
+                // Si matchea, desapilar de lista de saltos y desapilar de etiquetas.
+                fprintf(output, "\nETIQ_1:\n");
+            }
+        }
 
         if (indice_operador != -1) {
-            if(operandor_paridad[indice_operador] == 0){
-                // Soy un unario
-
-                if(strcmp(operadores[indice_operador], "DISPLAY") == 0) {
-                    // Display entero solamente por ahora
-                    fgets(linea, tam_char, archivoIntermedia);
-                    stringLeido = strrchr(linea, delimitador);
-                    stringLeido = limpiarStringLeido(stringLeido);
-                    fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
-                } else {
-                    desapilarDeLista(lista, valorDesapilado_1);
-                }
-            }
-            else{
+            if(operandor_paridad[indice_operador] == 2) 
+            {
+                 // Soy un binario - DESAPILO 2 SIEMPRE
                 desapilarDeLista(lista, valorDesapilado_1);
+                desapilarDeLista(lista, valorDesapilado_2);
 
-                if(strcmp(operadores[indice_operador], "OP_ASIG") == 0) {
+                if (strcmp(operadores[indice_operador], "CMP") == 0) {
+                    /*
+                        JE/JZ	Jump Equal or Jump Zero	ZF
+                        JNE/JNZ	Jump not Equal or Jump Not Zero	ZF
+                        JA/JNBE	Jump Above or Jump Not Below/Equal	CF, ZF
+                        JAE/JNB	Jump Above/Equal or Jump Not Below	CF
+                        JB/JNAE	Jump Below or Jump Not Above/Equal	CF
+                        JBE/JNA	Jump Below/Equal or Jump Not Above	AF, CF
+                    */
+                    // instrucciones de rutina.
                     fprintf(output, "FLD\t%s\n", valorDesapilado_1);
+                    fprintf(output, "FCOMP\t%s\n", valorDesapilado_2);
+                    fprintf(output, "FSTSW AX\n");
+                    fprintf(output, "SAHF\n");
+
+                    // Obtengo operador para saltar.
                     fgets(linea, tam_char, archivoIntermedia);
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
-                    fprintf(output, "FSTP\t%s\n", stringLeido);
-                    fprintf(output, "FFREE\n");
+                    buscarSalto(stringLeido, saltoAssembler);
+                    printf("SALTO: %s\n", saltoAssembler);
+                    // Generar etiqueta y guardar en lista.
+                    fprintf(output, "%s\tETIQ_1\n", saltoAssembler);
+                    // Falta apilar etiqueta.
+
+                    // Guardo el numero de instruccion donde insertar etiqueta.
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    insertarListaSimple(listaSaltos, stringLeido);
                 } else {
-                    desapilarDeLista(lista, valorDesapilado_2);
+                    // OP_MAS, OP_DIV, OP_MUL, OP_MENOS
                     // OP_SUM 12, 78
                     escribirBinario(output, operadores[indice_operador], valorDesapilado_1, valorDesapilado_2,  &nroAuxiliar, lista);
                     nroAuxiliar = nroAuxiliar + 1;  
                     // funcion que le paso el operador y los 2 operandos y se encarga de hacer lo que debe,
                     // es decir, escribir en el assm.txt
                 }
+            } 
+            else if(operandor_paridad[indice_operador] == 1)
+            {
+               // Soy un unario - DESAPILO 1 SIEMPRE
+                desapilarDeLista(lista, valorDesapilado_1);
+                if(strcmp(operadores[indice_operador], "OP_ASIG") == 0) {
+                    
+                    fprintf(output, "FLD\t%s\n", valorDesapilado_1);
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    fprintf(output, "FSTP\t%s\n", stringLeido);
+                    fprintf(output, "FFREE\n");
+                }
+            } 
+            else
+            {
+                // soy aburrido - NO DESAPILO
+                if(strcmp(operadores[indice_operador], "DISPLAY") == 0) {
+                    // Display entero solamente por ahora
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                } 
             }
-
         } else {
             char aux[10]= "@aux";
             char numero[5];
@@ -299,5 +374,12 @@ void buscarInstruccion(char * operando, char * instruccionAssembler){
         }
     }
 
+    return;
+}
+
+void buscarSalto(char * operando, char * saltoAssembler){
+    if (strcmp("BNE", operando) == 0) {
+        strcpy(saltoAssembler, "JNZ");
+    }
     return;
 }
