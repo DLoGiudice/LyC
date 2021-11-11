@@ -203,7 +203,7 @@ iteracion: WHILE {
             char __auxString[150];
             int __celdaActualInt;
 
-            insertarListaPolaca(lPolaca, "BI");
+            insertarListaPolaca(lPolaca, "BIBI");
             // Inserto posicion de la etiqueta
             desapilarDeLista(listaWhile, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));

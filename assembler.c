@@ -3,7 +3,7 @@
 #include <string.h>
 #include "helpers.h"
 
-#define CANT_OPERANDOS 9
+#define CANT_OPERANDOS 11
 #define LONG_OPERANDOS 100
 #define CANT_INSTRUCCIONES 4
 
@@ -187,7 +187,9 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                                                        "OP_ASIG",
                                                        "GET",
                                                        "DISPLAY",
-                                                       "BI"
+                                                       "BI",
+                                                       "BIBI",
+                                                       "ET"
                                                        };
                                                        
     int operandor_paridad[CANT_OPERANDOS] = {2, /*CMP*/
@@ -198,7 +200,9 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                                              1, /*OP_ASIG*/
                                              0, /*GET*/
                                              0, /*DISPLAY*/
-                                             0  /*BI*/
+                                             0, /*BI*/
+                                             0, /*BIBI*/
+                                             0  /*ET*/
                                              };
     int indice_operador;
     char valorDesapilado_1[LONG_OPERANDOS];
@@ -233,7 +237,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         // FSTP con un @auxN (N -> numero). LO QUE SE VA A PILANDO SON LOS AUXILIARES, SIEMPRE QUE SE
         // HAGA UNA OPERACION SE CREA UN AUXILIAR Y SE APILA EL MISMO.
         // Cuando viene un operador (op_mas) se desapilan 2 o 1 (segundo binario o unario) y se opera
-        // CON LOS AUXILIARES!!!! y el resultado se APILA en un nuevo axilar 
+        // CON LOS AUXILIARES!!!! y el resultado se APILA en un nuevo axilar
         
         if (contadorEtiquetasSaltos != 0) {
             // busco Tope De Pila (hacer funcion)
@@ -322,6 +326,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
                     fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                    fprintf(output, "newline\t1\n");
                 } else if(strcmp(operadores[indice_operador], "BI") == 0) {
                     strcpy(nombreEtiqueta, "ETIQ_");
                     strcat(nombreEtiqueta, numeroInstruccion);
@@ -335,6 +340,19 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                     stringLeido = limpiarStringLeido(stringLeido);
                     strcpy(saltos[contadorEtiquetasSaltos], stringLeido);
                     contadorEtiquetasSaltos = contadorEtiquetasSaltos + 1;
+                } else if(strcmp(operadores[indice_operador], "BIBI") == 0) {
+                    strcpy(nombreEtiqueta, "ETIQ_");
+                    // Escribe salto para atras.
+                    // Guardo el numero de instruccion donde insertar etiqueta.
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    strcat(nombreEtiqueta, stringLeido);
+                    fprintf(output, "%s\t%s\n", "JMP", nombreEtiqueta);
+                } else if(strcmp(operadores[indice_operador], "ET") == 0) {
+                    strcpy(nombreEtiqueta, "ETIQ_");
+                    strcat(nombreEtiqueta, numeroInstruccion);
+                    fprintf(output, "\n%s:\n", nombreEtiqueta);
                 }
             }
         } else {
@@ -409,6 +427,8 @@ void buscarInstruccion(char * operando, char * instruccionAssembler){
 void buscarSalto(char * operando, char * saltoAssembler){
     if (strcmp("BNE", operando) == 0) {
         strcpy(saltoAssembler, "JNZ");
+    } else if (strcmp("BGE", operando) == 0) {
+        strcpy(saltoAssembler, "JBE");
     }
     return;
 }
