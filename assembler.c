@@ -177,6 +177,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     char numeroInstruccion[tam_char];
     char * stringLeido;
     int delimitador = '-'; // Necesita comillas simples para funcionar
+    char nombreEtiqueta[100] = "ETIQ_";
                                                        
     char operadores[CANT_OPERANDOS][LONG_OPERANDOS] = {"CMP",
                                                        "OP_MAS",
@@ -186,7 +187,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                                                        "OP_ASIG",
                                                        "GET",
                                                        "DISPLAY",
-                                                       "NOT"
+                                                       "BI"
                                                        };
                                                        
     int operandor_paridad[CANT_OPERANDOS] = {2, /*CMP*/
@@ -197,7 +198,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                                              1, /*OP_ASIG*/
                                              0, /*GET*/
                                              0, /*DISPLAY*/
-                                             0  /*NOT*/
+                                             0  /*BI*/
                                              };
     int indice_operador;
     char valorDesapilado_1[LONG_OPERANDOS];
@@ -238,10 +239,11 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
             // busco Tope De Pila (hacer funcion)
             int i = 0;
             for(i = 0; i < contadorEtiquetasSaltos; i++) {
-                if(strcmp(saltos[i], numeroInstruccion) == 0)
+                if(strcmp(saltos[i], numeroInstruccion) == 0) {
                     // Si matchea, desapilar de lista de saltos y desapilar de etiquetas.
                     fprintf(output, "\n%s:\n", etiquetasSaltos[i]);
                     break;
+                }
             }
         }
 
@@ -253,7 +255,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                 desapilarDeLista(lista, valorDesapilado_2);
 
                 if (strcmp(operadores[indice_operador], "CMP") == 0) {
-                    char nombreEtiqueta[100] = "ETIQ_";
+                    strcpy(nombreEtiqueta, "ETIQ_");
                     /*
                         JE/JZ	Jump Equal or Jump Zero	ZF
                         JNE/JNZ	Jump not Equal or Jump Not Zero	ZF
@@ -320,7 +322,20 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
                     fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
-                } 
+                } else if(strcmp(operadores[indice_operador], "BI") == 0) {
+                    strcpy(nombreEtiqueta, "ETIQ_");
+                    strcat(nombreEtiqueta, numeroInstruccion);
+                    fprintf(output, "%s\t%s\n", "JMP", nombreEtiqueta);
+                    // Apilar numeroInstriccion.
+                    strcpy(etiquetasSaltos[contadorEtiquetasSaltos], nombreEtiqueta);
+
+                    // Guardo el numero de instruccion donde insertar etiqueta.
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    strcpy(saltos[contadorEtiquetasSaltos], stringLeido);
+                    contadorEtiquetasSaltos = contadorEtiquetasSaltos + 1;
+                }
             }
         } else {
             char aux[10]= "@aux";
