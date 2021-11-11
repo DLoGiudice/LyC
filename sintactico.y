@@ -203,7 +203,7 @@ iteracion: WHILE {
             char __auxString[150];
             int __celdaActualInt;
 
-            insertarListaPolaca(lPolaca, "BI");
+            insertarListaPolaca(lPolaca, "BIBI");
             // Inserto posicion de la etiqueta
             desapilarDeLista(listaWhile, __posicionDestino);
             sprintf(__celdaActual, "%d", celdaActual(lPolaca));
@@ -232,8 +232,8 @@ asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"
             char nombre[150] = "_";
             char valor[150];
             sprintf(valor, "%s", $1);
-            insertarListaPolaca(lPolaca, strcat(nombre, valor));
             insertarListaPolaca(lPolaca, "OP_ASIG");
+            insertarListaPolaca(lPolaca, strcat(nombre, valor));
             }
           | ID OP_ASIG CADENA {
             char longitud[2] = "";
@@ -245,8 +245,8 @@ asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"
             char valor[150];
             sprintf(valor, "%s", $3);
             insertarListaPolaca(lPolaca, valor);
-            insertarListaPolaca(lPolaca, $1);
             insertarListaPolaca(lPolaca, "OP_ASIG");
+            insertarListaPolaca(lPolaca, $1);
             printf ("Asignacion - cadena - Regla 17\n"); }
           | ID OP_ASIG eq { printf ("Asignacion - EQ - Regla 18\n"); };
 
@@ -577,6 +577,7 @@ factor: ID {
           char valor[150];
           sprintf(valor, "%d", $1);
           insertarListaPolaca(lPolaca, strcat(nombre, valor));
+          strcat(valor, ".0");
           detectarInsertar(lista, crearDato(nombre, "-", valor, "-")); }
       | REAL {
           printf("factor REAL - Regla 46\n");
