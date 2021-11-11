@@ -204,11 +204,16 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
     char valorDesapilado_2[LONG_OPERANDOS];
     int nroAuxiliar = 0;
     char saltoAssembler[150];
+    int contadorEtiquetasSaltos = 0;
 
     listaSimple *lista;
-    listaSimple *listaSaltos;
     lista = crearListaSimple();
-    listaSaltos = crearListaSimple();
+
+    char etiquetasSaltos[100][100];
+    char saltos[100][100];
+
+    // listaSimple listaSaltos;
+    // listaSaltos = crearListaSimple();
 
     fgets(linea, tam_char, archivoIntermedia);
 
@@ -229,11 +234,14 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
         // Cuando viene un operador (op_mas) se desapilan 2 o 1 (segundo binario o unario) y se opera
         // CON LOS AUXILIARES!!!! y el resultado se APILA en un nuevo axilar 
         
-        if (listaVacia(listaSaltos) != 1) {
+        if (contadorEtiquetasSaltos != 0) {
             // busco Tope De Pila (hacer funcion)
-            if (strcmp(listaSaltos -> prim -> dato.datoSimple, numeroInstruccion) == 0) {
-                // Si matchea, desapilar de lista de saltos y desapilar de etiquetas.
-                fprintf(output, "\nETIQ_1:\n");
+            int i = 0;
+            for(i = 0; i < contadorEtiquetasSaltos; i++) {
+                if(strcmp(saltos[i], numeroInstruccion) == 0)
+                    // Si matchea, desapilar de lista de saltos y desapilar de etiquetas.
+                    fprintf(output, "\n%s:\n", etiquetasSaltos[i]);
+                    break;
             }
         }
 
@@ -245,6 +253,7 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                 desapilarDeLista(lista, valorDesapilado_2);
 
                 if (strcmp(operadores[indice_operador], "CMP") == 0) {
+                    char nombreEtiqueta[100] = "ETIQ_";
                     /*
                         JE/JZ	Jump Equal or Jump Zero	ZF
                         JNE/JNZ	Jump not Equal or Jump Not Zero	ZF
@@ -264,16 +273,21 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
                     buscarSalto(stringLeido, saltoAssembler);
-                    printf("SALTO: %s\n", saltoAssembler);
+                    // printf("SALTO: %s\n", saltoAssembler);
                     // Generar etiqueta y guardar en lista.
-                    fprintf(output, "%s\tETIQ_1\n", saltoAssembler);
-                    // Falta apilar etiqueta.
+                    // nombreEtiqueta = "ETIQ_";
+                    strcat(nombreEtiqueta, numeroInstruccion);
+                    fprintf(output, "%s\t%s\n", saltoAssembler, nombreEtiqueta);
+                    // Apilar numeroInstriccion.
+                    strcpy(etiquetasSaltos[contadorEtiquetasSaltos], nombreEtiqueta);
 
                     // Guardo el numero de instruccion donde insertar etiqueta.
                     fgets(linea, tam_char, archivoIntermedia);
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
-                    insertarListaSimple(listaSaltos, stringLeido);
+                    strcpy(saltos[contadorEtiquetasSaltos], stringLeido);
+                    contadorEtiquetasSaltos = contadorEtiquetasSaltos + 1;
+                    // insertarListaSimple(listaSaltos, stringLeido);
                 } else {
                     // OP_MAS, OP_DIV, OP_MUL, OP_MENOS
                     // OP_SUM 12, 78
