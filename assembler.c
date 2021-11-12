@@ -10,13 +10,13 @@
 int generarAssembler(char *, char *);
 void imprimirEncabezado(FILE *);
 void imprimirCodigoEstaticoCuerpo(FILE *);
-void imprimirCodigoIntermedio(FILE *, FILE *, char *[45]);
+void imprimirCodigoIntermedio(FILE *, FILE *, char (*)[45]);
 void imprimirSenialDeFin(FILE *);
-void imprimirTablaDeSimbolos(FILE *, FILE *, char *[45]);
+void imprimirTablaDeSimbolos(FILE *, FILE *, char (*)[45]);
 
 void escribirAssembler(FILE *, char *, int *);
 
-void guardarSimbolo(char *, char *, FILE *);
+void guardarSimbolo(char *, char *, FILE *, char (*)[45], int *);
 void contructorConstantes(char *, char *);
 int esOperador(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
@@ -29,7 +29,7 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     FILE* archivoTablaDeSimbolos = fopen(tablaDeSimbolos, "r" );
     FILE* archivoIntermedia = fopen(intermedia, "r" );
     FILE* archivoAssembler = fopen("assm.asm", "w");
-    char variablesStrings[100][45];
+    char variablesStrings[20][45];
 
     if (archivoTablaDeSimbolos == NULL) {
         return 1;
@@ -82,13 +82,14 @@ void imprimirSenialDeFin(FILE * archivo){
 }
 
 
-void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char * variablesStrings[][45]) {
+void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char variablesStrings[][45]) {
     int tam_char = 150;
     char linea[tam_char];
     int lineas_encabezado = 0;
     char simbolo[32];
     char * delimitador = "|";
     int indice;
+    int cont_strings = 0;
 
     fprintf(archivo, ".DATA\n\n");
 
@@ -97,7 +98,7 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char * vari
     fgets(linea,tam_char,tablaDeSimbolos);
 
     while(!feof(tablaDeSimbolos)) {
-        guardarSimbolo(linea, delimitador, archivo);
+        guardarSimbolo(linea, delimitador, archivo, variablesStrings, &cont_strings);
         fgets(linea,tam_char,tablaDeSimbolos);
     }
 
@@ -107,14 +108,13 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char * vari
     }
 }
 
-void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
+void guardarSimbolo(char * linea, char * delimitador, FILE * archivo, char variablesStrings[][45], int * cont_strings) {
     // Uso de strtok --> https://www.codingame.com/playgrounds/14213/how-to-play-with-strings-in-c/string-split
     char *ptr = strtok(linea, delimitador);
     int cont_columnas = 0;
     char * simbolo;
     char * valor;
     int flagString = 0;
-    int cont_strings = 0;
 
     while(ptr != NULL)
 	{
@@ -156,8 +156,8 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
                 } else {
                     fprintf(archivo, "%s\tdb\t%s\n", simbolo, valor);
                 }
-                variablesStrings[cont_strings] = simbolo;
-                cont_strings = cont_strings + 1;
+                strcpy(variablesStrings[*cont_strings], simbolo);
+                *cont_strings = *cont_strings + 1;
             } else {
                 fprintf(archivo, "%s\tdd\t%s\n", simbolo, valor);
             }
@@ -190,7 +190,7 @@ void contructorConstantes(char * cadena, char * s){
 
 }
 
-void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia, char * variablesStrings[][45]) {
+void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia, char variablesStrings[][45]) {
     int tam_char = 150;
     char linea[tam_char];
     char numeroInstruccion[tam_char];
@@ -338,10 +338,10 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia, char * va
                     fgets(linea, tam_char, archivoIntermedia);
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
-                    for (indice_display = 0; indice_display < 100; indice_display++) {
+                    for (indice_display = 0; indice_display < 20; indice_display++) {
                         if (strcmp(variablesStrings[indice_display], stringLeido) == 0) {
                             es_cadena = 1;
-                            break; // Gracias Barba
+                            break;
                         }
                     }
                     if (es_cadena == 1) {
