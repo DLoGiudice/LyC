@@ -10,9 +10,9 @@
 int generarAssembler(char *, char *);
 void imprimirEncabezado(FILE *);
 void imprimirCodigoEstaticoCuerpo(FILE *);
-void imprimirCodigoIntermedio(FILE *, FILE *);
+void imprimirCodigoIntermedio(FILE *, FILE *, char *[45]);
 void imprimirSenialDeFin(FILE *);
-void imprimirTablaDeSimbolos(FILE *, FILE *);
+void imprimirTablaDeSimbolos(FILE *, FILE *, char *[45]);
 
 void escribirAssembler(FILE *, char *, int *);
 
@@ -29,6 +29,7 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     FILE* archivoTablaDeSimbolos = fopen(tablaDeSimbolos, "r" );
     FILE* archivoIntermedia = fopen(intermedia, "r" );
     FILE* archivoAssembler = fopen("assm.asm", "w");
+    char variablesStrings[100][45];
 
     if (archivoTablaDeSimbolos == NULL) {
         return 1;
@@ -44,9 +45,9 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
 
     // Paso a Paso
     imprimirEncabezado(archivoAssembler);
-    imprimirTablaDeSimbolos(archivoAssembler, archivoTablaDeSimbolos);
+    imprimirTablaDeSimbolos(archivoAssembler, archivoTablaDeSimbolos, variablesStrings);
     imprimirCodigoEstaticoCuerpo(archivoAssembler);
-    imprimirCodigoIntermedio(archivoAssembler, archivoIntermedia);
+    imprimirCodigoIntermedio(archivoAssembler, archivoIntermedia, variablesStrings);
     imprimirSenialDeFin(archivoAssembler);
 
     fclose(archivoTablaDeSimbolos);
@@ -81,7 +82,7 @@ void imprimirSenialDeFin(FILE * archivo){
 }
 
 
-void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
+void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char * variablesStrings[][45]) {
     int tam_char = 150;
     char linea[tam_char];
     int lineas_encabezado = 0;
@@ -96,7 +97,6 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
     fgets(linea,tam_char,tablaDeSimbolos);
 
     while(!feof(tablaDeSimbolos)) {
-        eliminarEspacios(linea);        
         guardarSimbolo(linea, delimitador, archivo);
         fgets(linea,tam_char,tablaDeSimbolos);
     }
@@ -114,14 +114,17 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
     char * simbolo;
     char * valor;
     int flagString = 0;
+    int cont_strings = 0;
 
     while(ptr != NULL)
 	{
         if (cont_columnas == 0) {
+            eliminarEspacios(ptr);
             simbolo = ptr;
         }
 
         if (cont_columnas == 1) {
+            eliminarEspacios(ptr);
             valor = ptr;
             if (strcmp(valor,"CTE_STRING")==0){
                 flagString = 1;
@@ -133,16 +136,31 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
         }
 
         if (cont_columnas == 3) {
+            if (flagString == 1) {
+                printf("VALOR ACA %c\n", valor[0]);
+                if(valor[0] != '\"')
+                    eliminarEspacios(valor);
+            } else {
+                eliminarEspacios(valor);
+            }
+
             if (strcmp(valor,"-") == 0)
                 valor = "?";
 
-            if (flagString == 1 && strcmp(valor,"?") != 0){
-                char cadena[100] = "";
-                contructorConstantes(cadena, valor);
-                strcpy(valor,cadena);
+            if (flagString == 1){
+                if (strcmp(valor,"?") != 0) {
+                    char cadena[100] = "";
+                    contructorConstantes(cadena, valor);
+                    strcpy(valor,cadena);
+                    fprintf(archivo, "%s\tdb\t%s\n", simbolo, valor);
+                } else {
+                    fprintf(archivo, "%s\tdb\t%s\n", simbolo, valor);
+                }
+                variablesStrings[cont_strings] = simbolo;
+                cont_strings = cont_strings + 1;
+            } else {
+                fprintf(archivo, "%s\tdd\t%s\n", simbolo, valor);
             }
-
-            fprintf(archivo, "%s\tdd\t%s\n", simbolo, valor);
             cont_columnas = 0;
         }
 
@@ -169,9 +187,10 @@ void contructorConstantes(char * cadena, char * s){
     strcat(cadena,aux1);
     strcat(cadena,lenString);
     strcat(cadena,aux2);
+
 }
 
-void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
+void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia, char * variablesStrings[][45]) {
     int tam_char = 150;
     char linea[tam_char];
     char numeroInstruccion[tam_char];
@@ -313,11 +332,23 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
             {
                 // soy aburrido - NO DESAPILO
                 if(strcmp(operadores[indice_operador], "DISPLAY") == 0) {
+                    int indice_display;
+                    int es_cadena = 0;
                     // Display entero solamente por ahora
                     fgets(linea, tam_char, archivoIntermedia);
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
-                    fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                    for (indice_display = 0; indice_display < 100; indice_display++) {
+                        if (strcmp(variablesStrings[indice_display], stringLeido) == 0) {
+                            es_cadena = 1;
+                            break; // Gracias Barba
+                        }
+                    }
+                    if (es_cadena == 1) {
+                        fprintf(output, "DisplayString\t%s\n", stringLeido);
+                    } else {
+                        fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                    }
                     fprintf(output, "newline\t1\n");
                 } else if(strcmp(operadores[indice_operador], "BI") == 0) {
                     strcpy(nombreEtiqueta, "ETIQ_");

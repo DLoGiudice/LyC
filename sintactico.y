@@ -22,6 +22,7 @@ int __cantidad_if = 0;
 char * __operador__comparador;
 int __banderaEquMin = 0;
 int __if_anidados = 0;
+int __contador_cadenas = 0;
 
 
 int contLong = 0;
@@ -115,21 +116,27 @@ sentencia: declaracion {printf("Regla 3\n");}
           | get {printf("Regla 8\n"); };
 
 display: DISPLAY CADENA {
-        printf ("Display Cadena - Regla 9\n");
-        char valor[150];
-        char nombre[150] = "_";
-        char __celdaActual[150];
-        sprintf(__celdaActual, "%d", celdaActual(lPolaca));
-        sprintf(valor, "\"%s\"", $2);
-        insertarListaPolaca(lPolaca, "DISPLAY");
-        insertarListaPolaca(lPolaca, strcat(nombre, valor));
+            printf ("Display Cadena - Regla 9\n");
+            char valor[150];
+            char numero_cadena[150];
+            char nombre[150] = "_cadena_";
+            char __celdaActual[150];
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            sprintf(valor, "%s", $2);
+            sprintf(numero_cadena, "%d", __contador_cadenas);
+            insertarListaPolaca(lPolaca, "DISPLAY");
+            strcat(nombre, numero_cadena);
+            sprintf(valor, "\"%s\"", $2);
+            detectarInsertar(lista, crearDato(nombre, "CTE_STRING", valor, "-"));
+            insertarListaPolaca(lPolaca, nombre);
+            __contador_cadenas = __contador_cadenas + 1;
         }
        | DISPLAY ID { printf ("Display ID - Regla 10\n");
-        char valor[150];
-        char nombre[150] = "_";
-        sprintf(valor, "%s", $2);
-        insertarListaPolaca(lPolaca, "DISPLAY");
-        insertarListaPolaca(lPolaca, strcat(nombre, valor));
+            char valor[150];
+            char nombre[150] = "_";
+            sprintf(valor, "%s", $2);
+            insertarListaPolaca(lPolaca, "DISPLAY");
+            insertarListaPolaca(lPolaca, strcat(nombre, valor));
         };
 
 get: GET ID {
