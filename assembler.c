@@ -260,17 +260,9 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 
                 if (strcmp(operadores[indice_operador], "CMP") == 0) {
                     strcpy(nombreEtiqueta, "ETIQ_");
-                    /*
-                        JE/JZ	Jump Equal or Jump Zero	ZF
-                        JNE/JNZ	Jump not Equal or Jump Not Zero	ZF
-                        JA/JNBE	Jump Above or Jump Not Below/Equal	CF, ZF
-                        JAE/JNB	Jump Above/Equal or Jump Not Below	CF
-                        JB/JNAE	Jump Below or Jump Not Above/Equal	CF
-                        JBE/JNA	Jump Below/Equal or Jump Not Above	AF, CF
-                    */
                     // instrucciones de rutina.
-                    fprintf(output, "FLD\t%s\n", valorDesapilado_1);
-                    fprintf(output, "FCOMP\t%s\n", valorDesapilado_2);
+                    fprintf(output, "FLD\t%s\n", valorDesapilado_2);
+                    fprintf(output, "FCOMP\t%s\n", valorDesapilado_1);
                     fprintf(output, "FSTSW AX\n");
                     fprintf(output, "SAHF\n");
 
@@ -425,10 +417,14 @@ void buscarInstruccion(char * operando, char * instruccionAssembler){
 }
 
 void buscarSalto(char * operando, char * saltoAssembler){
-    if (strcmp("BNE", operando) == 0) {
-        strcpy(saltoAssembler, "JNZ");
-    } else if (strcmp("BGE", operando) == 0) {
-        strcpy(saltoAssembler, "JBE");
+    char intermedia[6][5] = {"BLT", "BLE", "BGT", "BGE", "BEQ", "BNE"}; // Agregar operandos
+    char saltosAssm[6][5] = {"JB", "JNA", "JA", "JAE", "JE", "JNE"}; // Agregar operandos
+    int i;
+
+    for(i=0; i < 6; i++) {
+        if(strcmp(intermedia[i], operando) == 0) {
+            strcpy(saltoAssembler, saltosAssm[i]);
+            return;
+        }
     }
-    return;
 }
