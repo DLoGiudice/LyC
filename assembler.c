@@ -103,7 +103,7 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char variab
     }
 
     // imprimo AUX
-    for(indice=0; indice < 10; indice++) {
+    for(indice=0; indice < 50; indice++) {
         fprintf(archivo, "@aux%d\tdd\t?\n", indice);
     }
 }
@@ -119,11 +119,13 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo, char varia
     while(ptr != NULL)
 	{
         if (cont_columnas == 0) {
+            // Leo primera columna de Tabla Simbolos
             eliminarEspacios(ptr);
             simbolo = ptr;
         }
 
         if (cont_columnas == 1) {
+            // Leo segunda columna de Tabla Simbolos
             eliminarEspacios(ptr);
             valor = ptr;
             if (strcmp(valor,"CTE_STRING")==0){
@@ -132,15 +134,18 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo, char varia
         }
 
         if (cont_columnas == 2) {
+            // Leo tercera columna de Tabla Simbolos
             valor = ptr;
         }
 
         if (cont_columnas == 3) {
+            // Leo cuarta columna de Tabla Simbolos
             if (flagString == 1) {
-                printf("VALOR ACA %c\n", valor[0]);
                 if(valor[0] != '\"')
+                    // Si es string y si no es cadena, osea, comienza con "
                     eliminarEspacios(valor);
             } else {
+                // Si no es string y si es cadena, osea, comienza con "
                 eliminarEspacios(valor);
             }
 

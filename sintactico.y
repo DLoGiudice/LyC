@@ -149,19 +149,22 @@ get: GET ID {
         };
 
 long: LONG PARENTESIS_ABRE CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
-    printf("cont long %d", contLong);
     char valor[150];
+    char valorAux[150] = "_";
     sprintf(valor, "%d", contLong);
-    insertarListaPolaca(lPolaca, valor);
+    strcat(valorAux, valor);
+    strcat(valor, ".0");
+    insertarListaPolaca(lPolaca, valorAux);
+    detectarInsertar(lista, crearDato(valorAux, "CTE_INTEGER", valor, "-"));
     printf("LONG ([lista]) - Regla 12\n");
     };
 
 eq: EQUMAX PARENTESIS_ABRE {
         __banderaEquMax = 1;
     }expresion {
+        insertarListaPolaca(lPolaca, "OP_ASIG");
         insertarListaPolaca(lPolaca, "@master");
-        detectarInsertar(lista, crearDato("_@master", "-", "-", "-"));
-        insertarListaPolaca(lPolaca, ":=");
+        detectarInsertar(lista, crearDato("@master", "-", "-", "-"));
     } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
         char __posicionDestinoEquMax[150];
         char __celdaActualEquMax[150];
@@ -169,7 +172,7 @@ eq: EQUMAX PARENTESIS_ABRE {
         printf("EQUMAX(expresion;[lista]) - Regla 13\n");
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, "@max");
-         detectarInsertar(lista, crearDato("_@max", "-", "-", "-"));
+         detectarInsertar(lista, crearDato("@max", "-", "-", "-"));
         __operador__comparador = "BNE";
         sprintf(__celdaActualEquMax, "%d", celdaActual(lPolaca));
         __banderaEquMax = 0;
@@ -177,9 +180,9 @@ eq: EQUMAX PARENTESIS_ABRE {
   | EQUMIN PARENTESIS_ABRE {
         __banderaEquMin = 1;
   } expresion {
-        insertarListaPolaca(lPolaca, "@master");
-        detectarInsertar(lista, crearDato("_@master", "-", "-", "-"));
         insertarListaPolaca(lPolaca, "OP_ASIG");
+        insertarListaPolaca(lPolaca, "@master");
+        detectarInsertar(lista, crearDato("@master", "-", "-", "-"));
   } PUNTO_COMA CORCHETE_ABRE lista_factor CORCHETE_CIERRA PARENTESIS_CIERRA {
         char __posicionDestinoEquMin[150];
         char __celdaActualEquMin[150];
@@ -187,7 +190,7 @@ eq: EQUMAX PARENTESIS_ABRE {
         printf("EQUMIN(expresion;[lista]) - Regla 14\n");
         insertarListaPolaca(lPolaca, "@master");
         insertarListaPolaca(lPolaca, "@min");
-        detectarInsertar(lista, crearDato("_@min", "-", "-", "-"));
+        detectarInsertar(lista, crearDato("@min", "-", "-", "-"));
         __operador__comparador = "BNE";
         sprintf(__celdaActualEquMin, "%d", celdaActual(lPolaca));
         __banderaEquMin = 0;
@@ -537,10 +540,10 @@ lista_factor: lista_factor COMA expresion {
                     char __posicionDestino[150];
                     char __celdaActual[150];
 
-                    insertarListaPolaca(lPolaca, "@aux");
-                    detectarInsertar(lista, crearDato("_@aux", "-", "-", "-"));
                     insertarListaPolaca(lPolaca, "OP_ASIG");
-                    insertarListaPolaca(lPolaca, "@aux");
+                    insertarListaPolaca(lPolaca, "@equ_aux");
+                    detectarInsertar(lista, crearDato("@equ_aux", "-", "-", "-"));
+                    insertarListaPolaca(lPolaca, "@equ_aux");
                     // Inserto @max o @min dependiendo la bandera.
                     insertarListaPolaca(lPolaca, maxOMin);
                     insertarListaPolaca(lPolaca, "CMP");
@@ -551,10 +554,10 @@ lista_factor: lista_factor COMA expresion {
                     insertarListaSimple(listaEqu, __celdaActual);
                     insertarListaPolaca(lPolaca, " "); // Avanzar
                     // Detecto maximo, asigna a Aux
-                    insertarListaPolaca(lPolaca, "@aux");
+                    insertarListaPolaca(lPolaca, "@equ_aux");
                     // Inserto @max o @min dependiendo la bandera.
-                    insertarListaPolaca(lPolaca, maxOMin);
                     insertarListaPolaca(lPolaca, "OP_ASIG");
+                    insertarListaPolaca(lPolaca, maxOMin);
                     // Desapilo la posicion en donde voy a guardar la nueva celda actual.
                     desapilarDeLista(listaEqu, __posicionDestino);
                     sprintf(__celdaActual, "%d", celdaActual(lPolaca));
