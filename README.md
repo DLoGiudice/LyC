@@ -1,12 +1,12 @@
 # Lenguajes y Compiladores - Grupo 8
 
 ## Bienvenido al Trabajo Practico de Lenguajes y Compiladores del **Grupo 8**.
-## Segunda Entrega se encuentra en el tag v2.0
+## La entrega final se encuentra en el tag v3.0
 ### Guia de Instalacion
 1. Clonar el repositorio en un directorio de preferencia.  
 `git clone -b main https://github.com/DLoGiudice/LyC.git`
 2. Ir al directorio y correr el script con el siguiente código:  
-`.\script.bat`
+`.\grupo08.bat`
 3. Luego de correr el script, en el archivo **ts.txt** se encontrará la tabla de simbolos.
 4. Luego de correr el script, en el archivo **intermedia.txt** se encontrará la intermedia.
 
