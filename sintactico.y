@@ -569,8 +569,8 @@ lista_factor: lista_factor COMA expresion {
             | expresion {
                 printf("lista_factor: expresion - Regla 43\n");
                 if (__banderaEquMax == 1 || __banderaEquMin == 1 ) {
-                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min");
                     insertarListaPolaca(lPolaca, "OP_ASIG");
+                    (__banderaEquMax == 1) ? insertarListaPolaca(lPolaca, "@max") : insertarListaPolaca(lPolaca, "@min");
                 } else {
                     contLong = 1;
                 }
