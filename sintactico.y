@@ -9,6 +9,7 @@
 int yylex();
 int yyparse();
 void yyerror(char const *str);
+char * darVueltaOperador(char *);
 
 //Variables para verificar la coincidencia de lista de variables y lista de tipos.
 int contadorListaVariables = 0;
@@ -460,6 +461,7 @@ condicion: comparacion {
             char __celdaActual[150];
 
             insertarListaPolaca(lPolaca, "CMP");
+            __operador__comparador = darVueltaOperador(__operador__comparador);
             insertarListaPolaca(lPolaca, __operador__comparador);
             __operador__comparador = "";
             // Apilo celdaActual
@@ -511,7 +513,29 @@ condicion: comparacion {
             insertarListaPolacaNodoEspecifica(lPolaca, __celdaActual, __posicionSaltoOr);
 
         }
-        | NOT comparacion{printf("NOT Comparacion - Regla 32\n"); };
+        | NOT comparacion{
+            char __posicionDestino[150];
+            char __celdaActual[150];
+            printf("NOT Comparacion - Regla 32\n");
+
+            insertarListaPolaca(lPolaca, "CMP");
+            __operador__comparador = darVueltaOperador(__operador__comparador);
+            insertarListaPolaca(lPolaca, __operador__comparador);
+            __operador__comparador = "";
+            // Apilo celdaActual
+            sprintf(__celdaActual, "%d", celdaActual(lPolaca));
+            if( __lista_if == 1) {
+                if (__cantidad_if == 1) {
+                    insertarListaSimple(listaIf, __celdaActual);
+                } else {
+                    insertarListaSimple(listaIf2, __celdaActual);
+                }
+            }
+
+            if( __lista_while == 1)
+                insertarListaSimple(listaWhile, __celdaActual);
+            insertarListaPolaca(lPolaca, " "); // Avanzar
+        };
 
 comparacion: expresion {
              } operador expresion{printf("Comparacion - Regla 33\n");}
@@ -642,4 +666,20 @@ int main(){
 void yyerror (char const *s) {
     printf("Programa terminado por error \n");
     exit(1);
+}
+
+char * darVueltaOperador(char * operador) {
+    if (strcmp(operador, "BGT") == 0) {
+        return "BLE";
+    } else if (strcmp(operador, "BLT")==0) {
+        return "BGE";
+    } else if (strcmp(operador, "BGE")==0) {
+        return "BLT";
+    } else if (strcmp(operador, "BLE")==0) {
+        return "BGT";
+    } else if (strcmp(operador, "BEQ")==0) {
+        return "BNE";
+    } else if (strcmp(operador, "BNE")==0) {
+        return "BEQ";
+    }
 }
