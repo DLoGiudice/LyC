@@ -1,35 +1,13 @@
 */ Definicion de Variables /*
-DIM [ limite, resultador_final, prediccion ] AS [ integer, real, integer ]
-DIM [ contador, acumulador ] AS [ integer, integer ]
-DIM [ mensaje_final ] AS [ string ]
- 
-*/ Inicio de Programa /*
-contador := 0
-GET mensaje_final
- 
-WHILE(acumulador < 1000 AND contador < 10){ 
-    acumulador := 2
-    contador := 1
-    IF(acumulador >= limite OR contador < 5){
-        resultado_final := limite
-    } ELSE {
-        DISPLAY "Debajo del limite"
-    }
-}
- 
-IF (EQUMAX(resultado_final - 15; [100, 110, prediccion + acumulador])) {
-    IF (acumulador > contador AND contador > 4 ) {
-        DISPLAY "Acertaste Maximo"
-    }
+DIM [ a, p ] AS [ integer, integer ]
 
-    DISPLAY acumulador
-}
+p := 9
+a := 13
  
-IF (EQUMIN(resultado_final + 10; [100, 110, prediccion])) {
+IF (EQUMAX(a + 10; [10, 13, p])) {
     DISPLAY "Acertaste Minimo"
+} ELSE {
+    DISPLAY "pifiaste Minimo"
 }
- 
-IF (LONG([100, 110, prediccion]) == resultado_final) {
-    DISPLAY "Longitud"
-}
-DISPLAY mensaje_final
+
+DISPLAY "termine"

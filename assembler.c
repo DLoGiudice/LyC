@@ -10,13 +10,13 @@
 int generarAssembler(char *, char *);
 void imprimirEncabezado(FILE *);
 void imprimirCodigoEstaticoCuerpo(FILE *);
-void imprimirCodigoIntermedio(FILE *, FILE *);
+void imprimirCodigoIntermedio(FILE *, FILE *, char (*)[45]);
 void imprimirSenialDeFin(FILE *);
-void imprimirTablaDeSimbolos(FILE *, FILE *);
+void imprimirTablaDeSimbolos(FILE *, FILE *, char (*)[45]);
 
 void escribirAssembler(FILE *, char *, int *);
 
-void guardarSimbolo(char *, char *, FILE *);
+void guardarSimbolo(char *, char *, FILE *, char (*)[45], int *);
 void contructorConstantes(char *, char *);
 int esOperador(char [CANT_OPERANDOS][LONG_OPERANDOS], char *);
 char * limpiarStringLeido(char *);
@@ -29,6 +29,12 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     FILE* archivoTablaDeSimbolos = fopen(tablaDeSimbolos, "r" );
     FILE* archivoIntermedia = fopen(intermedia, "r" );
     FILE* archivoAssembler = fopen("assm.asm", "w");
+    char variablesStrings[20][45];
+
+    // Inicializo matriz con valores vacios.
+    for (int i = 0; i < 20; i++) {
+        strcmp(variablesStrings[i], "__EMTPY__");
+    }
 
     if (archivoTablaDeSimbolos == NULL) {
         return 1;
@@ -44,9 +50,9 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
 
     // Paso a Paso
     imprimirEncabezado(archivoAssembler);
-    imprimirTablaDeSimbolos(archivoAssembler, archivoTablaDeSimbolos);
+    imprimirTablaDeSimbolos(archivoAssembler, archivoTablaDeSimbolos, variablesStrings);
     imprimirCodigoEstaticoCuerpo(archivoAssembler);
-    imprimirCodigoIntermedio(archivoAssembler, archivoIntermedia);
+    imprimirCodigoIntermedio(archivoAssembler, archivoIntermedia, variablesStrings);
     imprimirSenialDeFin(archivoAssembler);
 
     fclose(archivoTablaDeSimbolos);
@@ -81,13 +87,14 @@ void imprimirSenialDeFin(FILE * archivo){
 }
 
 
-void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
+void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char variablesStrings[][45]) {
     int tam_char = 150;
     char linea[tam_char];
     int lineas_encabezado = 0;
     char simbolo[32];
     char * delimitador = "|";
     int indice;
+    int cont_strings = 0;
 
     fprintf(archivo, ".DATA\n\n");
 
@@ -96,18 +103,17 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos) {
     fgets(linea,tam_char,tablaDeSimbolos);
 
     while(!feof(tablaDeSimbolos)) {
-        eliminarEspacios(linea);        
-        guardarSimbolo(linea, delimitador, archivo);
+        guardarSimbolo(linea, delimitador, archivo, variablesStrings, &cont_strings);
         fgets(linea,tam_char,tablaDeSimbolos);
     }
 
     // imprimo AUX
-    for(indice=0; indice < 10; indice++) {
+    for(indice=0; indice < 25; indice++) {
         fprintf(archivo, "@aux%d\tdd\t?\n", indice);
     }
 }
 
-void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
+void guardarSimbolo(char * linea, char * delimitador, FILE * archivo, char variablesStrings[][45], int * cont_strings) {
     // Uso de strtok --> https://www.codingame.com/playgrounds/14213/how-to-play-with-strings-in-c/string-split
     char *ptr = strtok(linea, delimitador);
     int cont_columnas = 0;
@@ -118,10 +124,14 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
     while(ptr != NULL)
 	{
         if (cont_columnas == 0) {
+            // Leo primera columna de Tabla Simbolos
+            eliminarEspacios(ptr);
             simbolo = ptr;
         }
 
         if (cont_columnas == 1) {
+            // Leo segunda columna de Tabla Simbolos
+            eliminarEspacios(ptr);
             valor = ptr;
             if (strcmp(valor,"CTE_STRING")==0){
                 flagString = 1;
@@ -129,20 +139,38 @@ void guardarSimbolo(char * linea, char * delimitador, FILE * archivo) {
         }
 
         if (cont_columnas == 2) {
+            // Leo tercera columna de Tabla Simbolos
             valor = ptr;
         }
 
         if (cont_columnas == 3) {
+            // Leo cuarta columna de Tabla Simbolos
+            if (flagString == 1) {
+                if(valor[0] != '\"')
+                    // Si es string y si no es cadena, osea, comienza con "
+                    eliminarEspacios(valor);
+            } else {
+                // Si no es string y si es cadena, osea, comienza con "
+                eliminarEspacios(valor);
+            }
+
             if (strcmp(valor,"-") == 0)
                 valor = "?";
 
-            if (flagString == 1 && strcmp(valor,"?") != 0){
-                char cadena[100] = "";
-                contructorConstantes(cadena, valor);
-                strcpy(valor,cadena);
+            if (flagString == 1){
+                if (strcmp(valor,"?") != 0) {
+                    char cadena[100] = "";
+                    contructorConstantes(cadena, valor);
+                    strcpy(valor,cadena);
+                    fprintf(archivo, "%s\tdb\t%s\n", simbolo, valor);
+                } else {
+                    fprintf(archivo, "%s\tdb\t%s\n", simbolo, valor);
+                }
+                strcpy(variablesStrings[*cont_strings], simbolo);
+                *cont_strings = *cont_strings + 1;
+            } else {
+                fprintf(archivo, "%s\tdd\t%s\n", simbolo, valor);
             }
-
-            fprintf(archivo, "%s\tdd\t%s\n", simbolo, valor);
             cont_columnas = 0;
         }
 
@@ -169,9 +197,10 @@ void contructorConstantes(char * cadena, char * s){
     strcat(cadena,aux1);
     strcat(cadena,lenString);
     strcat(cadena,aux2);
+
 }
 
-void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
+void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia, char variablesStrings[][45]) {
     int tam_char = 150;
     char linea[tam_char];
     char numeroInstruccion[tam_char];
@@ -260,17 +289,9 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
 
                 if (strcmp(operadores[indice_operador], "CMP") == 0) {
                     strcpy(nombreEtiqueta, "ETIQ_");
-                    /*
-                        JE/JZ	Jump Equal or Jump Zero	ZF
-                        JNE/JNZ	Jump not Equal or Jump Not Zero	ZF
-                        JA/JNBE	Jump Above or Jump Not Below/Equal	CF, ZF
-                        JAE/JNB	Jump Above/Equal or Jump Not Below	CF
-                        JB/JNAE	Jump Below or Jump Not Above/Equal	CF
-                        JBE/JNA	Jump Below/Equal or Jump Not Above	AF, CF
-                    */
                     // instrucciones de rutina.
-                    fprintf(output, "FLD\t%s\n", valorDesapilado_1);
-                    fprintf(output, "FCOMP\t%s\n", valorDesapilado_2);
+                    fprintf(output, "FLD\t%s\n", valorDesapilado_2);
+                    fprintf(output, "FCOMP\t%s\n", valorDesapilado_1);
                     fprintf(output, "FSTSW AX\n");
                     fprintf(output, "SAHF\n");
 
@@ -279,19 +300,20 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
                     buscarSalto(stringLeido, saltoAssembler);
-                    // printf("SALTO: %s\n", saltoAssembler);
-                    // Generar etiqueta y guardar en lista.
-                    // nombreEtiqueta = "ETIQ_";
-                    strcat(nombreEtiqueta, numeroInstruccion);
-                    fprintf(output, "%s\t%s\n", saltoAssembler, nombreEtiqueta);
-                    // Apilar numeroInstriccion.
-                    strcpy(etiquetasSaltos[contadorEtiquetasSaltos], nombreEtiqueta);
 
                     // Guardo el numero de instruccion donde insertar etiqueta.
                     fgets(linea, tam_char, archivoIntermedia);
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
                     strcpy(saltos[contadorEtiquetasSaltos], stringLeido);
+
+                    // Generar etiqueta y guardar en lista.
+                    // nombreEtiqueta = "ETIQ_";
+                    // Apilar numeroInstriccion.
+                    strcat(nombreEtiqueta, stringLeido);
+                    strcpy(etiquetasSaltos[contadorEtiquetasSaltos], nombreEtiqueta);
+                    fprintf(output, "%s\t%s\n", saltoAssembler, nombreEtiqueta);
+                    fprintf(output, "FFREE\n");
                     contadorEtiquetasSaltos = contadorEtiquetasSaltos + 1;
                     // insertarListaSimple(listaSaltos, stringLeido);
                 } else {
@@ -321,11 +343,46 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia) {
             {
                 // soy aburrido - NO DESAPILO
                 if(strcmp(operadores[indice_operador], "DISPLAY") == 0) {
+                    int indice_display;
+                    int es_cadena = 0;
                     // Display entero solamente por ahora
                     fgets(linea, tam_char, archivoIntermedia);
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
-                    fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                    for (indice_display = 0; indice_display < 20; indice_display++) {
+                        if (strcmp(variablesStrings[indice_display], stringLeido) == 0) {
+                            es_cadena = 1;
+                            break;
+                        } else if (strcmp(variablesStrings[indice_display], "__EMTPY__") == 0) {
+                            break;
+                        }
+                    }
+                    if (es_cadena == 1) {
+                        fprintf(output, "DisplayString\t%s\n", stringLeido);
+                    } else {
+                        fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                    }
+                    fprintf(output, "newline\t1\n");
+                } else if(strcmp(operadores[indice_operador], "GET") == 0) {
+                    int indice_display;
+                    int es_cadena = 0;
+                    // Display entero solamente por ahora
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    for (indice_display = 0; indice_display < 20; indice_display++) {
+                        if (strcmp(variablesStrings[indice_display], stringLeido) == 0) {
+                            es_cadena = 1;
+                            break;
+                        } else if (strcmp(variablesStrings[indice_display], "__EMTPY__") == 0) {
+                            break;
+                        }
+                    }
+                    if (es_cadena == 1) {
+                        fprintf(output, "getString\t%s\n", stringLeido);
+                    } else {
+                        fprintf(output, "getFloat\t%s\n", stringLeido);
+                    }
                     fprintf(output, "newline\t1\n");
                 } else if(strcmp(operadores[indice_operador], "BI") == 0) {
                     strcpy(nombreEtiqueta, "ETIQ_");
@@ -425,10 +482,14 @@ void buscarInstruccion(char * operando, char * instruccionAssembler){
 }
 
 void buscarSalto(char * operando, char * saltoAssembler){
-    if (strcmp("BNE", operando) == 0) {
-        strcpy(saltoAssembler, "JNZ");
-    } else if (strcmp("BGE", operando) == 0) {
-        strcpy(saltoAssembler, "JBE");
+    char intermedia[6][5] = {"BLT", "BLE", "BGT", "BGE", "BEQ", "BNE"}; // Agregar operandos
+    char saltosAssm[6][5] = {"JB", "JNA", "JA", "JAE", "JE", "JNE"}; // Agregar operandos
+    int i;
+
+    for(i=0; i < 6; i++) {
+        if(strcmp(intermedia[i], operando) == 0) {
+            strcpy(saltoAssembler, saltosAssm[i]);
+            return;
+        }
     }
-    return;
 }
