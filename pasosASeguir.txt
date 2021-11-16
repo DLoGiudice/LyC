@@ -1,8 +1,0 @@
-1_ Crear la pila de assembler desde el archivo de intermedia.
-
-	Se saca un elemento de la pila
-	Se pregunta si es un operador (+) o un operando (a)
-		Si es un operando se carga el mismo en el co-presador.
-		Si es un operador, se verifica si es unario o binario
-			Si es unario, se quita de la pila un item y se procesa y se apila el resultado
-			Si es un binario se quita de la pila dos items y se procesan y se apila el resultado.

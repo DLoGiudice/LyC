@@ -28,11 +28,12 @@ void buscarSalto(char *, char *);
 int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     FILE* archivoTablaDeSimbolos = fopen(tablaDeSimbolos, "r" );
     FILE* archivoIntermedia = fopen(intermedia, "r" );
-    FILE* archivoAssembler = fopen("assm.asm", "w");
+    FILE* archivoAssembler = fopen("final.asm", "w");
     char variablesStrings[20][45];
+    int i;
 
     // Inicializo matriz con valores vacios.
-    for (int i = 0; i < 20; i++) {
+    for (i = 0; i < 20; i++) {
         strcmp(variablesStrings[i], "__EMTPY__");
     }
 
@@ -108,7 +109,7 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char variab
     }
 
     // imprimo AUX
-    for(indice=0; indice < 25; indice++) {
+    for(indice=0; indice < 39; indice++) {
         fprintf(archivo, "@aux%d\tdd\t?\n", indice);
     }
 }

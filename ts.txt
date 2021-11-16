@@ -1,18 +1,31 @@
 NOMBRE                        |TIPODATO          |VALOR     |LONGITUD        
 ==================================================================
-_limite                       |CTE_INTEGER       |-         |-               
-_resultador_final             |CTE_FLOAT         |-         |-               
-_prediccion                   |CTE_INTEGER       |-         |-               
 _contador                     |CTE_INTEGER       |-         |-               
-_acumulador                   |CTE_INTEGER       |-         |-               
+_acumulador                   |CTE_FLOAT         |-         |-               
+_prediccion                   |CTE_INTEGER       |-         |-               
+_cant_iteracion               |CTE_INTEGER       |-         |-               
+_longitud                     |CTE_INTEGER       |-         |-               
 _mensaje_final                |CTE_STRING        |-         |-               
-_0                            |-                 |0         |-               
-_1000                         |-                 |1000      |-               
-_10                           |-                 |10        |-               
-_2                            |-                 |2         |-               
-_1                            |-                 |1         |-               
-_5                            |-                 |5         |-               
-_15                           |-                 |15        |-               
-_100                          |-                 |100       |-               
-_110                          |-                 |110       |-               
-_4                            |-                 |4         |-               
+_0                            |-                 |0.0       |-               
+_cadena_0                     |CTE_STRING        |"Inicio Programa"|-               
+_cadena_1                     |CTE_STRING        |"Ins cant itera(Max: 5)"|-               
+_5                            |-                 |5.0       |-               
+_1                            |-                 |1.0       |-               
+_cadena_2                     |CTE_STRING        |"Inserte prediccion"|-               
+_10                           |-                 |10.0      |-               
+_cadena_3                     |CTE_STRING        |"Acertaste"|-               
+_cadena_4                     |CTE_STRING        |"No Acertaste"|-               
+_20                           |-                 |20.0      |-               
+@master                       |-                 |-         |-               
+_15                           |-                 |15.0      |-               
+@equ_aux                      |-                 |-         |-               
+@max                          |-                 |-         |-               
+@min                          |-                 |-         |-               
+_cadena_5                     |CTE_STRING        |"True EQUMIN"|-               
+_cadena_6                     |CTE_STRING        |"False EQUMIN"|-               
+_cadena_7                     |CTE_STRING        |"Inserte long de arr"|-               
+_100                          |-                 |100.0     |-               
+_110                          |-                 |110.0     |-               
+_3                            |CTE_INTEGER       |3.0       |-               
+_cadena_8                     |CTE_STRING        |"Acertaste Longitud"|-               
+_cadena_9                     |CTE_STRING        |"Algun mensaje Final?"|-               
