@@ -108,7 +108,7 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char variab
     }
 
     // imprimo AUX
-    for(indice=0; indice < 50; indice++) {
+    for(indice=0; indice < 25; indice++) {
         fprintf(archivo, "@aux%d\tdd\t?\n", indice);
     }
 }
@@ -300,19 +300,20 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia, char vari
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
                     buscarSalto(stringLeido, saltoAssembler);
-                    // printf("SALTO: %s\n", saltoAssembler);
-                    // Generar etiqueta y guardar en lista.
-                    // nombreEtiqueta = "ETIQ_";
-                    strcat(nombreEtiqueta, numeroInstruccion);
-                    fprintf(output, "%s\t%s\n", saltoAssembler, nombreEtiqueta);
-                    // Apilar numeroInstriccion.
-                    strcpy(etiquetasSaltos[contadorEtiquetasSaltos], nombreEtiqueta);
 
                     // Guardo el numero de instruccion donde insertar etiqueta.
                     fgets(linea, tam_char, archivoIntermedia);
                     stringLeido = strrchr(linea, delimitador);
                     stringLeido = limpiarStringLeido(stringLeido);
                     strcpy(saltos[contadorEtiquetasSaltos], stringLeido);
+
+                    // Generar etiqueta y guardar en lista.
+                    // nombreEtiqueta = "ETIQ_";
+                    // Apilar numeroInstriccion.
+                    strcat(nombreEtiqueta, stringLeido);
+                    strcpy(etiquetasSaltos[contadorEtiquetasSaltos], nombreEtiqueta);
+                    fprintf(output, "%s\t%s\n", saltoAssembler, nombreEtiqueta);
+                    fprintf(output, "FFREE\n");
                     contadorEtiquetasSaltos = contadorEtiquetasSaltos + 1;
                     // insertarListaSimple(listaSaltos, stringLeido);
                 } else {
