@@ -1,13 +1,43 @@
 */ Definicion de Variables /*
-DIM [ a, p ] AS [ integer, integer ]
+DIM [ contador, acumulador, prediccion, cant_iteracion ] AS [ integer, real, integer, integer ]
+DIM [ longitud, mensaje_final ] AS [ integer, string ]
 
-p := 9
-a := 13
- 
-IF (EQUMAX(a + 10; [10, 13, p])) {
-    DISPLAY "Acertaste Minimo"
-} ELSE {
-    DISPLAY "pifiaste Minimo"
+*/ Inicio de Programa /*
+contador := 0
+DISPLAY "Inicio Programa"
+DISPLAY "Ins cant itera(Max: 5)"
+GET cant_iteracion
+
+WHILE(contador < cant_iteracion AND contador < 5) {
+    DISPLAY contador
+    contador := contador + 1
 }
 
-DISPLAY "termine"
+DISPLAY "Inserte prediccion"
+GET prediccion
+
+IF (prediccion == 10) {
+    DISPLAY "Acertaste"
+} ELSE {
+    DISPLAY "No Acertaste"
+}
+
+IF (EQUMAX(20; [20, 15, 10])) {
+    DISPLAY prediccion
+}
+
+IF (EQUMIN(10; [20, 10, 5])) {
+    DISPLAY "True EQUMIN"
+} ELSE {
+    DISPLAY "False EQUMIN"
+}
+
+DISPLAY "Inserte long de arr"
+GET longitud
+IF (LONG([100, 110, prediccion]) == longitud) {
+    DISPLAY "Acertaste Longitud"
+}
+
+DISPLAY "Algun mensaje Final?"
+GET mensaje_final
+DISPLAY mensaje_final

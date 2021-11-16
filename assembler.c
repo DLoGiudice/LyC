@@ -108,7 +108,7 @@ void imprimirTablaDeSimbolos(FILE * archivo, FILE * tablaDeSimbolos, char variab
     }
 
     // imprimo AUX
-    for(indice=0; indice < 25; indice++) {
+    for(indice=0; indice < 39; indice++) {
         fprintf(archivo, "@aux%d\tdd\t?\n", indice);
     }
 }
