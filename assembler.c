@@ -31,6 +31,11 @@ int generarAssembler(char * tablaDeSimbolos, char * intermedia) {
     FILE* archivoAssembler = fopen("assm.asm", "w");
     char variablesStrings[20][45];
 
+    // Inicializo matriz con valores vacios.
+    for (int i = 0; i < 20; i++) {
+        strcmp(variablesStrings[i], "__EMTPY__");
+    }
+
     if (archivoTablaDeSimbolos == NULL) {
         return 1;
     }
@@ -347,12 +352,35 @@ void imprimirCodigoIntermedio(FILE * output, FILE * archivoIntermedia, char vari
                         if (strcmp(variablesStrings[indice_display], stringLeido) == 0) {
                             es_cadena = 1;
                             break;
+                        } else if (strcmp(variablesStrings[indice_display], "__EMTPY__") == 0) {
+                            break;
                         }
                     }
                     if (es_cadena == 1) {
                         fprintf(output, "DisplayString\t%s\n", stringLeido);
                     } else {
                         fprintf(output, "Displayfloat\t%s,2\n", stringLeido);
+                    }
+                    fprintf(output, "newline\t1\n");
+                } else if(strcmp(operadores[indice_operador], "GET") == 0) {
+                    int indice_display;
+                    int es_cadena = 0;
+                    // Display entero solamente por ahora
+                    fgets(linea, tam_char, archivoIntermedia);
+                    stringLeido = strrchr(linea, delimitador);
+                    stringLeido = limpiarStringLeido(stringLeido);
+                    for (indice_display = 0; indice_display < 20; indice_display++) {
+                        if (strcmp(variablesStrings[indice_display], stringLeido) == 0) {
+                            es_cadena = 1;
+                            break;
+                        } else if (strcmp(variablesStrings[indice_display], "__EMTPY__") == 0) {
+                            break;
+                        }
+                    }
+                    if (es_cadena == 1) {
+                        fprintf(output, "getString\t%s\n", stringLeido);
+                    } else {
+                        fprintf(output, "getFloat\t%s\n", stringLeido);
                     }
                     fprintf(output, "newline\t1\n");
                 } else if(strcmp(operadores[indice_operador], "BI") == 0) {

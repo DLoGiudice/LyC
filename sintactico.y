@@ -248,8 +248,10 @@ asignacion: ID OP_ASIG expresion { printf ("Asignacion - expresion - Regla 16\n"
           | ID OP_ASIG CADENA {
             char longitud[2] = "";
             char nombre[33] = "_";
+            char nombre_valor[40] = "";
             sprintf(longitud, "%d", (int)strlen($3));
-            if (detectarInsertar(lista, crearDato(strcat(nombre, $3),"-", $3, longitud))==1){
+            sprintf(nombre_valor, "\"%s\"", $3);
+            if (detectarInsertar(lista, crearDato(strcat(nombre, $3),"CTE_STRING", nombre_valor, longitud))==1){
                 yyerror("Hay un duplicado en la tabla de simbolos");
              }
             char valor[150];
